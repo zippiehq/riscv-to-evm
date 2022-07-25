@@ -1,8 +1,6 @@
-import { sign } from "crypto";
 import fs from "fs";
-import { writer } from "repl";
 
-const lines = fs.readFileSync("fib.s").toString("utf8").split("\n");
+const lines = fs.readFileSync("test.s").toString("utf8").split("\n");
 
 const linesTokenized = lines.map((x) => x.trim().replaceAll("\t", " ").replaceAll(/#.*$/g, "").replaceAll(", ", " ").trim().split(" "));
 
@@ -59,7 +57,7 @@ function readRegister(regName: string) {
   } else {
     const address = reg2mem[regName];
     opcodes.push({ opcode: "PUSH2", parameter: address.toString(16).toUpperCase().padStart(4, "0") });
-    opcodes.push({ opcode: "MLOAD" });
+    opcodes.push({ opcode: "MLOAD", comment: "read from " + regName});
   }
 }
 
@@ -69,16 +67,15 @@ function writeRegister(regName: string, doMask: boolean) {
   } else {
     if (doMask) {
       opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF"});
-      opcodes.push({ opcode: "AND"});
+      opcodes.push({ opcode: "AND", comment: "mask to 32 bits"});
     }
     const address = reg2mem[regName];
     opcodes.push({ opcode: "PUSH2", parameter: address.toString(16).toUpperCase().padStart(4, "0") });
-    opcodes.push({ opcode: "MSTORE"});
+    opcodes.push({ opcode: "MSTORE", comment: "store to " + regName});
   }
 }
 
 function signExtendTo256(value: number) {
-  // XXX we should be able to calculate this here instead of using opcodes
   const buf = Buffer.alloc(4);
   buf.writeInt32BE(value);
   let val = BigInt("0x" + buf.toString("hex"));
@@ -111,11 +108,69 @@ function emitAdd(rd: string, rs1: string, rs2: string) {
   writeRegister(rd, true);
 }
 
+function emitSub(rd: string, rs1: string, rs2: string) {
+  readRegister(rs2);
+  readRegister(rs1);
+  opcodes.push({opcode: "SUB", comment: "SUB"});
+  writeRegister(rd, true);
+}
+
 function emitMv(rd: string, rs1: string) {
   readRegister(rs1);
   writeRegister(rd, false);
 }
 
+function emitAndOrXor(type: string, rd: string, rs1: string, rs2: string) {
+  readRegister(rs2);
+  readRegister(rs1);
+  switch (type) {
+    case "and": opcodes.push({opcode: "AND", comment: "AND"}); break;
+    case "or": opcodes.push({opcode: "OR", comment: "OR"}); break;
+    case "xor": opcodes.push({opcode: "XOR", comment: "XOR"}); break;
+  }
+  writeRegister(rd, true);
+}
+
+function emitAndOrXori(type: string, rd: string, rs1: string, imm: number) {
+  signExtendTo256(imm);
+  readRegister(rs1);
+  switch (type) {
+    case "and": opcodes.push({opcode: "AND", comment: "ANDI"}); break;
+    case "or": opcodes.push({opcode: "OR", comment: "ORI"}); break;
+    case "xor": opcodes.push({opcode: "XOR", comment: "XORI"}); break;
+  }
+  writeRegister(rd, true);
+}
+
+function emitSra(rd: string, rs1: string, rs2: string) {
+  readRegister(rs1);
+  
+}
+
+function emitSeqz(rd: string, rs1: string) {
+  readRegister(rs1);
+  opcodes.push({opcode: "ISZERO", comment: "seqz"});
+  writeRegister(rd, false);
+}
+
+function emitSllSrl(type: string, rd: string, rs1: string, rs2: string) {
+  readRegister(rs1);
+  readRegister(rs2);
+  opcodes.push({opcode: type == "SLL" ? "SHL" : "SHR"});
+  writeRegister(rd, true);
+}
+
+function emitRet() {
+  readRegister("ra");
+  opcodes.push({opcode: "JUMP", comment: "ret"});
+}
+
+function emitSlliSrli(func: string, rd: string, rs1: string, imm: number) {
+  readRegister(rs1);
+  opcodes.push({opcode: "PUSH1", parameter: imm.toString(16).toUpperCase().padStart(2, "0")});
+  opcodes.push({opcode: func == "slli" ? "SHL" : "SHR", comment: func});
+  writeRegister(rd, true);
+}
 
 for (let i = 0; i < linesTokenized.length; i++) {
   const line = linesTokenized[i];
@@ -124,6 +179,27 @@ for (let i = 0; i < linesTokenized.length; i++) {
     case "addi": emitAddi(line[1], line[2], Number(line[3])); break;
     case "add": emitAdd(line[1], line[2], line[3]); break;
     case "mv": emitMv(line[1], line[2]); break; // pseudo
+    case "sub": emitSub(line[1], line[2], line[3]); break;
+    case "xor":
+    case "or":
+    case "and": 
+      emitAndOrXor(line[0], line[1], line[2], line[3]); 
+      break;
+    case "xor":
+    case "or":
+    case "and": 
+      emitAndOrXori(line[0], line[1], line[2], Number(line[3])); 
+      break;
+    case "seqz": emitSeqz(line[1], line[2]); break; // psuedo;
+    case "sll":
+    case "srl":
+      emitSllSrl(line[0], line[1], line[2], line[3]);
+      break;
+    case "slli":
+      emitSlliSrli(line[0], line[1], line[2], Number(line[3]));
+      break;
+    case "ret":
+        emitRet(); break // pseudo
     default: console.log("Unknown " + line[0]);
   }
 }
