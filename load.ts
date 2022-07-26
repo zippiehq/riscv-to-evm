@@ -1,5 +1,9 @@
 import fs from "fs";
 import crypto from "crypto";
+import { assemble } from "evm-assembler";
+import Common, { Chain, Hardfork } from '@ethereumjs/common';
+import VM from '@ethereumjs/vm';
+import { BN } from 'ethereumjs-util';
 
 const input = fs.readFileSync("addi.S").toString("utf8")
 const lines = input.replaceAll(";", "\n").replaceAll(": ", ":\n").split("\n");
@@ -133,9 +137,15 @@ function signExtendTo256(value: number) {
   opcodes.push({opcode: "PUSH32", parameter: val.toString(16).toUpperCase().padStart(64, "0"), comment: "signextended " + value});
 }
 
-function emitAddi(rd: string, rs1: string, imm: number) {
+function emitAddi(rd: string, rs1: string, imm: number|null, rawImm: string) {
   readRegister(rs1);
-  signExtendTo256(imm);
+  if (imm !== null) {
+    signExtendTo256(imm);
+  } else {
+    if (rawImm.startsWith("%lo(")) {
+      opcodes.push({opcode: "PUSH4", find_name: rawImm.replaceAll("(", " ").replaceAll(")", " ").split(" ")[1]});
+    }
+  }
   opcodes.push({opcode: "ADD", comment: "ADDI"});
   writeRegister(rd, true);
 }
@@ -170,8 +180,12 @@ function emitAndOrXor(type: string, rd: string, rs1: string, rs2: string) {
   writeRegister(rd, true);
 }
 
-function emitAndOrXori(type: string, rd: string, rs1: string, imm: number) {
-  signExtendTo256(imm);
+function emitAndOrXori(type: string, rd: string, rs1: string, imm: number|null, rawImm: string) {
+  if (imm !== null) {
+    signExtendTo256(imm);
+  } else {
+    throw new Error("No imm");
+  }
   readRegister(rs1);
   switch (type) {
     case "and": opcodes.push({opcode: "AND", comment: "ANDI"}); break;
@@ -234,7 +248,10 @@ function emitBltu(rs1: string, rs2: string, symbol: string) {
   opcodes.push({opcode: "JUMPI"});
 }
 
-function emitSrai(rd: string, rs1: string, imm: number) {
+function emitSrai(rd: string, rs1: string, imm: number|null, rawImm: string) {
+  if (imm == null) {
+    throw new Error("no imm");
+  }
   readRegister(rs1);
   opcodes.push({opcode: "PUSH1", parameter: "03"});
   opcodes.push({opcode: "SIGNEXTEND"});
@@ -261,9 +278,13 @@ function emitRet() {
   opcodes.push({opcode: "JUMP", comment: "ret"});
 }
 
-function emitSlliSrli(func: string, rd: string, rs1: string, imm: number) {
+function emitSlliSrli(func: string, rd: string, rs1: string, imm: number|null, rawImm: string) {
   readRegister(rs1);
-  opcodes.push({opcode: "PUSH1", parameter: imm.toString(16).toUpperCase().padStart(2, "0")});
+  if (imm !== null) {
+    opcodes.push({opcode: "PUSH1", parameter: imm.toString(16).toUpperCase().padStart(2, "0")});
+  } else {
+    throw new Error("Missing imm");
+  }
   opcodes.push({opcode: func == "slli" ? "SHL" : "SHR", comment: func});
   writeRegister(rd, true);
 }
@@ -299,12 +320,18 @@ function emitBne(rs1: string, rs2: string, symbol: string) {
 }
 
 
-function emitLui(rd: string, imm: number) {
+function emitLui(rd: string, imm: number|null, rawImm: string) {
+  if (imm == null) {
+    throw new Error("No imm, got " + rawImm);
+  }
   opcodes.push({opcode: "PUSH4", parameter: (imm << 12).toString(16).toUpperCase().padStart(8, "0"), comment: "LUI"});
   writeRegister(rd, false);
 }
 
-function emitLi(rd: string, imm: number) {
+function emitLi(rd: string, imm: number|null, rawImm: string) {
+  if (imm == null) {
+    throw new Error("No imm")
+  }
   opcodes.push({opcode: "PUSH4", parameter: imm.toString(16).toUpperCase().padStart(8, "0"), comment: "LI"});
   writeRegister(rd, false);
 }
@@ -406,6 +433,7 @@ function emitSw(rs1: string, offset: string) {
     signExtendTo256(Number(off[0]));
     opcodes.push({opcode: "ADD"});  
   }
+  opcodes.push({opcode: "DUP1"});
   opcodes.push({opcode: "MLOAD", comment: "fetch"});
   opcodes.push({opcode: "PUSH32", parameter: "00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff".toUpperCase()});
   opcodes.push({opcode: "AND"});
@@ -418,9 +446,13 @@ function emitSw(rs1: string, offset: string) {
   opcodes.push({opcode: "MSTORE", comment: "sw"});
 }
 
-function evalExpr(imm: string): number {
-  if (imm[0] == "%") {
-    return 0;
+function evalExpr(imm: string): number|null {
+  if (imm[0] == '%') {
+    if (imm.startsWith("%hi")) {
+      return 0;
+    } else {
+      return null;
+    }
   }
   if (imm[0] == "'") {
     return eval(imm).charCodeAt(0);
@@ -433,12 +465,12 @@ opcodes.push({opcode: "JUMP", comment: "jump to main"});
 
 for (let i = 0; i < linesTokenized.length; i++) {
   const line = linesTokenized[i];
-  /* if (line[0] != "") {
+  if (line[0] != "") {
     opcodes.push({opcode: "JUMPDEST", comment: JSON.stringify(line)});
-  } */
+  }
   switch (line[0]) {
     case "": break;
-    case "addi": emitAddi(line[1], line[2], evalExpr(line.slice(3).join(" "))); break;
+    case "addi": emitAddi(line[1], line[2], evalExpr(line.slice(3).join(" ")), line.slice(3).join(" ")); break;
     case "add": emitAdd(line[1], line[2], line[3]); break;
     case "mv": emitMv(line[1], line[2]); break; // pseudo
     case "sub": emitSub(line[1], line[2], line[3]); break;
@@ -450,7 +482,7 @@ for (let i = 0; i < linesTokenized.length; i++) {
     case "xor":
     case "or":
     case "and": 
-      emitAndOrXori(line[0], line[1], line[2], evalExpr(line.slice(3).join(" "))); 
+      emitAndOrXori(line[0], line[1], line[2], evalExpr(line.slice(3).join(" ")), line.slice(3).join(" ")); 
       break;
     case "seqz": emitSeqz(line[1], line[2]); break; // psuedo;
     case "sll":
@@ -458,13 +490,13 @@ for (let i = 0; i < linesTokenized.length; i++) {
       emitSllSrl(line[0], line[1], line[2], line[3]);
       break;
     case "slli":
-      emitSlliSrli(line[0], line[1], line[2], evalExpr(line.slice(3).join(" ")));
+      emitSlliSrli(line[0], line[1], line[2], evalExpr(line.slice(3).join(" ")), line.slice(3).join(" "));
       break;
     case "sra":
       emitSra(line[1], line[2], line[3]);
       break; 
     case "srai":
-      emitSrai(line[1], line[2], evalExpr(line.slice(3).join(" ")));
+      emitSrai(line[1], line[2], evalExpr(line.slice(3).join(" ")), line.slice(3).join(" "));
       break;
     case "slt": 
       emitSlt(line[1], line[2], line[3]);
@@ -479,10 +511,10 @@ for (let i = 0; i < linesTokenized.length; i++) {
     case "ret":
       emitRet(); break // pseudo
     case "lui":
-      emitLui(line[1], evalExpr(line.slice(2).join(" ")));
+      emitLui(line[1], evalExpr(line.slice(2).join(" ")), line.slice(3).join(" "));
       break;
     case "li":
-      emitLi(line[1], evalExpr(line.slice(2).join(" "))); // pseudo
+      emitLi(line[1], evalExpr(line.slice(2).join(" ")), line.slice(3).join(" ")); // pseudo
       break;
     case "ebreak": 
       opcodes.push({opcode: "INVALID", comment: "ebreak"});
@@ -541,3 +573,160 @@ opcodes.push({opcode: "PUSH1", parameter: "00"});
 opcodes.push({opcode: "PUSH1", parameter: "00"});
 opcodes.push({opcode: "RETURN"});
 console.log(JSON.stringify(opcodes, null, 2));
+
+function performAssembly(): string {
+  let preAssembly: string[][] = [];
+  const result = opcodes;
+  for (let i = 0; i < result.length; i++) {
+      const para = result[i].parameter
+      if (para) {
+          preAssembly.push([result[i].opcode, para]);
+      } else {
+          preAssembly.push([result[i].opcode]);
+      }
+  }
+  return assemble(preAssembly);
+}
+
+function addProgramCounters(): number {
+  let pc = 0;
+  for (const e of opcodes) {
+      const para = e.parameter;
+      const find_name = e.find_name;
+      const data_offset = e.data_offset;
+      e.pc = pc;
+      if (find_name || (data_offset !== undefined) && data_offset >= 0) {
+          pc += assemble([[e.opcode, "0000"]]).length / 2;
+      } else if (para) {
+          pc += assemble([[e.opcode, para]]).length / 2;
+      } else {
+          console.log(e);
+          pc += assemble([[e.opcode]]).length / 2;
+      }
+  }
+  return pc;
+}
+
+function resolveNamesAndOffsets() {
+    for (let p = 0; p < opcodes.length; p++) {
+        const e = opcodes[p];
+        if (e.find_name) {
+            let i = 0;
+            for (; i < opcodes.length; i++) {
+                if (opcodes[i].name == e.find_name) {
+                    const pcR = opcodes[i].pc;
+                    if (pcR == undefined){
+                        throw new Error("Missing pc");
+                    }
+                    e.parameter = pcR.toString(16).padStart(4, '0').toUpperCase();
+                    break;
+                }
+            }
+            if (i == opcodes.length) {
+                if (e.find_name.endsWith("b")) {
+                  for (i = p; i >= 0; i--) {
+                    if (opcodes[i].name == e.find_name.slice(0, e.find_name.length - 1)) {
+                      const pcR = opcodes[i].pc;
+                      if (pcR == undefined){
+                          throw new Error("Missing pc");
+                      }
+                      e.parameter = pcR.toString(16).padStart(4, '0').toUpperCase();
+                      break;
+                    }
+                  }
+                  if (i == -1) {
+                    throw new Error("Could not find backwards reference " + e.find_name + " in " + JSON.stringify(e));
+                  }
+                } else if (e.find_name.endsWith("f")) {
+                  for (i = p; p < opcodes.length; i++) {
+                    if (opcodes[i].name == e.find_name.slice(0, e.find_name.length - 1)) {
+                      const pcR = opcodes[i].pc;
+                      if (pcR == undefined){
+                          throw new Error("Missing pc");
+                      }
+                      e.parameter = pcR.toString(16).padStart(4, '0').toUpperCase();
+                      break;
+                  }
+                  if (i == opcodes.length) {
+                    throw new Error("Could not find forwards reference " + e.find_name + " in " + JSON.stringify(e));
+                  }
+                }
+                throw new Error("Could not find " + e.find_name + " in " + JSON.stringify(e));
+            }
+          }
+        }
+    }
+}
+
+addProgramCounters();
+resolveNamesAndOffsets();
+
+const finalBytecode = Buffer.from(performAssembly(), "hex");
+console.log("Final bytecode: " + finalBytecode.toString("hex"))
+
+function printO(op: EVMOpCode) {
+  const pc = op.pc;
+  if (pc == undefined) {
+      throw new Error("Missing pc");
+  }
+  console.log(
+    pc.toString(16).toUpperCase() +
+      "\t" +
+      op.opcode +
+      "\t" +
+      (op.parameter ? op.parameter : "") +
+      "\t " +
+      (op.name ? ";; " + op.name : "") +
+      (op.find_name ? ";; " + op.find_name : "") +
+      "\t " +
+      (op.comment ? " ;; # " + op.comment : "")
+  );
+}
+
+async function invokeRiscv() {
+  const common = new Common({ chain: Chain.Mainnet, hardfork: Hardfork.London })
+  const vm = new VM({ common })
+  vm.on('step', function (data: any) {
+    console.log(`pc: ${data.pc.toString(16).toUpperCase()} - Opcode: ${JSON.stringify(data.opcode.name)}- mem length: ${data.memory.length} - ${data.opcode.dynamicFee}`)
+    for (let l = 0; l < data.stack.length; l++) {
+       console.log("- stack " + (data.stack.length - 1 - l) + ": 0x" + data.stack[l].toString(16).toUpperCase());
+    }
+    //const regs = Object.keys(reg2mem);
+    //const mem = data.memory.toString("hex");
+    /* for (let l = 0; l < regs.length; l++) {
+      if (regs[l].startsWith("x")) {
+        continue;
+      }
+      const loc = reg2mem[l];
+      console.log("reg " + regs[l] + " " + mem.substring(loc*2, loc*2 + ))
+    } */
+    if (data.opcode.name == "MLOAD") {
+        console.log("[MEM LOAD] from 0x" + data.stack[data.stack.length - 1].toString(16));
+    } else if (data.opcode.name == "MSTORE") {
+        console.log("[MEM WRITE] " + data.stack[data.stack.length - 2].toString(16) + " to 0x" + data.stack[data.stack.length - 1].toString(16));
+        if (data.stack[data.stack.length - 1] < 32) {
+            throw new Error("Trying to write to 0");
+        }
+    }
+    for (let l = 0; l < opcodes.length; l++) {
+      if (opcodes[l].pc == data.pc) {
+          printO(opcodes[l]);
+      }
+    }  
+  });
+  console.log("Running in EVM:");
+  const results = await vm.runCode({
+      code: finalBytecode,
+      data: Buffer.alloc(0),
+      gasLimit: new BN(0xffffffffff),
+  });
+  if (results.exceptionError) {
+    throw new Error(JSON.stringify(results.exceptionError));
+  }
+  console.log(`Returned: ${results.returnValue.toString('hex')}`)
+  console.log(`gasUsed : ${results.gasUsed.toString()}`);
+}
+
+invokeRiscv().catch((err) => {
+  console.log(err);
+})
