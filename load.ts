@@ -188,9 +188,9 @@ function emitAndOrXori(type: string, rd: string, rs1: string, imm: number|null, 
   }
   readRegister(rs1);
   switch (type) {
-    case "and": opcodes.push({opcode: "AND", comment: "ANDI"}); break;
-    case "or": opcodes.push({opcode: "OR", comment: "ORI"}); break;
-    case "xor": opcodes.push({opcode: "XOR", comment: "XORI"}); break;
+    case "andi": opcodes.push({opcode: "AND", comment: "ANDI"}); break;
+    case "ori": opcodes.push({opcode: "OR", comment: "ORI"}); break;
+    case "xori": opcodes.push({opcode: "XOR", comment: "XORI"}); break;
   }
   writeRegister(rd, true);
 }
@@ -479,9 +479,9 @@ for (let i = 0; i < linesTokenized.length; i++) {
     case "and": 
       emitAndOrXor(line[0], line[1], line[2], line[3]); 
       break;
-    case "xor":
-    case "or":
-    case "and": 
+    case "xori":
+    case "ori":
+    case "andi": 
       emitAndOrXori(line[0], line[1], line[2], evalExpr(line.slice(3).join(" ")), line.slice(3).join(" ")); 
       break;
     case "seqz": emitSeqz(line[1], line[2]); break; // psuedo;
