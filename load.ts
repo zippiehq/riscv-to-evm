@@ -321,6 +321,9 @@ for (let i = 0; i < linesTokenized.length; i++) {
     case "li":
       emitLi(line[1], evalExpr(line.slice(2).join(" "))); // pseudo
       break;
+    case "ebreak": 
+      opcodes.push({opcode: "INVALID", comment: "ebreak"});
+      break;
     default: 
       if (line[0].endsWith(":")) {
         opcodes.push({opcode: "JUMPDEST", name: line[0].slice(0, line[0].length - 1)});
@@ -335,4 +338,4 @@ opcodes.push({opcode: "PUSH1", parameter: "00"});
 opcodes.push({opcode: "PUSH1", parameter: "00"});
 opcodes.push({opcode: "PUSH1", parameter: "00"});
 opcodes.push({opcode: "RETURN"});
-console.log(opcodes);
+console.log(JSON.stringify(opcodes, null, 2));
