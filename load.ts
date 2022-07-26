@@ -1,6 +1,7 @@
 import fs from "fs";
 import crypto from "crypto";
-const input = fs.readFileSync("simple.S").toString("utf8")
+
+const input = fs.readFileSync("addi.S").toString("utf8")
 const lines = input.replaceAll(";", "\n").replaceAll(": ", ":\n").split("\n");
 
 const linesTokenized = lines.map((x) => x.trim().replaceAll("\t", " ").replaceAll(/#.*$/g, "").replaceAll(", ", " ").replaceAll(",", " ").trim().split(" "));
@@ -189,6 +190,50 @@ function emitSra(rd: string, rs1: string, rs2: string) {
   writeRegister(rd, true);
 }
 
+function emitBlt(rs1: string, rs2: string, symbol: string) {
+  readRegister(rs2);
+  opcodes.push({opcode: "PUSH1", parameter: "03"});
+  opcodes.push({opcode: "SIGNEXTEND"});
+  readRegister(rs1);
+  opcodes.push({opcode: "PUSH1", parameter: "03"});
+  opcodes.push({opcode: "SIGNEXTEND"});
+  opcodes.push({opcode: "SLT"});
+  opcodes.push({opcode: "PUSH4", find_name: symbol});
+  opcodes.push({opcode: "JUMPI"});
+}
+
+function emitBge(rs1: string, rs2: string, symbol: string) {
+  readRegister(rs2);
+  opcodes.push({opcode: "PUSH1", parameter: "03"});
+  opcodes.push({opcode: "SIGNEXTEND"});
+  readRegister(rs1);
+  opcodes.push({opcode: "PUSH1", parameter: "03"});
+  opcodes.push({opcode: "SIGNEXTEND"});
+  opcodes.push({opcode: "SLT"});
+  opcodes.push({opcode: "ISZERO"});
+  opcodes.push({opcode: "PUSH4", find_name: symbol});
+  opcodes.push({opcode: "JUMPI"});
+}
+
+function emitBgeu(rs1: string, rs2: string, symbol: string) {
+  readRegister(rs2);
+  readRegister(rs1);
+  opcodes.push({opcode: "PUSH1", parameter: "03"});
+  opcodes.push({opcode: "SIGNEXTEND"});
+  opcodes.push({opcode: "LT"});
+  opcodes.push({opcode: "ISZERO"});
+  opcodes.push({opcode: "PUSH4", find_name: symbol});
+  opcodes.push({opcode: "JUMPI"});
+}
+
+function emitBltu(rs1: string, rs2: string, symbol: string) {
+  readRegister(rs2);
+  readRegister(rs1);
+  opcodes.push({opcode: "LT"});
+  opcodes.push({opcode: "PUSH4", find_name: symbol});
+  opcodes.push({opcode: "JUMPI"});
+}
+
 function emitSrai(rd: string, rs1: string, imm: number) {
   readRegister(rs1);
   opcodes.push({opcode: "PUSH1", parameter: "03"});
@@ -233,6 +278,26 @@ function emitSlt(rd: string, rs1: string, rs2: string) {
   opcodes.push({opcode: "SLT"});
   writeRegister(rd, false);
 }
+
+function emitBeq(rs1: string, rs2: string, symbol: string) {
+  // XXX if zero/x0 can optimize to ISZERO
+  readRegister(rs1);
+  readRegister(rs2);
+  opcodes.push({opcode: "EQ"});
+  opcodes.push({opcode: "PUSH4", find_name: symbol});
+  opcodes.push({opcode: "JUMPI", comment: "beq"});
+}
+
+function emitBne(rs1: string, rs2: string, symbol: string) {
+  // XXX if zero/x0 can optimize to ISZERO
+  readRegister(rs1);
+  readRegister(rs2);
+  // is 0 if equal
+  opcodes.push({opcode: "SUB"});
+  opcodes.push({opcode: "PUSH4", find_name: symbol});
+  opcodes.push({opcode: "JUMPI", comment: "bne"});
+}
+
 
 function emitLui(rd: string, imm: number) {
   opcodes.push({opcode: "PUSH4", parameter: (imm << 12).toString(16).toUpperCase().padStart(8, "0"), comment: "LUI"});
@@ -363,12 +428,14 @@ function evalExpr(imm: string): number {
   return eval(imm);
 }
 
+opcodes.push({opcode: "PUSH4", find_name: "main"});
+opcodes.push({opcode: "JUMP", comment: "jump to main"});
 
 for (let i = 0; i < linesTokenized.length; i++) {
   const line = linesTokenized[i];
-  if (line[0] != "") {
+  /* if (line[0] != "") {
     opcodes.push({opcode: "JUMPDEST", comment: JSON.stringify(line)});
-  }
+  } */
   switch (line[0]) {
     case "": break;
     case "addi": emitAddi(line[1], line[2], evalExpr(line.slice(3).join(" "))); break;
@@ -437,6 +504,27 @@ for (let i = 0; i < linesTokenized.length; i++) {
       break;
     case "sw":
       emitSw(line[1], line[2]);
+      break;
+    case "beq":
+      emitBeq(line[1], line[2], line[3]);
+      break;
+    case "bne":
+      emitBne(line[1], line[2], line[3]);
+      break;
+    case "blt":
+      emitBlt(line[1], line[2], line[3]);
+      break;
+    case "bltu":
+      emitBltu(line[1], line[2], line[3]);
+      break;
+    case "bge":
+      emitBge(line[1], line[2], line[3]);
+      break;
+    case "bgeu":
+      emitBgeu(line[1], line[2], line[3]);
+      break;
+    case "nop": 
+      // emit nothing
       break;
     default: 
       if (line[0].endsWith(":")) {
