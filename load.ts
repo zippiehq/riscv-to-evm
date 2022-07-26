@@ -1,8 +1,9 @@
 import fs from "fs";
+import crypto from "crypto";
+const input = fs.readFileSync("addi.S").toString("utf8")
+const lines = input.replaceAll(";", "\n").replaceAll(": ", ":\n").split("\n");
 
-const lines = fs.readFileSync("test.s").toString("utf8").split("\n");
-
-const linesTokenized = lines.map((x) => x.trim().replaceAll("\t", " ").replaceAll(/#.*$/g, "").replaceAll(", ", " ").trim().split(" "));
+const linesTokenized = lines.map((x) => x.trim().replaceAll("\t", " ").replaceAll(/#.*$/g, "").replaceAll(", ", " ").replaceAll(",", " ").trim().split(" "));
 
 const reg2mem: Record<string, number> = {
   "ra": 32*1, // x1 XXX fast?
@@ -37,6 +38,37 @@ const reg2mem: Record<string, number> = {
   "t4": 32*29, // x29 
   "t5": 32*30, // x30 
   "t6": 32*31, // x31 
+  "x1": 32*1,
+  "x2": 32*2,
+  "x3": 32*3,
+  "x4": 32*4,
+  "x5": 32*5,
+  "x6": 32*6,
+  "x7": 32*7,
+  "x8": 32*8,
+  "x9": 32*9,
+  "x10": 32*10,
+  "x11": 32*11,
+  "x12": 32*12,
+  "x13": 32*13,
+  "x14": 32*14,
+  "x15": 32*15,
+  "x16": 32*16,
+  "x17": 32*17,
+  "x18": 32*18,
+  "x19": 32*19,
+  "x20": 32*20,
+  "x21": 32*21,
+  "x22": 32*22,
+  "x23": 32*23,
+  "x24": 32*24,
+  "x25": 32*25,
+  "x26": 32*26,
+  "x27": 32*27,
+  "x28": 32*28,
+  "x29": 32*29,
+  "x30": 32*30,
+  "x31": 32*31,
 }
 
 interface EVMOpCode {   
@@ -52,17 +84,20 @@ interface EVMOpCode {
 const opcodes: EVMOpCode[] = [];
 
 function readRegister(regName: string) {
-  if (regName == "zero") {
+  if (regName == "zero" || regName == "x0") {
     opcodes.push({ opcode: "PUSH1", parameter: "00" });
   } else {
     const address = reg2mem[regName];
+    if (!address) {
+      throw new Error("Unknown register " + regName);
+    }
     opcodes.push({ opcode: "PUSH2", parameter: address.toString(16).toUpperCase().padStart(4, "0") });
     opcodes.push({ opcode: "MLOAD", comment: "read from " + regName});
   }
 }
 
 function writeRegister(regName: string, doMask: boolean) {
-  if (regName == "zero") {
+  if (regName == "zero" || regName == "x0") {
     opcodes.push({ opcode: "POP"} ); // this result was redundant
   } else {
     if (doMask) {
@@ -70,6 +105,9 @@ function writeRegister(regName: string, doMask: boolean) {
       opcodes.push({ opcode: "AND", comment: "mask to 32 bits"});
     }
     const address = reg2mem[regName];
+    if (!address) {
+      throw new Error("Unknown register " + regName);
+    }
     opcodes.push({ opcode: "PUSH2", parameter: address.toString(16).toUpperCase().padStart(4, "0") });
     opcodes.push({ opcode: "MSTORE", comment: "store to " + regName});
   }
@@ -144,7 +182,20 @@ function emitAndOrXori(type: string, rd: string, rs1: string, imm: number) {
 
 function emitSra(rd: string, rs1: string, rs2: string) {
   readRegister(rs1);
-  
+  opcodes.push({opcode: "PUSH1", parameter: "03"});
+  opcodes.push({opcode: "SIGNEXTEND"});
+  readRegister(rs2);
+  opcodes.push({opcode: "SAR"})
+  writeRegister(rd, true);
+}
+
+function emitSrai(rd: string, rs1: string, imm: number) {
+  readRegister(rs1);
+  opcodes.push({opcode: "PUSH1", parameter: "03"});
+  opcodes.push({opcode: "SIGNEXTEND"});
+  opcodes.push({opcode: "PUSH1", parameter: imm.toString(16).toUpperCase().padStart(2, "0") });
+  opcodes.push({opcode: "SAR"})
+  writeRegister(rd, true);
 }
 
 function emitSeqz(rd: string, rs1: string) {
@@ -172,11 +223,59 @@ function emitSlliSrli(func: string, rd: string, rs1: string, imm: number) {
   writeRegister(rd, true);
 }
 
+function emitSlt(rd: string, rs1: string, rs2: string) {
+  readRegister(rs2);
+  opcodes.push({opcode: "PUSH1", parameter: "03"});
+  opcodes.push({opcode: "SIGNEXTEND"});
+  readRegister(rs1);
+  opcodes.push({opcode: "PUSH1", parameter: "03"});
+  opcodes.push({opcode: "SIGNEXTEND"});
+  opcodes.push({opcode: "SLT"});
+  writeRegister(rd, false);
+}
+
+function emitLui(rd: string, imm: number) {
+  opcodes.push({opcode: "PUSH4", parameter: (imm << 12).toString(16).toUpperCase().padStart(8, "0"), comment: "LUI"});
+  writeRegister(rd, false);
+}
+
+function emitLi(rd: string, imm: number) {
+  opcodes.push({opcode: "PUSH4", parameter: imm.toString(16).toUpperCase().padStart(8, "0"), comment: "LI"});
+  writeRegister(rd, false);
+}
+
+function emitJal(rd: string, symbol: string) {
+  const randoLabel = "__jal_return_" + crypto.randomBytes(32).toString("hex");
+  if (!(rd == "zero" || rd == "x0")) {
+    opcodes.push({opcode: "PUSH4", find_name: randoLabel});
+    writeRegister(rd, false);
+  }
+  opcodes.push({opcode: "PUSH4", find_name: symbol});
+  opcodes.push({opcode: "JUMP", comment: "jal"});
+  if (!(rd == "zero" || rd == "x0")) {
+    opcodes.push({opcode: "JUMPDEST", name: randoLabel});
+  }
+}
+
+function evalExpr(imm: string): number {
+  if (imm[0] == "%") {
+    return 0;
+  }
+  if (imm[0] == "'") {
+    return eval(imm).charCodeAt(0);
+  }
+  return eval(imm);
+}
+
+
 for (let i = 0; i < linesTokenized.length; i++) {
   const line = linesTokenized[i];
-  opcodes.push({opcode: "JUMPDEST", comment: JSON.stringify(line)});
+  if (line[0] != "") {
+    opcodes.push({opcode: "JUMPDEST", comment: JSON.stringify(line)});
+  }
   switch (line[0]) {
-    case "addi": emitAddi(line[1], line[2], Number(line[3])); break;
+    case "": break;
+    case "addi": emitAddi(line[1], line[2], evalExpr(line.slice(3).join(" "))); break;
     case "add": emitAdd(line[1], line[2], line[3]); break;
     case "mv": emitMv(line[1], line[2]); break; // pseudo
     case "sub": emitSub(line[1], line[2], line[3]); break;
@@ -188,7 +287,7 @@ for (let i = 0; i < linesTokenized.length; i++) {
     case "xor":
     case "or":
     case "and": 
-      emitAndOrXori(line[0], line[1], line[2], Number(line[3])); 
+      emitAndOrXori(line[0], line[1], line[2], evalExpr(line.slice(3).join(" "))); 
       break;
     case "seqz": emitSeqz(line[1], line[2]); break; // psuedo;
     case "sll":
@@ -196,12 +295,44 @@ for (let i = 0; i < linesTokenized.length; i++) {
       emitSllSrl(line[0], line[1], line[2], line[3]);
       break;
     case "slli":
-      emitSlliSrli(line[0], line[1], line[2], Number(line[3]));
+      emitSlliSrli(line[0], line[1], line[2], evalExpr(line.slice(3).join(" ")));
+      break;
+    case "sra":
+      emitSra(line[1], line[2], line[3]);
+      break; 
+    case "srai":
+      emitSrai(line[1], line[2], evalExpr(line.slice(3).join(" ")));
+      break;
+    case "slt": 
+      emitSlt(line[1], line[2], line[3]);
+      break;
+    case "jal": 
+      if (line.length == 2) {
+        emitJal("zero", line[1]);
+      } else {
+        emitJal(line[1], line[2]);
+      }
       break;
     case "ret":
-        emitRet(); break // pseudo
-    default: console.log("Unknown " + line[0]);
+      emitRet(); break // pseudo
+    case "lui":
+      emitLui(line[1], evalExpr(line.slice(2).join(" ")));
+      break;
+    case "li":
+      emitLi(line[1], evalExpr(line.slice(2).join(" "))); // pseudo
+      break;
+    default: 
+      if (line[0].endsWith(":")) {
+        opcodes.push({opcode: "JUMPDEST", name: line[0].slice(0, line[0].length - 1)});
+        break;
+      }
+    console.log("Unknown " + line);
   }
 }
 
+opcodes.push({opcode: "JUMPDEST", name: "__exit"});
+opcodes.push({opcode: "PUSH1", parameter: "00"});
+opcodes.push({opcode: "PUSH1", parameter: "00"});
+opcodes.push({opcode: "PUSH1", parameter: "00"});
+opcodes.push({opcode: "RETURN"});
 console.log(opcodes);
