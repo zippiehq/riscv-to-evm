@@ -4,8 +4,8 @@ import { assemble } from "evm-assembler";
 import Common, { Chain, Hardfork } from '@ethereumjs/common';
 import VM from '@ethereumjs/vm';
 import { BN } from 'ethereumjs-util';
-
-const input = fs.readFileSync("addi.S").toString("utf8")
+import process from "process";
+const input = fs.readFileSync(process.argv[2]).toString("utf8")
 const lines = input.replaceAll(";", "\n").replaceAll(": ", ":\n").split("\n");
 
 const linesTokenized = lines.map((x) => x.trim().replaceAll("\t", " ").replaceAll(/#.*$/g, "").replaceAll(", ", " ").replaceAll(",", " ").trim().split(" "));
@@ -608,55 +608,73 @@ function addProgramCounters(): number {
 }
 
 function resolveNamesAndOffsets() {
-    for (let p = 0; p < opcodes.length; p++) {
-        const e = opcodes[p];
-        if (e.find_name) {
-            let i = 0;
-            for (; i < opcodes.length; i++) {
-                if (opcodes[i].name == e.find_name) {
-                    const pcR = opcodes[i].pc;
-                    if (pcR == undefined){
-                        throw new Error("Missing pc");
-                    }
-                    e.parameter = pcR.toString(16).padStart(4, '0').toUpperCase();
-                    break;
-                }
-            }
-            if (i == opcodes.length) {
-                if (e.find_name.endsWith("b")) {
-                  for (i = p; i >= 0; i--) {
-                    if (opcodes[i].name == e.find_name.slice(0, e.find_name.length - 1)) {
-                      const pcR = opcodes[i].pc;
-                      if (pcR == undefined){
-                          throw new Error("Missing pc");
-                      }
-                      e.parameter = pcR.toString(16).padStart(4, '0').toUpperCase();
-                      break;
-                    }
-                  }
-                  if (i == -1) {
-                    throw new Error("Could not find backwards reference " + e.find_name + " in " + JSON.stringify(e));
-                  }
-                } else if (e.find_name.endsWith("f")) {
-                  for (i = p; p < opcodes.length; i++) {
-                    if (opcodes[i].name == e.find_name.slice(0, e.find_name.length - 1)) {
-                      const pcR = opcodes[i].pc;
-                      if (pcR == undefined){
-                          throw new Error("Missing pc");
-                      }
-                      e.parameter = pcR.toString(16).padStart(4, '0').toUpperCase();
-                      break;
-                  }
-                  if (i == opcodes.length) {
-                    throw new Error("Could not find forwards reference " + e.find_name + " in " + JSON.stringify(e));
-                  }
-                }
-                throw new Error("Could not find " + e.find_name + " in " + JSON.stringify(e));
+  for (let p = 0; p < opcodes.length; p++) {
+    const e = opcodes[p];
+    if (e.find_name) {
+      let i = 0;
+      for (; i < opcodes.length; i++) {
+        if (opcodes[i].name == e.find_name) {
+          const pcR = opcodes[i].pc;
+          if (pcR == undefined) {
+            throw new Error("Missing pc");
+          }
+          e.parameter = pcR.toString(16).padStart(4, "0").toUpperCase();
+          break;
+        }
+      }
+      if (i == opcodes.length) {
+        if (e.find_name.endsWith("b")) {
+          for (i = p; i >= 0; i--) {
+            if (
+              opcodes[i].name == e.find_name.slice(0, e.find_name.length - 1)
+            ) {
+              const pcR = opcodes[i].pc;
+              if (pcR == undefined) {
+                throw new Error("Missing pc");
+              }
+              e.parameter = pcR.toString(16).padStart(4, "0").toUpperCase();
+              break;
             }
           }
+          if (i == -1) {
+            throw new Error(
+              "Could not find backwards reference " +
+                e.find_name +
+                " in " +
+                JSON.stringify(e)
+            );
+          }
+        } else if (e.find_name.endsWith("f")) {
+          for (i = p; p < opcodes.length; i++) {
+            if (
+              opcodes[i].name == e.find_name.slice(0, e.find_name.length - 1)
+            ) {
+              const pcR = opcodes[i].pc;
+              if (pcR == undefined) {
+                throw new Error("Missing pc");
+              }
+              e.parameter = pcR.toString(16).padStart(4, "0").toUpperCase();
+              break;
+            }
+          }
+          if (i == opcodes.length) {
+            throw new Error(
+              "Could not find forwards reference " +
+                e.find_name +
+                " in " +
+                JSON.stringify(e)
+            );
+          }
+        } else {
+          throw new Error(
+            "Could not find " + e.find_name + " in " + JSON.stringify(e)
+          );
         }
+      }
     }
+  }
 }
+
 
 addProgramCounters();
 resolveNamesAndOffsets();
