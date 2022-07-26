@@ -1,6 +1,6 @@
 import fs from "fs";
 import crypto from "crypto";
-const input = fs.readFileSync("addi.S").toString("utf8")
+const input = fs.readFileSync("simple.S").toString("utf8")
 const lines = input.replaceAll(";", "\n").replaceAll(": ", ":\n").split("\n");
 
 const linesTokenized = lines.map((x) => x.trim().replaceAll("\t", " ").replaceAll(/#.*$/g, "").replaceAll(", ", " ").replaceAll(",", " ").trim().split(" "));
@@ -257,6 +257,102 @@ function emitJal(rd: string, symbol: string) {
   }
 }
 
+function emitLb(rd: string, offset: string) {
+  const off = offset.split("(");
+  readRegister(off[1].replace(")", ""));
+  if (Number(off[0]) !== 0) {
+    signExtendTo256(Number(off[0]));
+    opcodes.push({opcode: "ADD"});  
+  }
+  opcodes.push({opcode: "MLOAD", comment: "lb"});
+  opcodes.push({opcode: "PUSH1", parameter: "F8"});
+  opcodes.push({opcode: "SHR"});
+  opcodes.push({opcode: "PUSH1", parameter: "00"});
+  opcodes.push({opcode: "SIGNEXTEND"});
+  writeRegister(rd, true);
+}
+
+function emitLbu(rd: string, offset: string) {
+  const off = offset.split("(");
+  readRegister(off[1].replace(")", ""));
+  if (Number(off[0]) !== 0) {
+    signExtendTo256(Number(off[0]));
+    opcodes.push({opcode: "ADD"});  
+  }
+  opcodes.push({opcode: "MLOAD", comment: "lb"});
+  opcodes.push({opcode: "PUSH1", parameter: "F8"});
+  opcodes.push({opcode: "SHR"});
+
+  writeRegister(rd, true);
+}
+
+function emitLh(rd: string, offset: string) {
+  const off = offset.split("(");
+  readRegister(off[1].replace(")", ""));
+  if (Number(off[0]) !== 0) {
+    signExtendTo256(Number(off[0]));
+    opcodes.push({opcode: "ADD"});  
+  }
+  opcodes.push({opcode: "MLOAD", comment: "lh"});
+  opcodes.push({opcode: "PUSH1", parameter: "F0"});
+  opcodes.push({opcode: "SHR"});
+  opcodes.push({opcode: "PUSH1", parameter: "01"});
+  opcodes.push({opcode: "SIGNEXTEND"});
+  // need byteswap
+  writeRegister(rd, true);
+}
+
+function emitLhu(rd: string, offset: string) {
+  const off = offset.split("(");
+  readRegister(off[1].replace(")", ""));
+  if (Number(off[0]) !== 0) {
+    signExtendTo256(Number(off[0]));
+    opcodes.push({opcode: "ADD"});  
+  }
+  opcodes.push({opcode: "MLOAD", comment: "lh"});
+  opcodes.push({opcode: "PUSH1", parameter: "F0"});
+  opcodes.push({opcode: "SHR"});
+  // need byteswap
+  writeRegister(rd, true);
+}
+
+function emitLw(rd: string, offset: string) {
+  const off = offset.split("(");
+  readRegister(off[1].replace(")", ""));
+  if (Number(off[0]) !== 0) {
+    signExtendTo256(Number(off[0]));
+    opcodes.push({opcode: "ADD"});  
+  }
+  opcodes.push({opcode: "MLOAD", comment: "lh"});
+  opcodes.push({opcode: "PUSH1", parameter: "E0"});
+  opcodes.push({opcode: "SHR"});
+  /* not needed on rv32 
+  opcodes.push({opcode: "PUSH1", parameter: "03"});
+  opcodes.push({opcode: "SIGNEXTEND"});
+  */
+  // need byteswap
+  writeRegister(rd, true);
+}
+
+function emitSw(rs1: string, offset: string) {
+  const off = offset.split("(");
+  readRegister(off[1].replace(")", ""));
+  if (Number(off[0]) !== 0) {
+    signExtendTo256(Number(off[0]));
+    opcodes.push({opcode: "ADD"});  
+  }
+  opcodes.push({opcode: "MLOAD", comment: "fetch"});
+  opcodes.push({opcode: "PUSH32", parameter: "00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff".toUpperCase()});
+  opcodes.push({opcode: "AND"});
+  readRegister(rs1);
+  opcodes.push({opcode: "PUSH1", parameter: "E0"});
+  opcodes.push({opcode: "SHL"});
+  // need byteswap
+  opcodes.push({opcode: "ADD"});
+  opcodes.push({opcode: "SWAP1"});
+  opcodes.push({opcode: "MSTORE", comment: "sw"});
+}
+
 function evalExpr(imm: string): number {
   if (imm[0] == "%") {
     return 0;
@@ -323,6 +419,24 @@ for (let i = 0; i < linesTokenized.length; i++) {
       break;
     case "ebreak": 
       opcodes.push({opcode: "INVALID", comment: "ebreak"});
+      break;
+    case "lb":
+      emitLb(line[1], line[2]);
+      break;
+    case "lbu":
+      emitLbu(line[1], line[2]);
+      break;
+    case "lh":
+      emitLh(line[1], line[2]);
+      break;
+    case "lhu":
+      emitLhu(line[1], line[2]);
+      break;
+    case "lw":
+      emitLw(line[1], line[2]);
+      break;
+    case "sw":
+      emitSw(line[1], line[2]);
       break;
     default: 
       if (line[0].endsWith(":")) {
