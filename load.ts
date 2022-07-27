@@ -10,6 +10,18 @@ const lines = input.replaceAll(";", "\n").replaceAll(": ", ":\n").split("\n");
 
 const linesTokenized = lines.map((x) => x.trim().replaceAll("\t", " ").replaceAll(/#.*$/g, "").replaceAll(", ", " ").replaceAll(",", " ").trim().split(" "));
 
+
+/* 
+  memory map:
+    from-to, memory|code|calldata, offset
+
+    STACK_END-STACK_BEGIN, memory, 1024
+    , code, 0
+    , data, 
+    , bss?
+    , calldata, 0
+    , heap upwards
+*/
 const reg2mem: Record<string, number> = {
   "ra": 32*1, // x1 XXX fast?
   "sp": 32*2, // x2 XXX fast?
@@ -74,6 +86,8 @@ const reg2mem: Record<string, number> = {
   "x29": 32*29,
   "x30": 32*30,
   "x31": 32*31,
+  "debug-out": 32*32,
+  "internal-scratch": 32*33,
 }
 
 interface EVMOpCode {   
@@ -232,12 +246,10 @@ function emitBge(rs1: string, rs2: string, symbol: string) {
 function emitBgeu(rs1: string, rs2: string, symbol: string) {
   readRegister(rs2);
   readRegister(rs1);
-  opcodes.push({opcode: "PUSH1", parameter: "03"});
-  opcodes.push({opcode: "SIGNEXTEND"});
   opcodes.push({opcode: "LT"});
   opcodes.push({opcode: "ISZERO"});
   opcodes.push({opcode: "PUSH4", find_name: symbol});
-  opcodes.push({opcode: "JUMPI"});
+  opcodes.push({opcode: "JUMPI", comment: "bgeu"});
 }
 
 function emitBltu(rs1: string, rs2: string, symbol: string) {
@@ -332,7 +344,13 @@ function emitLi(rd: string, imm: number|null, rawImm: string) {
   if (imm == null) {
     throw new Error("No imm")
   }
-  opcodes.push({opcode: "PUSH4", parameter: imm.toString(16).toUpperCase().padStart(8, "0"), comment: "LI"});
+  const buf = Buffer.alloc(4);
+  if (imm < 0) {
+    buf.writeInt32BE(imm);
+  } else {
+    buf.writeUint32BE(imm);
+  }
+  opcodes.push({opcode: "PUSH4", parameter: buf.toString("hex").toUpperCase().padStart(8, "0"), comment: "LI"});
   writeRegister(rd, false);
 }
 
@@ -423,17 +441,29 @@ function emitLw(rd: string, offset: string) {
   opcodes.push({opcode: "SIGNEXTEND"});
   */
   // need byteswap
-  writeRegister(rd, true);
+  writeRegister(rd, false);
 }
 
 function emitSw(rs1: string, offset: string) {
+  readRegister(rs1);
   const off = offset.split("(");
   readRegister(off[1].replace(")", ""));
   if (Number(off[0]) !== 0) {
     signExtendTo256(Number(off[0]));
     opcodes.push({opcode: "ADD"});  
   }
+
+  const randoLabel = crypto.randomBytes(32).toString("hex");
   opcodes.push({opcode: "DUP1"});
+  opcodes.push({opcode: "PUSH1", parameter: "1F"});
+  opcodes.push({opcode: "SHR"});
+  opcodes.push({opcode: "PUSH4", find_name: "__specialaddress_" + randoLabel});
+  opcodes.push({opcode: "JUMPI"})
+
+  opcodes.push({opcode: "PUSH4", parameter: "10000000"});
+  opcodes.push({opcode: "EQ"});
+  opcodes.push({opcode: "PUSH4", find_name: "__handleTestWrite_" + randoLabel});
+  opcodes.push({opcode: "JUMPI"});
   opcodes.push({opcode: "MLOAD", comment: "fetch"});
   opcodes.push({opcode: "PUSH32", parameter: "00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff".toUpperCase()});
   opcodes.push({opcode: "AND"});
@@ -444,6 +474,34 @@ function emitSw(rs1: string, offset: string) {
   opcodes.push({opcode: "ADD"});
   opcodes.push({opcode: "SWAP1"});
   opcodes.push({opcode: "MSTORE", comment: "sw"});
+  opcodes.push({opcode: "PUSH4", find_name: "__exitSw_" + randoLabel});
+  opcodes.push({opcode: "JUMP"});
+  opcodes.push({opcode: "JUMPDEST", name: "__handleTestWrite_" + randoLabel});
+  opcodes.push({opcode: "POP"});
+  readRegister(rs1);
+  writeRegister("debug-out", false);
+  opcodes.push({opcode: "JUMPDEST", name: "__exitSw_" + randoLabel});
+}
+
+function emitLa(rd: string, symbol: string) {
+  opcodes.push({ opcode: "PUSH4", find_name: symbol});
+  /* 
+    if PIC
+  opcodes.push({opcode: "MLOAD", comment: "la"});
+  opcodes.push({opcode: "PUSH1", parameter: "E0"});
+  opcodes.push({opcode: "SHR"}); */
+
+  writeRegister(rd, false);
+}
+
+function emitLla(rd: string, symbol: string) {
+  opcodes.push({ opcode: "PUSH4", find_name: symbol});
+  writeRegister(rd, false);
+}
+
+function emitJ(symbol: string) {
+  opcodes.push({ opcode: "PUSH4", find_name: symbol});
+  opcodes.push({ opcode: "JUMP", comment: "j"});
 }
 
 function evalExpr(imm: string): number|null {
@@ -463,10 +521,12 @@ function evalExpr(imm: string): number|null {
 opcodes.push({opcode: "PUSH4", find_name: "main"});
 opcodes.push({opcode: "JUMP", comment: "jump to main"});
 
+let dataMode = 0;
+
 for (let i = 0; i < linesTokenized.length; i++) {
   const line = linesTokenized[i];
   if (line[0] != "") {
-    opcodes.push({opcode: "JUMPDEST", comment: JSON.stringify(line)});
+    //opcodes.push({opcode: "JUMPDEST", comment: JSON.stringify(line)});
   }
   switch (line[0]) {
     case "": break;
@@ -557,6 +617,15 @@ for (let i = 0; i < linesTokenized.length; i++) {
       break;
     case "nop": 
       // emit nothing
+      break;
+    case "la":
+      emitLa(line[1], line[2]); // pseudo
+      break;
+    case "lla":
+      emitLla(line[1], line[2]); // pseudo
+      break;
+    case "j":
+      emitJ(line[1]);
       break;
     default: 
       if (line[0].endsWith(":")) {
@@ -721,9 +790,13 @@ async function invokeRiscv() {
     if (data.opcode.name == "MLOAD") {
         console.log("[MEM LOAD] from 0x" + data.stack[data.stack.length - 1].toString(16));
     } else if (data.opcode.name == "MSTORE") {
-        console.log("[MEM WRITE] " + data.stack[data.stack.length - 2].toString(16) + " to 0x" + data.stack[data.stack.length - 1].toString(16));
-        if (data.stack[data.stack.length - 1] < 32) {
-            throw new Error("Trying to write to 0");
+        if (data.stack[data.stack.length - 1].toString(16) == "400") {
+          console.log("[DEBUG] output = " + Buffer.from(data.stack[data.stack.length - 2].toString(16), "hex").toString("utf8"));
+        } else {
+          console.log("[MEM WRITE] " + data.stack[data.stack.length - 2].toString(16) + " to 0x" + data.stack[data.stack.length - 1].toString(16));
+          if (data.stack[data.stack.length - 1] < 32) {
+              throw new Error("Trying to write to 0");
+          }  
         }
     }
     for (let l = 0; l < opcodes.length; l++) {
