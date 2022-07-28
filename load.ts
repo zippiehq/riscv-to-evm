@@ -411,7 +411,7 @@ function emitLb(rd: string, offset: string) {
     signExtendTo256(Number(off[0]));
     opcodes.push({opcode: "ADD"});  
   }
-  loadFromAddress(rd, "8", true);
+  emitUint8Read(rd, true);
 }
 
 function emitLbu(rd: string, offset: string) {
@@ -421,7 +421,7 @@ function emitLbu(rd: string, offset: string) {
     signExtendTo256(Number(off[0]));
     opcodes.push({opcode: "ADD"});  
   }
-  loadFromAddress(rd, "8", false);
+  emitUint8Read(rd, false);
 }
 
 function emitLh(rd: string, offset: string) {
@@ -431,7 +431,7 @@ function emitLh(rd: string, offset: string) {
     signExtendTo256(Number(off[0]));
     opcodes.push({opcode: "ADD"});  
   }
-  loadFromAddress(rd, "16", true);
+  emitUint16Read(rd, true);
 }
 
 function emitLhu(rd: string, offset: string) {
@@ -441,74 +441,7 @@ function emitLhu(rd: string, offset: string) {
     signExtendTo256(Number(off[0]));
     opcodes.push({opcode: "ADD"});  
   }
-  loadFromAddress(rd, "16", false);
-}
-
-interface SizeInfo {
-  shr: number;
-  bsize: number;
-  signExtend: number;
-}
-const size2shr: Record<string, SizeInfo> = {
-  "32": {shr: 224, bsize: 4, signExtend: -1},
-  "16": {shr: 240, bsize: 2, signExtend: 1},
-  "8": {shr: 248, bsize: 1, signExtend: 0},
-}
-
-function loadFromAddress(rd: string, size: string, signExtend: boolean) {
-  const randoLabel = crypto.randomBytes(32).toString("hex");
-
-  opcodes.push({opcode: "DUP1"});
-  opcodes.push({opcode: "PUSH4", parameter: (DEBUG_MEMORY_LOCATION-1).toString(16).toUpperCase().padStart(8, "0")}); // XXX double check this
-  opcodes.push({opcode: "SWAP1"})
-  opcodes.push({opcode: "GT"});
-  opcodes.push({opcode: "PUSH2", find_name: "__specialaddress_" + randoLabel});
-  opcodes.push({opcode: "JUMPI"})
-
-  // risc-v memory starts at 0x420 in EVM memory, everything below is reserved for our registers
-  opcodes.push({opcode: "PUSH2", parameter: RISCV_MEMORY_IN_EVM_START});
-  opcodes.push({opcode: "ADD"});
-  opcodes.push({opcode: "MLOAD", comment: "fetch for load of" + size});
-  opcodes.push({opcode: "PUSH1", parameter: size2shr[size].shr.toString(16).toUpperCase().padStart(2, "0")});
-  opcodes.push({opcode: "SHR"});
-  if (signExtend) {
-    opcodes.push({opcode: "PUSH1", parameter: size2shr[size].signExtend.toString().toUpperCase().padStart(2, "0")});
-    opcodes.push({opcode: "SIGNEXTEND"});
-  } else {
-    writeRegister(rd, false);
-  }
-
-  opcodes.push({opcode: "PUSH2", find_name: "__exitSw_" + randoLabel});
-  opcodes.push({opcode: "JUMP"});
-  opcodes.push({opcode: "JUMPDEST", name: "__specialaddress_" + randoLabel});
-  opcodes.push({opcode: "DUP1"});
-  opcodes.push({opcode: "PUSH4", parameter: (TEXT_MEMORY_LOCATION - 1).toString(16).toUpperCase().padStart(8, "0")});
-  opcodes.push({opcode: "SWAP1"});
-  opcodes.push({opcode: "GT"});
-  opcodes.push({opcode: "PUSH2", find_name: "__sw_text_" + randoLabel});
-
-  opcodes.push({opcode: "JUMPI"})
-  opcodes.push({opcode: "INVALID", comment: "trap: cannot read from debug addresses"});
-
-  opcodes.push({opcode: "PUSH2", find_name: "__exitSw_" + randoLabel});
-  opcodes.push({opcode: "JUMP"});
-
-  opcodes.push({opcode: "JUMPDEST", name: "__sw_text_" + randoLabel});
-  opcodes.push({opcode: "PUSH4", parameter: TEXT_MEMORY_LOCATION.toString(16).toUpperCase().padStart(8, "0")});
-  opcodes.push({opcode: "SWAP1"});
-  opcodes.push({opcode: "SUB"});;
-  opcodes.push({opcode: "PUSH1", parameter: size2shr[size].bsize.toString().toUpperCase().padStart(2, "0")});
-  opcodes.push({opcode: "SWAP1"})
-  opcodes.push({opcode: "PUSH2", parameter: reg2mem[rd].toString(16).toUpperCase().padStart(4, "0")});
-  opcodes.push({opcode: "CODECOPY", comment: "from code straight to " + rd}); // XXX fix with fast registers
-  if (signExtend) {
-    readRegister(rd);
-    opcodes.push({opcode: "PUSH1", parameter: size2shr[size].signExtend.toString().toUpperCase().padStart(2, "0")});
-    opcodes.push({opcode: "SIGNEXTEND"});  
-    writeRegister(rd, true);
-  }
-
-  opcodes.push({opcode: "JUMPDEST", name: "__exitSw_" + randoLabel}); 
+  emitUint16Read(rd, false);
 }
 
 function emitLw(rd: string, offset: string) {
@@ -518,30 +451,43 @@ function emitLw(rd: string, offset: string) {
     signExtendTo256(Number(off[0]));
     opcodes.push({opcode: "ADD"});  
   }
-  loadFromAddress(rd, "32", false);
+  emitUint32Read(rd);
 }
 
 function emitUint32Read(rd: string) {
+  // XXX debug mode where we trap on unaligned accesses
   opcodes.push({"opcode": "MLOAD"});
   opcodes.push({"opcode": "PUSH1", parameter: "E0"});
   opcodes.push({"opcode": "SHR"});
   writeRegister(rd, false);
 }
 
-function emitUint16Read(rd: string) {
+function emitUint16Read(rd: string, signExtend: boolean) {
+  // XXX debug mode where we trap on unaligned accesses
   opcodes.push({"opcode": "PUSH32", parameter: "1"});
   opcodes.push({"opcode": "XOR"});
   opcodes.push({"opcode": "MLOAD"});
   opcodes.push({"opcode": "PUSH1", parameter: "F0"});
   opcodes.push({"opcode": "SHR"});
+  if (signExtend) {
+    opcodes.push({opcode: "PUSH1", parameter: "01"});
+    opcodes.push({opcode: "SIGNEXTEND"});
+  } 
+  
+  writeRegister(rd, signExtend);
 }
 
-function emitUint8Read(rd: string) {
+function emitUint8Read(rd: string, signExtend: boolean) {
   opcodes.push({"opcode": "PUSH32", parameter: "2"}); // mask down to 32-bits
   opcodes.push({"opcode": "XOR"});
   opcodes.push({"opcode": "MLOAD"});
   opcodes.push({"opcode": "PUSH1", parameter: "F8"});
   opcodes.push({"opcode": "SHR"});
+  if (signExtend) {
+    opcodes.push({opcode: "PUSH1", parameter: "00"});
+    opcodes.push({opcode: "SIGNEXTEND"});
+  }  
+  writeRegister(rd, signExtend);
 }
 
 function emitSw(rs1: string, offset: string) {
@@ -551,49 +497,16 @@ function emitSw(rs1: string, offset: string) {
     signExtendTo256(Number(off[0]));
     opcodes.push({opcode: "ADD"});  
   }
-  /* maybe this could be a callable subroutine to save some code space */
-  const randoLabel = crypto.randomBytes(32).toString("hex");
-  opcodes.push({opcode: "DUP1"});
-  opcodes.push({opcode: "PUSH4", parameter: (DEBUG_MEMORY_LOCATION-1).toString(16).toUpperCase().padStart(8, "0")}); // XXX double check this
-  opcodes.push({opcode: "SWAP1"})
-  opcodes.push({opcode: "GT"});  
-  opcodes.push({opcode: "PUSH2", find_name: "__specialaddress_" + randoLabel});
-  opcodes.push({opcode: "JUMPI"});
-
-  // risc-v memory starts at 0x420 in EVM memory, everything below is reserved for our registers
-  opcodes.push({opcode: "PUSH2", parameter: RISCV_MEMORY_IN_EVM_START});
-  opcodes.push({opcode: "ADD"});
   opcodes.push({opcode: "DUP1"});
   opcodes.push({opcode: "MLOAD", comment: "fetch"});
   opcodes.push({opcode: "PUSH32", parameter: WORD_REPLACE_MASK});
   opcodes.push({opcode: "AND"});
   readRegister(rs1);
-  // need byteswap
   opcodes.push({opcode: "PUSH1", parameter: "E0"});
   opcodes.push({opcode: "SHL"});
   opcodes.push({opcode: "ADD"});
   opcodes.push({opcode: "SWAP1"});
   opcodes.push({opcode: "MSTORE", comment: "sw"});
-  opcodes.push({opcode: "PUSH2", find_name: "__exitSw_" + randoLabel});
-  opcodes.push({opcode: "JUMP"});
-  opcodes.push({opcode: "JUMPDEST", name: "__specialaddress_" + randoLabel});
-  opcodes.push({opcode: "DUP1"});
-  opcodes.push({opcode: "PUSH4", parameter: (TEXT_MEMORY_LOCATION - 1).toString(16).toUpperCase().padStart(8, "0")});
-  opcodes.push({opcode: "SWAP1"});
-  opcodes.push({opcode: "GT"});
-  opcodes.push({opcode: "PUSH2", find_name: "__sw_text_" + randoLabel});
-
-  opcodes.push({opcode: "JUMPI"})
-  opcodes.push({opcode: "POP"});
-  readRegister(rs1); 
-  writeRegister("debug-out", false);
-
-  opcodes.push({opcode: "PUSH2", find_name: "__exitSw_" + randoLabel});
-  opcodes.push({opcode: "JUMP"});
-
-  opcodes.push({opcode: "JUMPDEST", name: "__sw_text_" + randoLabel});
-  opcodes.push({opcode: "INVALID", comment: "trapping, writing to text area"});
-  opcodes.push({opcode: "JUMPDEST", name: "__exitSw_" + randoLabel});
 }
 
 function emitLa(rd: string, symbol: string) {
@@ -620,7 +533,7 @@ function emitJ(symbol: string) {
 function evalExpr(imm: string): number|null {
   if (imm[0] == '%') {
     if (imm.startsWith("%hi")) {
-      return 0x20000000 >> 12; // code segment
+      return 0x10000 >> 12; // code segment
     } else {
       return null;
     }
@@ -630,6 +543,12 @@ function evalExpr(imm: string): number|null {
   }
   return eval(imm);
 }
+
+// copy .text segment into 0x10000 onwards, max code size 65k
+opcodes.push({opcode: "CODESIZE"});
+opcodes.push({opcode: "PUSH1", parameter: "00"});
+opcodes.push({opcode: "PUSH4", parameter: Number(0x10000).toString(16).toUpperCase().padStart(8, "0")});
+opcodes.push({opcode: "CODECOPY"});
 
 opcodes.push({opcode: "PUSH2", find_name: "main"});
 opcodes.push({opcode: "JUMP", comment: "jump to main"});
