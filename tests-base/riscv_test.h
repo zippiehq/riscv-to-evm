@@ -24,10 +24,6 @@ TEST_FUNC_NAME:				\
 	sw	a1,1024(a2);		\
 	addi	a0,a0,1;		\
 	jal	zero,.prname_next;	\
-.test_name:				\
-	.ascii TEST_FUNC_TXT;		\
-	.byte 0x00;			\
-	.balign 4, 0;			\
 .prname_done:				\
 	addi	a1,zero,'.';		\
 	sw	a1,1024(a2);		\
@@ -58,7 +54,7 @@ TEST_FUNC_NAME:				\
 	ebreak;
 
 #define RVTEST_CODE_END
-#define RVTEST_DATA_BEGIN .balign 4;
+#define RVTEST_DATA_BEGIN .test_name: .ascii TEST_FUNC_TXT; byte 0x00; .balign 4;
 #define RVTEST_DATA_END
 
 #endif

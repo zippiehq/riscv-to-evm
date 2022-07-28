@@ -79,7 +79,7 @@
 # 12 "auipc.S" 2
 
 
-.text; .global main; .global __exit; main: lui a0,%hi(.test_name); addi a0,a0,%lo(.test_name); lui a2,0x0; .prname_next: lb a1,0(a0); beq a1,zero,.prname_done; sw a1,1024(a2); addi a0,a0,1; jal zero,.prname_next; .test_name: .ascii auipc; .byte 0x00; .balign 4, 0; .prname_done: addi a1,zero,'.'; sw a1,1024(a2); sw a1,1024(a2);
+.text; .global main; .global __exit; main: lui a0,%hi(.test_name); addi a0,a0,%lo(.test_name); lui a2,0x0; .prname_next: lb a1,0(a0); beq a1,zero,.prname_done; sw a1,1024(a2); addi a0,a0,1; jal zero,.prname_next; .prname_done: addi a1,zero,'.'; sw a1,1024(a2); sw a1,1024(a2);
 
   test_2: .align 3; lla a0, 1f + 10000; jal a1, 1f; 1: sub a0, a0, a1;; li x29, 10000; li x28, 2; bne a0, x29, fail;
 
@@ -100,7 +100,7 @@
 
 
   .data
-.balign 4;
+.test_name: .ascii "auipc"; byte 0x00; .balign 4;
 
  
 
