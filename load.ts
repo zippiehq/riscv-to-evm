@@ -374,6 +374,36 @@ function emitJal(rd: string, symbol: string) {
   }
 }
 
+function bswap16() {
+  opcodes.push({opcode: "DUP1"});
+  opcodes.push({opcode: "PUSH1", parameter: "08"});
+  opcodes.push({opcode: "SHL"});
+  opcodes.push({opcode: "PUSH2", parameter: "FF00"});
+  opcodes.push({opcode: "AND"});
+  opcodes.push({opcode: "SWAP1"});
+  opcodes.push({opcode: "PUSH1", parameter: "08"});
+  opcodes.push({opcode: "SHR"});
+  opcodes.push({opcode: "PUSH2", parameter: "00FF"});
+  opcodes.push({opcode: "AND"});  
+  opcodes.push({opcode: "OR"});
+}
+
+function bswap32() {
+  opcodes.push({opcode: "DUP1"});
+  opcodes.push({opcode: "DUP1"});
+  opcodes.push({opcode: "PUSH1", parameter: "08"});
+  opcodes.push({opcode: "SHL"});
+  opcodes.push({opcode: "PUSH2", parameter: "FF00"});
+  opcodes.push({opcode: "AND"});
+  opcodes.push({opcode: "SWAP1"});
+  opcodes.push({opcode: "PUSH1", parameter: "08"});
+  opcodes.push({opcode: "SHR"});
+  opcodes.push({opcode: "PUSH2", parameter: "00FF"});
+  opcodes.push({opcode: "AND"});  
+  opcodes.push({opcode: "OR"});
+}
+
+
 function emitLb(rd: string, offset: string) {
   const off = offset.split("(");
   readRegister(off[1].replace(")", ""));
@@ -381,12 +411,7 @@ function emitLb(rd: string, offset: string) {
     signExtendTo256(Number(off[0]));
     opcodes.push({opcode: "ADD"});  
   }
-  opcodes.push({opcode: "MLOAD", comment: "lb"});
-  opcodes.push({opcode: "PUSH1", parameter: "F8"});
-  opcodes.push({opcode: "SHR"});
-  opcodes.push({opcode: "PUSH1", parameter: "00"});
-  opcodes.push({opcode: "SIGNEXTEND"});
-  writeRegister(rd, true);
+  loadFromAddress(rd, "8", true);
 }
 
 function emitLbu(rd: string, offset: string) {
@@ -396,11 +421,7 @@ function emitLbu(rd: string, offset: string) {
     signExtendTo256(Number(off[0]));
     opcodes.push({opcode: "ADD"});  
   }
-  opcodes.push({opcode: "MLOAD", comment: "lb"});
-  opcodes.push({opcode: "PUSH1", parameter: "F8"});
-  opcodes.push({opcode: "SHR"});
-
-  writeRegister(rd, true);
+  loadFromAddress(rd, "8", false);
 }
 
 function emitLh(rd: string, offset: string) {
@@ -410,13 +431,7 @@ function emitLh(rd: string, offset: string) {
     signExtendTo256(Number(off[0]));
     opcodes.push({opcode: "ADD"});  
   }
-  opcodes.push({opcode: "MLOAD", comment: "lh"});
-  opcodes.push({opcode: "PUSH1", parameter: "F0"});
-  opcodes.push({opcode: "SHR"});
-  opcodes.push({opcode: "PUSH1", parameter: "01"});
-  opcodes.push({opcode: "SIGNEXTEND"});
-  // need byteswap
-  writeRegister(rd, true);
+  loadFromAddress(rd, "16", true);
 }
 
 function emitLhu(rd: string, offset: string) {
@@ -426,36 +441,42 @@ function emitLhu(rd: string, offset: string) {
     signExtendTo256(Number(off[0]));
     opcodes.push({opcode: "ADD"});  
   }
-  opcodes.push({opcode: "MLOAD", comment: "lh"});
-  opcodes.push({opcode: "PUSH1", parameter: "F0"});
-  opcodes.push({opcode: "SHR"});
-  // need byteswap
-  writeRegister(rd, true);
+  loadFromAddress(rd, "16", false);
 }
 
-function emitLw(rd: string, offset: string) {
-  const off = offset.split("(");
-  readRegister(off[1].replace(")", ""));
-  if (Number(off[0]) !== 0) {
-    signExtendTo256(Number(off[0]));
-    opcodes.push({opcode: "ADD"});  
-  }
+interface SizeInfo {
+  shr: number;
+  bsize: number;
+  signExtend: number;
+}
+const size2shr: Record<string, SizeInfo> = {
+  "32": {shr: 224, bsize: 4, signExtend: -1},
+  "16": {shr: 240, bsize: 2, signExtend: 1},
+  "8": {shr: 248, bsize: 1, signExtend: 0},
+}
 
+function loadFromAddress(rd: string, size: string, signExtend: boolean) {
   const randoLabel = crypto.randomBytes(32).toString("hex");
+
   opcodes.push({opcode: "DUP1"});
   opcodes.push({opcode: "PUSH4", parameter: (DEBUG_MEMORY_LOCATION-1).toString(16).toUpperCase().padStart(8, "0")}); // XXX double check this
   opcodes.push({opcode: "SWAP1"})
   opcodes.push({opcode: "GT"});
-  opcodes.push({opcode: "PUSH2", find_name: "__lw_specialaddress_" + randoLabel});
+  opcodes.push({opcode: "PUSH2", find_name: "__specialaddress_" + randoLabel});
   opcodes.push({opcode: "JUMPI"})
 
   // risc-v memory starts at 0x420 in EVM memory, everything below is reserved for our registers
   opcodes.push({opcode: "PUSH2", parameter: RISCV_MEMORY_IN_EVM_START});
   opcodes.push({opcode: "ADD"});
-  opcodes.push({opcode: "MLOAD", comment: "fetch for lw"});
-  opcodes.push({opcode: "PUSH1", parameter: "E0"});
+  opcodes.push({opcode: "MLOAD", comment: "fetch for load of" + size});
+  opcodes.push({opcode: "PUSH1", parameter: size2shr[size].shr.toString(16).toUpperCase().padStart(2, "0")});
   opcodes.push({opcode: "SHR"});
-  writeRegister(rd, false);
+  if (signExtend) {
+    opcodes.push({opcode: "PUSH1", parameter: size2shr[size].signExtend.toString().toUpperCase().padStart(2, "0")});
+    opcodes.push({opcode: "SIGNEXTEND"});
+  } else {
+    writeRegister(rd, false);
+  }
 
   opcodes.push({opcode: "PUSH2", find_name: "__exitSw_" + randoLabel});
   opcodes.push({opcode: "JUMP"});
@@ -473,19 +494,54 @@ function emitLw(rd: string, offset: string) {
   opcodes.push({opcode: "JUMP"});
 
   opcodes.push({opcode: "JUMPDEST", name: "__sw_text_" + randoLabel});
-  opcodes.push({opcode: "PUSH1", parameter: "04"});
+  opcodes.push({opcode: "PUSH4", parameter: TEXT_MEMORY_LOCATION.toString(16).toUpperCase().padStart(8, "0")});
+  opcodes.push({opcode: "SWAP1"});
+  opcodes.push({opcode: "SUB"});;
+  opcodes.push({opcode: "PUSH1", parameter: size2shr[size].bsize.toString().toUpperCase().padStart(2, "0")});
   opcodes.push({opcode: "SWAP1"})
   opcodes.push({opcode: "PUSH2", parameter: reg2mem[rd].toString(16).toUpperCase().padStart(4, "0")});
-  opcodes.push({opcode: "CODECOPY", comment: "from code straight to " + rd}); // XXX fix with fast reegisters
-  opcodes.push({opcode: "JUMPDEST", name: "__exitSw_" + randoLabel});
+  opcodes.push({opcode: "CODECOPY", comment: "from code straight to " + rd}); // XXX fix with fast registers
+  if (signExtend) {
+    readRegister(rd);
+    opcodes.push({opcode: "PUSH1", parameter: size2shr[size].signExtend.toString().toUpperCase().padStart(2, "0")});
+    opcodes.push({opcode: "SIGNEXTEND"});  
+    writeRegister(rd, true);
+  }
 
+  opcodes.push({opcode: "JUMPDEST", name: "__exitSw_" + randoLabel}); 
+}
 
-  /* not needed on rv32 
-  opcodes.push({opcode: "PUSH1", parameter: "03"});
-  opcodes.push({opcode: "SIGNEXTEND"});
-  */
-  // need byteswap
+function emitLw(rd: string, offset: string) {
+  const off = offset.split("(");
+  readRegister(off[1].replace(")", ""));
+  if (Number(off[0]) !== 0) {
+    signExtendTo256(Number(off[0]));
+    opcodes.push({opcode: "ADD"});  
+  }
+  loadFromAddress(rd, "32", false);
+}
+
+function emitUint32Read(rd: string) {
+  opcodes.push({"opcode": "MLOAD"});
+  opcodes.push({"opcode": "PUSH1", parameter: "E0"});
+  opcodes.push({"opcode": "SHR"});
   writeRegister(rd, false);
+}
+
+function emitUint16Read(rd: string) {
+  opcodes.push({"opcode": "PUSH32", parameter: "1"});
+  opcodes.push({"opcode": "XOR"});
+  opcodes.push({"opcode": "MLOAD"});
+  opcodes.push({"opcode": "PUSH1", parameter: "F0"});
+  opcodes.push({"opcode": "SHR"});
+}
+
+function emitUint8Read(rd: string) {
+  opcodes.push({"opcode": "PUSH32", parameter: "2"}); // mask down to 32-bits
+  opcodes.push({"opcode": "XOR"});
+  opcodes.push({"opcode": "MLOAD"});
+  opcodes.push({"opcode": "PUSH1", parameter: "F8"});
+  opcodes.push({"opcode": "SHR"});
 }
 
 function emitSw(rs1: string, offset: string) {
@@ -502,7 +558,7 @@ function emitSw(rs1: string, offset: string) {
   opcodes.push({opcode: "SWAP1"})
   opcodes.push({opcode: "GT"});  
   opcodes.push({opcode: "PUSH2", find_name: "__specialaddress_" + randoLabel});
-  opcodes.push({opcode: "JUMPI"})
+  opcodes.push({opcode: "JUMPI"});
 
   // risc-v memory starts at 0x420 in EVM memory, everything below is reserved for our registers
   opcodes.push({opcode: "PUSH2", parameter: RISCV_MEMORY_IN_EVM_START});
@@ -564,7 +620,7 @@ function emitJ(symbol: string) {
 function evalExpr(imm: string): number|null {
   if (imm[0] == '%') {
     if (imm.startsWith("%hi")) {
-      return 0;
+      return 0x20000000 >> 12; // code segment
     } else {
       return null;
     }
@@ -772,6 +828,7 @@ function resolveNamesAndOffsets() {
           }
         } else if (e.find_name.endsWith("f")) {
           for (i = p; p < opcodes.length; i++) {
+            console.log(opcodes[i]);
             if (
               opcodes[i].name == e.find_name.slice(0, e.find_name.length - 1)
             ) {
@@ -844,23 +901,29 @@ async function invokeRiscv() {
       const loc = reg2mem[l];
       console.log("reg " + regs[l] + " " + mem.substring(loc*2, loc*2 + ))
     } */
-    if (data.opcode.name == "MLOAD") {
-        console.log("[MEM LOAD] from 0x" + data.stack[data.stack.length - 1].toString(16));
-    } else if (data.opcode.name == "MSTORE") {
-        if (data.stack[data.stack.length - 1].toString(16) == "400") {
-          console.log("[DEBUG] output = " + Buffer.from(data.stack[data.stack.length - 2].toString(16), "hex").toString("utf8"));
-        } else {
-          console.log("[MEM WRITE] " + data.stack[data.stack.length - 2].toString(16) + " to 0x" + data.stack[data.stack.length - 1].toString(16));
-          if (data.stack[data.stack.length - 1] < 32) {
-              throw new Error("Trying to write to 0");
-          }  
-        }
-    }
     for (let l = 0; l < opcodes.length; l++) {
       if (opcodes[l].pc == data.pc) {
           printO(opcodes[l]);
       }
     }  
+    if (data.opcode.name == "MLOAD") {
+      if (data.stack[data.stack.length - 1] >= 0x10000000) {
+        throw new Error("Trying to access high memory");
+      }
+          console.log("[MEM LOAD] from 0x" + data.stack[data.stack.length - 1].toString(16));
+    } else if (data.opcode.name == "MSTORE") {
+      if (data.stack[data.stack.length - 1] >= 0x10000000) {
+        throw new Error("Trying to access high memory");
+      }
+      if (data.stack[data.stack.length - 1].toString(16) == "400") {
+        console.log("[DEBUG] output = " + Buffer.from(data.stack[data.stack.length - 2].toString(16), "hex").toString("utf8"));
+      } else {
+        console.log("[MEM WRITE] " + data.stack[data.stack.length - 2].toString(16) + " to 0x" + data.stack[data.stack.length - 1].toString(16));
+        if (data.stack[data.stack.length - 1] < 32) {
+          throw new Error("Trying to write to 0");
+        }  
+      }
+    }
   });
   console.log("Running in EVM:");
   const results = await vm.runCode({
