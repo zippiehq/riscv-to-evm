@@ -891,7 +891,7 @@ resolveNamesAndOffsets();
 const finalBytecode = Buffer.from(performAssembly(), "hex");
 console.log("Final bytecode: " + finalBytecode.toString("hex"))
 console.log("Data section: " + JSON.stringify(dataSection));
-console.log("Data labels: " + dataLabels);
+console.log("Data labels: " + JSON.stringify(dataLabels));
 function printO(op: EVMOpCode) {
   const pc = op.pc;
   if (pc == undefined) {
