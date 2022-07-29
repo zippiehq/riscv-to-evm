@@ -240,11 +240,11 @@ Unknown .balign,4
   },
   {
     "opcode": "PUSH2",
-    "find_name": ".prname_next"
+    "find_name": "__jal_c457e70ab17fd427c67e79919f5a75299e888974ec8b47f8b46558b55a22aad9__handler"
   },
   {
     "opcode": "JUMP",
-    "comment": "jal"
+    "comment": "jal to handler"
   },
   {
     "opcode": "JUMPDEST",
@@ -5264,15 +5264,41 @@ Unknown .balign,4
   },
   {
     "opcode": "PUSH2",
-    "find_name": "__exit"
+    "find_name": "__jal_c802999a2c779f1742c32df69ce7d49d9dd6c9710ba1d47a164130731bdea3e7__handler"
   },
   {
     "opcode": "JUMP",
-    "comment": "jal"
+    "comment": "jal to handler"
   },
   {
     "opcode": "JUMPDEST",
     "name": ".test_name"
+  },
+  {
+    "opcode": "JUMPDEST",
+    "name": "__jal_c457e70ab17fd427c67e79919f5a75299e888974ec8b47f8b46558b55a22aad9__handler"
+  },
+  {
+    "opcode": "PUSH2",
+    "find_name": ".prname_next",
+    "relative_to_opcode": 60
+  },
+  {
+    "opcode": "JUMP",
+    "comment": "JAL zero to .prname_next"
+  },
+  {
+    "opcode": "JUMPDEST",
+    "name": "__jal_c802999a2c779f1742c32df69ce7d49d9dd6c9710ba1d47a164130731bdea3e7__handler"
+  },
+  {
+    "opcode": "PUSH2",
+    "find_name": "__exit",
+    "relative_to_opcode": 1326
+  },
+  {
+    "opcode": "JUMP",
+    "comment": "JAL zero to __exit"
   },
   {
     "opcode": "JUMPDEST",
@@ -5327,7 +5353,7 @@ Unknown .balign,4
 { opcode: 'MLOAD', comment: 'read from a0', pc: 201 }
 { opcode: 'ADD', comment: 'ADDI', pc: 235 }
 { opcode: 'MSTORE', comment: 'store to a0', pc: 239 }
-{ opcode: 'JUMP', comment: 'jal', pc: 243 }
+{ opcode: 'JUMP', comment: 'jal to handler', pc: 243 }
 { opcode: 'JUMPDEST', name: '.prname_done', pc: 244 }
 { opcode: 'ADD', comment: 'ADDI', pc: 280 }
 { opcode: 'MSTORE', comment: 'store to a1', pc: 284 }
@@ -6010,390 +6036,66 @@ Unknown .balign,4
 { opcode: 'ADD', pc: 4332 }
 { opcode: 'SWAP1', pc: 4333 }
 { opcode: 'MSTORE', comment: 'sw', pc: 4334 }
-{ opcode: 'JUMP', comment: 'jal', pc: 4338 }
+{ opcode: 'JUMP', comment: 'jal to handler', pc: 4338 }
 { opcode: 'JUMPDEST', name: '.test_name', pc: 4339 }
-{ opcode: 'JUMPDEST', name: '__exit', pc: 4340 }
-{ opcode: 'RETURN', pc: 4347 }
-{ opcode: 'PUSH2', find_name: '2f', pc: 491 }
-{ opcode: 'JUMPI', comment: 'bgeu', pc: 494 }
-{ opcode: 'PUSH1', parameter: '00', pc: 495 }
-{ opcode: 'PUSH2', parameter: '0380', pc: 497 }
-{ opcode: 'MLOAD', comment: 'read from x28', pc: 500 }
-{ opcode: 'SUB', pc: 501 }
-{ opcode: 'PUSH4', parameter: 'FFFFFFFF', pc: 502 }
-{ opcode: 'AND', comment: 'mask to 32 bits', pc: 507 }
-{ opcode: 'PUSH2', find_name: 'fail', pc: 508 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 511 }
-{ opcode: 'JUMPDEST', name: '1', pc: 512 }
-{ opcode: 'PUSH1', parameter: '00', pc: 513 }
-{ opcode: 'PUSH2', parameter: '0380', pc: 515 }
-{ opcode: 'MLOAD', comment: 'read from x28', pc: 518 }
-{ opcode: 'SUB', pc: 519 }
-{ opcode: 'PUSH4', parameter: 'FFFFFFFF', pc: 520 }
-{ opcode: 'AND', comment: 'mask to 32 bits', pc: 525 }
-{ opcode: 'PUSH2', find_name: '3f', pc: 526 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 529 }
-{ opcode: 'JUMPDEST', name: '2', pc: 530 }
-{ opcode: 'PUSH2', find_name: '3f', pc: 526 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 529 }
-{ opcode: 'JUMPDEST', name: '2', pc: 530 }
-{ opcode: 'PUSH2', parameter: '0040', pc: 531 }
-{ opcode: 'MLOAD', comment: 'read from x2', pc: 534 }
-{ opcode: 'PUSH2', parameter: '0020', pc: 535 }
-{ opcode: 'MLOAD', comment: 'read from x1', pc: 538 }
-{ opcode: 'LT', pc: 539 }
-{ opcode: 'ISZERO', pc: 540 }
-{ opcode: 'PUSH2', find_name: '1b', pc: 541 }
-{ opcode: 'JUMPI', comment: 'bgeu', pc: 544 }
-{ opcode: 'PUSH1', parameter: '00', pc: 545 }
-{ opcode: 'PUSH2', parameter: '0380', pc: 547 }
-{ opcode: 'MLOAD', comment: 'read from x28', pc: 550 }
-{ opcode: 'SUB', pc: 551 }
-{ opcode: 'PUSH4', parameter: 'FFFFFFFF', pc: 552 }
-{ opcode: 'AND', comment: 'mask to 32 bits', pc: 557 }
-{ opcode: 'PUSH2', find_name: 'fail', pc: 558 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 561 }
-{ opcode: 'JUMPDEST', name: '3', pc: 562 }
-{ opcode: 'PUSH2', find_name: '2f', pc: 601 }
-{ opcode: 'JUMPI', comment: 'bgeu', pc: 604 }
-{ opcode: 'PUSH1', parameter: '00', pc: 605 }
-{ opcode: 'PUSH2', parameter: '0380', pc: 607 }
-{ opcode: 'MLOAD', comment: 'read from x28', pc: 610 }
-{ opcode: 'SUB', pc: 611 }
-{ opcode: 'PUSH4', parameter: 'FFFFFFFF', pc: 612 }
-{ opcode: 'AND', comment: 'mask to 32 bits', pc: 617 }
-{ opcode: 'PUSH2', find_name: 'fail', pc: 618 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 621 }
-{ opcode: 'JUMPDEST', name: '1', pc: 622 }
-{ opcode: 'PUSH1', parameter: '00', pc: 623 }
-{ opcode: 'PUSH2', parameter: '0380', pc: 625 }
-{ opcode: 'MLOAD', comment: 'read from x28', pc: 628 }
-{ opcode: 'SUB', pc: 629 }
-{ opcode: 'PUSH4', parameter: 'FFFFFFFF', pc: 630 }
-{ opcode: 'AND', comment: 'mask to 32 bits', pc: 635 }
-{ opcode: 'PUSH2', find_name: '3f', pc: 636 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 639 }
-{ opcode: 'JUMPDEST', name: '2', pc: 640 }
-{ opcode: 'PUSH2', find_name: '3f', pc: 636 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 639 }
-{ opcode: 'JUMPDEST', name: '2', pc: 640 }
-{ opcode: 'PUSH2', parameter: '0040', pc: 641 }
-{ opcode: 'MLOAD', comment: 'read from x2', pc: 644 }
-{ opcode: 'PUSH2', parameter: '0020', pc: 645 }
-{ opcode: 'MLOAD', comment: 'read from x1', pc: 648 }
-{ opcode: 'LT', pc: 649 }
-{ opcode: 'ISZERO', pc: 650 }
-{ opcode: 'PUSH2', find_name: '1b', pc: 651 }
-{ opcode: 'JUMPI', comment: 'bgeu', pc: 654 }
-{ opcode: 'PUSH1', parameter: '00', pc: 655 }
-{ opcode: 'PUSH2', parameter: '0380', pc: 657 }
-{ opcode: 'MLOAD', comment: 'read from x28', pc: 660 }
-{ opcode: 'SUB', pc: 661 }
-{ opcode: 'PUSH4', parameter: 'FFFFFFFF', pc: 662 }
-{ opcode: 'AND', comment: 'mask to 32 bits', pc: 667 }
-{ opcode: 'PUSH2', find_name: 'fail', pc: 668 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 671 }
-{ opcode: 'JUMPDEST', name: '3', pc: 672 }
-{ opcode: 'PUSH2', find_name: '2f', pc: 711 }
-{ opcode: 'JUMPI', comment: 'bgeu', pc: 714 }
-{ opcode: 'PUSH1', parameter: '00', pc: 715 }
-{ opcode: 'PUSH2', parameter: '0380', pc: 717 }
-{ opcode: 'MLOAD', comment: 'read from x28', pc: 720 }
-{ opcode: 'SUB', pc: 721 }
-{ opcode: 'PUSH4', parameter: 'FFFFFFFF', pc: 722 }
-{ opcode: 'AND', comment: 'mask to 32 bits', pc: 727 }
-{ opcode: 'PUSH2', find_name: 'fail', pc: 728 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 731 }
-{ opcode: 'JUMPDEST', name: '1', pc: 732 }
-{ opcode: 'PUSH1', parameter: '00', pc: 733 }
-{ opcode: 'PUSH2', parameter: '0380', pc: 735 }
-{ opcode: 'MLOAD', comment: 'read from x28', pc: 738 }
-{ opcode: 'SUB', pc: 739 }
-{ opcode: 'PUSH4', parameter: 'FFFFFFFF', pc: 740 }
-{ opcode: 'AND', comment: 'mask to 32 bits', pc: 745 }
-{ opcode: 'PUSH2', find_name: '3f', pc: 746 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 749 }
-{ opcode: 'JUMPDEST', name: '2', pc: 750 }
-{ opcode: 'PUSH2', find_name: '3f', pc: 746 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 749 }
-{ opcode: 'JUMPDEST', name: '2', pc: 750 }
-{ opcode: 'PUSH2', parameter: '0040', pc: 751 }
-{ opcode: 'MLOAD', comment: 'read from x2', pc: 754 }
-{ opcode: 'PUSH2', parameter: '0020', pc: 755 }
-{ opcode: 'MLOAD', comment: 'read from x1', pc: 758 }
-{ opcode: 'LT', pc: 759 }
-{ opcode: 'ISZERO', pc: 760 }
-{ opcode: 'PUSH2', find_name: '1b', pc: 761 }
-{ opcode: 'JUMPI', comment: 'bgeu', pc: 764 }
-{ opcode: 'PUSH1', parameter: '00', pc: 765 }
-{ opcode: 'PUSH2', parameter: '0380', pc: 767 }
-{ opcode: 'MLOAD', comment: 'read from x28', pc: 770 }
-{ opcode: 'SUB', pc: 771 }
-{ opcode: 'PUSH4', parameter: 'FFFFFFFF', pc: 772 }
-{ opcode: 'AND', comment: 'mask to 32 bits', pc: 777 }
-{ opcode: 'PUSH2', find_name: 'fail', pc: 778 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 781 }
-{ opcode: 'JUMPDEST', name: '3', pc: 782 }
-{ opcode: 'PUSH2', find_name: '2f', pc: 821 }
-{ opcode: 'JUMPI', comment: 'bgeu', pc: 824 }
-{ opcode: 'PUSH1', parameter: '00', pc: 825 }
-{ opcode: 'PUSH2', parameter: '0380', pc: 827 }
-{ opcode: 'MLOAD', comment: 'read from x28', pc: 830 }
-{ opcode: 'SUB', pc: 831 }
-{ opcode: 'PUSH4', parameter: 'FFFFFFFF', pc: 832 }
-{ opcode: 'AND', comment: 'mask to 32 bits', pc: 837 }
-{ opcode: 'PUSH2', find_name: 'fail', pc: 838 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 841 }
-{ opcode: 'JUMPDEST', name: '1', pc: 842 }
-{ opcode: 'PUSH1', parameter: '00', pc: 843 }
-{ opcode: 'PUSH2', parameter: '0380', pc: 845 }
-{ opcode: 'MLOAD', comment: 'read from x28', pc: 848 }
-{ opcode: 'SUB', pc: 849 }
-{ opcode: 'PUSH4', parameter: 'FFFFFFFF', pc: 850 }
-{ opcode: 'AND', comment: 'mask to 32 bits', pc: 855 }
-{ opcode: 'PUSH2', find_name: '3f', pc: 856 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 859 }
-{ opcode: 'JUMPDEST', name: '2', pc: 860 }
-{ opcode: 'PUSH2', find_name: '3f', pc: 856 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 859 }
-{ opcode: 'JUMPDEST', name: '2', pc: 860 }
-{ opcode: 'PUSH2', parameter: '0040', pc: 861 }
-{ opcode: 'MLOAD', comment: 'read from x2', pc: 864 }
-{ opcode: 'PUSH2', parameter: '0020', pc: 865 }
-{ opcode: 'MLOAD', comment: 'read from x1', pc: 868 }
-{ opcode: 'LT', pc: 869 }
-{ opcode: 'ISZERO', pc: 870 }
-{ opcode: 'PUSH2', find_name: '1b', pc: 871 }
-{ opcode: 'JUMPI', comment: 'bgeu', pc: 874 }
-{ opcode: 'PUSH1', parameter: '00', pc: 875 }
-{ opcode: 'PUSH2', parameter: '0380', pc: 877 }
-{ opcode: 'MLOAD', comment: 'read from x28', pc: 880 }
-{ opcode: 'SUB', pc: 881 }
-{ opcode: 'PUSH4', parameter: 'FFFFFFFF', pc: 882 }
-{ opcode: 'AND', comment: 'mask to 32 bits', pc: 887 }
-{ opcode: 'PUSH2', find_name: 'fail', pc: 888 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 891 }
-{ opcode: 'JUMPDEST', name: '3', pc: 892 }
-{ opcode: 'PUSH2', find_name: '2f', pc: 931 }
-{ opcode: 'JUMPI', comment: 'bgeu', pc: 934 }
-{ opcode: 'PUSH1', parameter: '00', pc: 935 }
-{ opcode: 'PUSH2', parameter: '0380', pc: 937 }
-{ opcode: 'MLOAD', comment: 'read from x28', pc: 940 }
-{ opcode: 'SUB', pc: 941 }
-{ opcode: 'PUSH4', parameter: 'FFFFFFFF', pc: 942 }
-{ opcode: 'AND', comment: 'mask to 32 bits', pc: 947 }
-{ opcode: 'PUSH2', find_name: 'fail', pc: 948 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 951 }
-{ opcode: 'JUMPDEST', name: '1', pc: 952 }
-{ opcode: 'PUSH1', parameter: '00', pc: 953 }
-{ opcode: 'PUSH2', parameter: '0380', pc: 955 }
-{ opcode: 'MLOAD', comment: 'read from x28', pc: 958 }
-{ opcode: 'SUB', pc: 959 }
-{ opcode: 'PUSH4', parameter: 'FFFFFFFF', pc: 960 }
-{ opcode: 'AND', comment: 'mask to 32 bits', pc: 965 }
-{ opcode: 'PUSH2', find_name: '3f', pc: 966 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 969 }
-{ opcode: 'JUMPDEST', name: '2', pc: 970 }
-{ opcode: 'PUSH2', find_name: '3f', pc: 966 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 969 }
-{ opcode: 'JUMPDEST', name: '2', pc: 970 }
-{ opcode: 'PUSH2', parameter: '0040', pc: 971 }
-{ opcode: 'MLOAD', comment: 'read from x2', pc: 974 }
-{ opcode: 'PUSH2', parameter: '0020', pc: 975 }
-{ opcode: 'MLOAD', comment: 'read from x1', pc: 978 }
-{ opcode: 'LT', pc: 979 }
-{ opcode: 'ISZERO', pc: 980 }
-{ opcode: 'PUSH2', find_name: '1b', pc: 981 }
-{ opcode: 'JUMPI', comment: 'bgeu', pc: 984 }
-{ opcode: 'PUSH1', parameter: '00', pc: 985 }
-{ opcode: 'PUSH2', parameter: '0380', pc: 987 }
-{ opcode: 'MLOAD', comment: 'read from x28', pc: 990 }
-{ opcode: 'SUB', pc: 991 }
-{ opcode: 'PUSH4', parameter: 'FFFFFFFF', pc: 992 }
-{ opcode: 'AND', comment: 'mask to 32 bits', pc: 997 }
-{ opcode: 'PUSH2', find_name: 'fail', pc: 998 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 1001 }
-{ opcode: 'JUMPDEST', name: '3', pc: 1002 }
-{ opcode: 'PUSH2', find_name: '2f', pc: 1041 }
-{ opcode: 'JUMPI', comment: 'bgeu', pc: 1044 }
-{ opcode: 'PUSH1', parameter: '00', pc: 1045 }
-{ opcode: 'PUSH2', parameter: '0380', pc: 1047 }
-{ opcode: 'MLOAD', comment: 'read from x28', pc: 1050 }
-{ opcode: 'SUB', pc: 1051 }
-{ opcode: 'PUSH4', parameter: 'FFFFFFFF', pc: 1052 }
-{ opcode: 'AND', comment: 'mask to 32 bits', pc: 1057 }
-{ opcode: 'PUSH2', find_name: 'fail', pc: 1058 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 1061 }
-{ opcode: 'JUMPDEST', name: '1', pc: 1062 }
-{ opcode: 'PUSH1', parameter: '00', pc: 1063 }
-{ opcode: 'PUSH2', parameter: '0380', pc: 1065 }
-{ opcode: 'MLOAD', comment: 'read from x28', pc: 1068 }
-{ opcode: 'SUB', pc: 1069 }
-{ opcode: 'PUSH4', parameter: 'FFFFFFFF', pc: 1070 }
-{ opcode: 'AND', comment: 'mask to 32 bits', pc: 1075 }
-{ opcode: 'PUSH2', find_name: '3f', pc: 1076 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 1079 }
-{ opcode: 'JUMPDEST', name: '2', pc: 1080 }
-{ opcode: 'PUSH2', find_name: '3f', pc: 1076 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 1079 }
-{ opcode: 'JUMPDEST', name: '2', pc: 1080 }
-{ opcode: 'PUSH2', parameter: '0040', pc: 1081 }
-{ opcode: 'MLOAD', comment: 'read from x2', pc: 1084 }
-{ opcode: 'PUSH2', parameter: '0020', pc: 1085 }
-{ opcode: 'MLOAD', comment: 'read from x1', pc: 1088 }
-{ opcode: 'LT', pc: 1089 }
-{ opcode: 'ISZERO', pc: 1090 }
-{ opcode: 'PUSH2', find_name: '1b', pc: 1091 }
-{ opcode: 'JUMPI', comment: 'bgeu', pc: 1094 }
-{ opcode: 'PUSH1', parameter: '00', pc: 1095 }
-{ opcode: 'PUSH2', parameter: '0380', pc: 1097 }
-{ opcode: 'MLOAD', comment: 'read from x28', pc: 1100 }
-{ opcode: 'SUB', pc: 1101 }
-{ opcode: 'PUSH4', parameter: 'FFFFFFFF', pc: 1102 }
-{ opcode: 'AND', comment: 'mask to 32 bits', pc: 1107 }
-{ opcode: 'PUSH2', find_name: 'fail', pc: 1108 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 1111 }
-{ opcode: 'JUMPDEST', name: '3', pc: 1112 }
-{ opcode: 'PUSH2', find_name: '1f', pc: 1151 }
-{ opcode: 'JUMPI', comment: 'bgeu', pc: 1154 }
-{ opcode: 'PUSH1', parameter: '00', pc: 1155 }
-{ opcode: 'PUSH2', parameter: '0380', pc: 1157 }
-{ opcode: 'MLOAD', comment: 'read from x28', pc: 1160 }
-{ opcode: 'SUB', pc: 1161 }
-{ opcode: 'PUSH4', parameter: 'FFFFFFFF', pc: 1162 }
-{ opcode: 'AND', comment: 'mask to 32 bits', pc: 1167 }
-{ opcode: 'PUSH2', find_name: '2f', pc: 1168 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 1171 }
-{ opcode: 'JUMPDEST', name: '1', pc: 1172 }
-{ opcode: 'PUSH2', find_name: '2f', pc: 1168 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 1171 }
-{ opcode: 'JUMPDEST', name: '1', pc: 1172 }
-{ opcode: 'PUSH1', parameter: '00', pc: 1173 }
-{ opcode: 'PUSH2', parameter: '0380', pc: 1175 }
-{ opcode: 'MLOAD', comment: 'read from x28', pc: 1178 }
-{ opcode: 'SUB', pc: 1179 }
-{ opcode: 'PUSH4', parameter: 'FFFFFFFF', pc: 1180 }
-{ opcode: 'AND', comment: 'mask to 32 bits', pc: 1185 }
-{ opcode: 'PUSH2', find_name: 'fail', pc: 1186 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 1189 }
-{ opcode: 'JUMPDEST', name: '2', pc: 1190 }
-{ opcode: 'PUSH2', find_name: '1f', pc: 1244 }
-{ opcode: 'JUMPI', comment: 'bgeu', pc: 1247 }
-{ opcode: 'PUSH1', parameter: '00', pc: 1248 }
-{ opcode: 'PUSH2', parameter: '0380', pc: 1250 }
-{ opcode: 'MLOAD', comment: 'read from x28', pc: 1253 }
-{ opcode: 'SUB', pc: 1254 }
-{ opcode: 'PUSH4', parameter: 'FFFFFFFF', pc: 1255 }
-{ opcode: 'AND', comment: 'mask to 32 bits', pc: 1260 }
-{ opcode: 'PUSH2', find_name: '2f', pc: 1261 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 1264 }
-{ opcode: 'JUMPDEST', name: '1', pc: 1265 }
-{ opcode: 'PUSH2', find_name: '2f', pc: 1261 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 1264 }
-{ opcode: 'JUMPDEST', name: '1', pc: 1265 }
-{ opcode: 'PUSH1', parameter: '00', pc: 1266 }
-{ opcode: 'PUSH2', parameter: '0380', pc: 1268 }
-{ opcode: 'MLOAD', comment: 'read from x28', pc: 1271 }
-{ opcode: 'SUB', pc: 1272 }
-{ opcode: 'PUSH4', parameter: 'FFFFFFFF', pc: 1273 }
-{ opcode: 'AND', comment: 'mask to 32 bits', pc: 1278 }
-{ opcode: 'PUSH2', find_name: 'fail', pc: 1279 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 1282 }
-{ opcode: 'JUMPDEST', name: '2', pc: 1283 }
-{ opcode: 'PUSH2', find_name: '1f', pc: 1337 }
-{ opcode: 'JUMPI', comment: 'bgeu', pc: 1340 }
-{ opcode: 'PUSH1', parameter: '00', pc: 1341 }
-{ opcode: 'PUSH2', parameter: '0380', pc: 1343 }
-{ opcode: 'MLOAD', comment: 'read from x28', pc: 1346 }
-{ opcode: 'SUB', pc: 1347 }
-{ opcode: 'PUSH4', parameter: 'FFFFFFFF', pc: 1348 }
-{ opcode: 'AND', comment: 'mask to 32 bits', pc: 1353 }
-{ opcode: 'PUSH2', find_name: '2f', pc: 1354 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 1357 }
-{ opcode: 'JUMPDEST', name: '1', pc: 1358 }
-{ opcode: 'PUSH2', find_name: '2f', pc: 1354 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 1357 }
-{ opcode: 'JUMPDEST', name: '1', pc: 1358 }
-{ opcode: 'PUSH1', parameter: '00', pc: 1359 }
-{ opcode: 'PUSH2', parameter: '0380', pc: 1361 }
-{ opcode: 'MLOAD', comment: 'read from x28', pc: 1364 }
-{ opcode: 'SUB', pc: 1365 }
-{ opcode: 'PUSH4', parameter: 'FFFFFFFF', pc: 1366 }
-{ opcode: 'AND', comment: 'mask to 32 bits', pc: 1371 }
-{ opcode: 'PUSH2', find_name: 'fail', pc: 1372 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 1375 }
-{ opcode: 'JUMPDEST', name: '2', pc: 1376 }
-{ opcode: 'PUSH2', find_name: '1f', pc: 1430 }
-{ opcode: 'JUMPI', comment: 'bgeu', pc: 1433 }
-{ opcode: 'PUSH1', parameter: '00', pc: 1434 }
-{ opcode: 'PUSH2', parameter: '0380', pc: 1436 }
-{ opcode: 'MLOAD', comment: 'read from x28', pc: 1439 }
-{ opcode: 'SUB', pc: 1440 }
-{ opcode: 'PUSH4', parameter: 'FFFFFFFF', pc: 1441 }
-{ opcode: 'AND', comment: 'mask to 32 bits', pc: 1446 }
-{ opcode: 'PUSH2', find_name: '2f', pc: 1447 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 1450 }
-{ opcode: 'JUMPDEST', name: '1', pc: 1451 }
-{ opcode: 'PUSH2', find_name: '2f', pc: 1447 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 1450 }
-{ opcode: 'JUMPDEST', name: '1', pc: 1451 }
-{ opcode: 'PUSH1', parameter: '00', pc: 1452 }
-{ opcode: 'PUSH2', parameter: '0380', pc: 1454 }
-{ opcode: 'MLOAD', comment: 'read from x28', pc: 1457 }
-{ opcode: 'SUB', pc: 1458 }
-{ opcode: 'PUSH4', parameter: 'FFFFFFFF', pc: 1459 }
-{ opcode: 'AND', comment: 'mask to 32 bits', pc: 1464 }
-{ opcode: 'PUSH2', find_name: 'fail', pc: 1465 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 1468 }
-{ opcode: 'JUMPDEST', name: '2', pc: 1469 }
-{ opcode: 'PUSH2', find_name: '1f', pc: 2967 }
-{ opcode: 'JUMPI', comment: 'bgeu', pc: 2970 }
-{ opcode: 'PUSH2', parameter: '0020', pc: 2971 }
-{ opcode: 'MLOAD', comment: 'read from x1', pc: 2974 }
 {
-  opcode: 'PUSH32',
-  parameter: '0000000000000000000000000000000000000000000000000000000000000001',
-  comment: 'signextended 1',
-  pc: 2975
+  opcode: 'JUMPDEST',
+  name: '__jal_c457e70ab17fd427c67e79919f5a75299e888974ec8b47f8b46558b55a22aad9__handler',
+  pc: 4340
 }
-{ opcode: 'ADD', comment: 'ADDI', pc: 3008 }
-{ opcode: 'PUSH2', parameter: '0020', pc: 3009 }
-{ opcode: 'MSTORE', comment: 'store to x1', pc: 3012 }
-{ opcode: 'PUSH2', parameter: '0020', pc: 3013 }
-{ opcode: 'MLOAD', comment: 'read from x1', pc: 3016 }
+{ opcode: 'JUMP', comment: 'JAL zero to .prname_next', pc: 4344 }
 {
-  opcode: 'PUSH32',
-  parameter: '0000000000000000000000000000000000000000000000000000000000000001',
-  comment: 'signextended 1',
-  pc: 3017
+  opcode: 'JUMPDEST',
+  name: '__jal_c802999a2c779f1742c32df69ce7d49d9dd6c9710ba1d47a164130731bdea3e7__handler',
+  pc: 4345
 }
-{ opcode: 'ADD', comment: 'ADDI', pc: 3050 }
-{ opcode: 'PUSH2', parameter: '0020', pc: 3051 }
-{ opcode: 'MSTORE', comment: 'store to x1', pc: 3054 }
-{ opcode: 'PUSH2', parameter: '0020', pc: 3055 }
-{ opcode: 'MLOAD', comment: 'read from x1', pc: 3058 }
-{
-  opcode: 'PUSH32',
-  parameter: '0000000000000000000000000000000000000000000000000000000000000001',
-  comment: 'signextended 1',
-  pc: 3059
-}
-{ opcode: 'ADD', comment: 'ADDI', pc: 3092 }
-{ opcode: 'PUSH2', parameter: '0020', pc: 3093 }
-{ opcode: 'MSTORE', comment: 'store to x1', pc: 3096 }
-{ opcode: 'PUSH2', parameter: '0020', pc: 3097 }
-{ opcode: 'MLOAD', comment: 'read from x1', pc: 3100 }
-{
-  opcode: 'PUSH32',
-  parameter: '0000000000000000000000000000000000000000000000000000000000000001',
-  comment: 'signextended 1',
-  pc: 3101
-}
-{ opcode: 'ADD', comment: 'ADDI', pc: 3134 }
-{ opcode: 'PUSH2', parameter: '0020', pc: 3135 }
-{ opcode: 'MSTORE', comment: 'store to x1', pc: 3138 }
-{ opcode: 'JUMPDEST', name: '1', pc: 3139 }
-Final bytecode: 610004565b630001000061014052610140516110f301610140526300000000610180525b610140517f0000000000000000000000000000000000000000000000000000000000000002185160f81c60000b63ffffffff16610160526101605163ffffffff16600063ffffffff16146100f457610180517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101605160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000000010161014052610023565b60007f000000000000000000000000000000000000000000000000000000000000002e0161016052610180517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101605160e01b019052610180517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101605160e01b0190525b63000000026103805263000000006100205263000000006100405261004051610020511015610212576000610380510363ffffffff16610cce575b6000610380510363ffffffff16610232575b61004051610020511015610200576000610380510363ffffffff16610cce575b5b63000000036103805263000000016100205263000000016100405261004051610020511015610280576000610380510363ffffffff16610cce575b6000610380510363ffffffff166102a0575b6100405161002051101561026e576000610380510363ffffffff16610cce575b5b63000000046103805263ffffffff6100205263ffffffff61004052610040516100205110156102ee576000610380510363ffffffff16610cce575b6000610380510363ffffffff1661030e575b610040516100205110156102dc576000610380510363ffffffff16610cce575b5b6300000005610380526300000001610020526300000000610040526100405161002051101561035c576000610380510363ffffffff16610cce575b6000610380510363ffffffff1661037c575b6100405161002051101561034a576000610380510363ffffffff16610cce575b5b63000000066103805263ffffffff6100205263fffffffe61004052610040516100205110156103ca576000610380510363ffffffff16610cce575b6000610380510363ffffffff166103ea575b610040516100205110156103b8576000610380510363ffffffff16610cce575b5b63000000076103805263ffffffff6100205263000000006100405261004051610020511015610438576000610380510363ffffffff16610cce575b6000610380510363ffffffff16610458575b61004051610020511015610426576000610380510363ffffffff16610cce575b5b63000000086103805263000000006100205263000000016100405261004051610020511015610494576000610380510363ffffffff166104a6575b6000610380510363ffffffff16610cce575b61004051610020511015610494575b5b63000000096103805263fffffffe6100205263ffffffff61004052610040516100205110156104f1576000610380510363ffffffff16610503575b6000610380510363ffffffff16610cce575b610040516100205110156104f1575b5b630000000a6103805263000000006100205263ffffffff610040526100405161002051101561054e576000610380510363ffffffff16610560575b6000610380510363ffffffff16610cce575b6100405161002051101561054e575b5b630000000b61038052637fffffff61002052638000000061004052610040516100205110156105ab576000610380510363ffffffff166105bd575b6000610380510363ffffffff16610cce575b610040516100205110156105ab575b5b630000000c610380526300000000610080525b63efffffff6100205263f00000006100405261004051610020511015610cce57610080517f0000000000000000000000000000000000000000000000000000000000000001016100805263000000026100a052610080516100a0510363ffffffff166105e0575b630000000d610380526300000000610080525b63efffffff6100205263f00000006100405261004051610020511015610cce57610080517f0000000000000000000000000000000000000000000000000000000000000001016100805263000000026100a052610080516100a0510363ffffffff1661065a575b630000000e610380526300000000610080525b63efffffff6100205263f00000006100405261004051610020511015610cce57610080517f0000000000000000000000000000000000000000000000000000000000000001016100805263000000026100a052610080516100a0510363ffffffff166106d4575b630000000f610380526300000000610080525b63efffffff6100205263f00000006100405261004051610020511015610cce57610080517f0000000000000000000000000000000000000000000000000000000000000001016100805263000000026100a052610080516100a0510363ffffffff1661074e575b6300000010610380526300000000610080525b63efffffff6100205263f00000006100405261004051610020511015610cce57610080517f0000000000000000000000000000000000000000000000000000000000000001016100805263000000026100a052610080516100a0510363ffffffff166107c8575b6300000011610380526300000000610080525b63efffffff6100205263f00000006100405261004051610020511015610cce57610080517f0000000000000000000000000000000000000000000000000000000000000001016100805263000000026100a052610080516100a0510363ffffffff16610842575b6300000012610380526300000000610080525b63efffffff6100205263f00000006100405261004051610020511015610cce57610080517f0000000000000000000000000000000000000000000000000000000000000001016100805263000000026100a052610080516100a0510363ffffffff166108bc575b6300000013610380526300000000610080525b63efffffff6100205263f00000006100405261004051610020511015610cce57610080517f0000000000000000000000000000000000000000000000000000000000000001016100805263000000026100a052610080516100a0510363ffffffff16610936575b6300000014610380526300000000610080525b63efffffff6100205263f00000006100405261004051610020511015610cce57610080517f0000000000000000000000000000000000000000000000000000000000000001016100805263000000026100a052610080516100a0510363ffffffff166109b0575b6300000015610380526300000000610080525b63efffffff6100205263f00000006100405261004051610020511015610cce57610080517f0000000000000000000000000000000000000000000000000000000000000001016100805263000000026100a052610080516100a0510363ffffffff16610a2a575b6300000016610380526300000000610080525b63efffffff6100205263f00000006100405261004051610020511015610cce57610080517f0000000000000000000000000000000000000000000000000000000000000001016100805263000000026100a052610080516100a0510363ffffffff16610aa4575b6300000017610380526300000000610080525b63efffffff6100205263f00000006100405261004051610020511015610cce57610080517f0000000000000000000000000000000000000000000000000000000000000001016100805263000000026100a052610080516100a0510363ffffffff16610b1e575b6300000001610020526000610020511015610c4357610020517f00000000000000000000000000000000000000000000000000000000000000010161002052610020517f00000000000000000000000000000000000000000000000000000000000000010161002052610020517f00000000000000000000000000000000000000000000000000000000000000010161002052610020517f000000000000000000000000000000000000000000000000000000000000000101610020525b610020517f00000000000000000000000000000000000000000000000000000000000000010161002052610020517f0000000000000000000000000000000000000000000000000000000000000001016100205263000000036103a052630000001861038052610020516103a0510363ffffffff16610cce576000610380510363ffffffff16610f71575b63000000006101405260007f0000000000000000000000000000000000000000000000000000000000000045016101605260007f0000000000000000000000000000000000000000000000000000000000000052016101805260007f000000000000000000000000000000000000000000000000000000000000004f016101a05260007f000000000000000000000000000000000000000000000000000000000000000a016101c052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101605160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101805160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101805160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101a05160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101805160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101c05160e01b019052fe5b63000000006101405260007f000000000000000000000000000000000000000000000000000000000000004f016101605260007f000000000000000000000000000000000000000000000000000000000000004b016101805260007f000000000000000000000000000000000000000000000000000000000000000a016101a052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101605160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101805160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101a05160e01b0190526110f4565b5b600060006000f3
+{ opcode: 'JUMP', comment: 'JAL zero to __exit', pc: 4349 }
+{ opcode: 'JUMPDEST', name: '__exit', pc: 4350 }
+{ opcode: 'RETURN', pc: 4357 }
+Searching forwards...
+Searching forwards...
+Searching backwards...
+Searching forwards...
+Searching forwards...
+Searching backwards...
+Searching forwards...
+Searching forwards...
+Searching backwards...
+Searching forwards...
+Searching forwards...
+Searching backwards...
+Searching forwards...
+Searching forwards...
+Searching backwards...
+Searching forwards...
+Searching forwards...
+Searching backwards...
+Searching forwards...
+Searching forwards...
+Searching backwards...
+Searching forwards...
+Searching forwards...
+Searching backwards...
+Searching forwards...
+Searching forwards...
+Searching backwards...
+Searching forwards...
+Searching forwards...
+Searching backwards...
+Searching backwards...
+Searching backwards...
+Searching backwards...
+Searching backwards...
+Searching backwards...
+Searching backwards...
+Searching backwards...
+Searching backwards...
+Searching backwards...
+Searching backwards...
+Searching backwards...
+Searching backwards...
+Searching forwards...
+Final bytecode: 610004565b630001000061014052610140516110f301610140526300000000610180525b610140517f0000000000000000000000000000000000000000000000000000000000000002185160f81c60000b63ffffffff16610160526101605163ffffffff16600063ffffffff16146100f457610180517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101605160e01b019052610140517f000000000000000000000000000000000000000000000000000000000000000101610140526110f4565b60007f000000000000000000000000000000000000000000000000000000000000002e0161016052610180517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101605160e01b019052610180517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101605160e01b0190525b63000000026103805263000000006100205263000000006100405261004051610020511015610212576000610380510363ffffffff16610cce575b6000610380510363ffffffff16610232575b61004051610020511015610200576000610380510363ffffffff16610cce575b5b63000000036103805263000000016100205263000000016100405261004051610020511015610280576000610380510363ffffffff16610cce575b6000610380510363ffffffff166102a0575b6100405161002051101561026e576000610380510363ffffffff16610cce575b5b63000000046103805263ffffffff6100205263ffffffff61004052610040516100205110156102ee576000610380510363ffffffff16610cce575b6000610380510363ffffffff1661030e575b610040516100205110156102dc576000610380510363ffffffff16610cce575b5b6300000005610380526300000001610020526300000000610040526100405161002051101561035c576000610380510363ffffffff16610cce575b6000610380510363ffffffff1661037c575b6100405161002051101561034a576000610380510363ffffffff16610cce575b5b63000000066103805263ffffffff6100205263fffffffe61004052610040516100205110156103ca576000610380510363ffffffff16610cce575b6000610380510363ffffffff166103ea575b610040516100205110156103b8576000610380510363ffffffff16610cce575b5b63000000076103805263ffffffff6100205263000000006100405261004051610020511015610438576000610380510363ffffffff16610cce575b6000610380510363ffffffff16610458575b61004051610020511015610426576000610380510363ffffffff16610cce575b5b63000000086103805263000000006100205263000000016100405261004051610020511015610494576000610380510363ffffffff166104a6575b6000610380510363ffffffff16610cce575b61004051610020511015610494575b5b63000000096103805263fffffffe6100205263ffffffff61004052610040516100205110156104f1576000610380510363ffffffff16610503575b6000610380510363ffffffff16610cce575b610040516100205110156104f1575b5b630000000a6103805263000000006100205263ffffffff610040526100405161002051101561054e576000610380510363ffffffff16610560575b6000610380510363ffffffff16610cce575b6100405161002051101561054e575b5b630000000b61038052637fffffff61002052638000000061004052610040516100205110156105ab576000610380510363ffffffff166105bd575b6000610380510363ffffffff16610cce575b610040516100205110156105ab575b5b630000000c610380526300000000610080525b63efffffff6100205263f00000006100405261004051610020511015610cce57610080517f0000000000000000000000000000000000000000000000000000000000000001016100805263000000026100a052610080516100a0510363ffffffff166105e0575b630000000d610380526300000000610080525b63efffffff6100205263f00000006100405261004051610020511015610cce57610080517f0000000000000000000000000000000000000000000000000000000000000001016100805263000000026100a052610080516100a0510363ffffffff1661065a575b630000000e610380526300000000610080525b63efffffff6100205263f00000006100405261004051610020511015610cce57610080517f0000000000000000000000000000000000000000000000000000000000000001016100805263000000026100a052610080516100a0510363ffffffff166106d4575b630000000f610380526300000000610080525b63efffffff6100205263f00000006100405261004051610020511015610cce57610080517f0000000000000000000000000000000000000000000000000000000000000001016100805263000000026100a052610080516100a0510363ffffffff1661074e575b6300000010610380526300000000610080525b63efffffff6100205263f00000006100405261004051610020511015610cce57610080517f0000000000000000000000000000000000000000000000000000000000000001016100805263000000026100a052610080516100a0510363ffffffff166107c8575b6300000011610380526300000000610080525b63efffffff6100205263f00000006100405261004051610020511015610cce57610080517f0000000000000000000000000000000000000000000000000000000000000001016100805263000000026100a052610080516100a0510363ffffffff16610842575b6300000012610380526300000000610080525b63efffffff6100205263f00000006100405261004051610020511015610cce57610080517f0000000000000000000000000000000000000000000000000000000000000001016100805263000000026100a052610080516100a0510363ffffffff166108bc575b6300000013610380526300000000610080525b63efffffff6100205263f00000006100405261004051610020511015610cce57610080517f0000000000000000000000000000000000000000000000000000000000000001016100805263000000026100a052610080516100a0510363ffffffff16610936575b6300000014610380526300000000610080525b63efffffff6100205263f00000006100405261004051610020511015610cce57610080517f0000000000000000000000000000000000000000000000000000000000000001016100805263000000026100a052610080516100a0510363ffffffff166109b0575b6300000015610380526300000000610080525b63efffffff6100205263f00000006100405261004051610020511015610cce57610080517f0000000000000000000000000000000000000000000000000000000000000001016100805263000000026100a052610080516100a0510363ffffffff16610a2a575b6300000016610380526300000000610080525b63efffffff6100205263f00000006100405261004051610020511015610cce57610080517f0000000000000000000000000000000000000000000000000000000000000001016100805263000000026100a052610080516100a0510363ffffffff16610aa4575b6300000017610380526300000000610080525b63efffffff6100205263f00000006100405261004051610020511015610cce57610080517f0000000000000000000000000000000000000000000000000000000000000001016100805263000000026100a052610080516100a0510363ffffffff16610b1e575b6300000001610020526000610020511015610c4357610020517f00000000000000000000000000000000000000000000000000000000000000010161002052610020517f00000000000000000000000000000000000000000000000000000000000000010161002052610020517f00000000000000000000000000000000000000000000000000000000000000010161002052610020517f000000000000000000000000000000000000000000000000000000000000000101610020525b610020517f00000000000000000000000000000000000000000000000000000000000000010161002052610020517f0000000000000000000000000000000000000000000000000000000000000001016100205263000000036103a052630000001861038052610020516103a0510363ffffffff16610cce576000610380510363ffffffff16610f71575b63000000006101405260007f0000000000000000000000000000000000000000000000000000000000000045016101605260007f0000000000000000000000000000000000000000000000000000000000000052016101805260007f000000000000000000000000000000000000000000000000000000000000004f016101a05260007f000000000000000000000000000000000000000000000000000000000000000a016101c052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101605160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101805160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101805160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101a05160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101805160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101c05160e01b019052fe5b63000000006101405260007f000000000000000000000000000000000000000000000000000000000000004f016101605260007f000000000000000000000000000000000000000000000000000000000000004b016101805260007f000000000000000000000000000000000000000000000000000000000000000a016101a052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101605160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101805160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101a05160e01b0190526110f9565b5b610023565b6110fe565b600060006000f3
 Data section: [101,103,98,0,0]
 Data labels: {".test_name":0}
 Running in EVM:
@@ -11285,25 +10987,32 @@ pc: 10EE - Opcode: "MSTORE"- mem length: 69920 - 3
 10EE	MSTORE		 	  ;; # sw
 [DEBUG] output = �                           
 pc: 10EF - Opcode: "PUSH2"- mem length: 69920 - 3
-10EF	PUSH2	10F4	 ;; __exit	 
+10EF	PUSH2	10F9	 ;; __jal_c802999a2c779f1742c32df69ce7d49d9dd6c9710ba1d47a164130731bdea3e7__handler	 
 pc: 10F2 - Opcode: "JUMP"- mem length: 69920 - 8
-- stack 0: 0x10F4
-10F2	JUMP		 	  ;; # jal
-pc: 10F4 - Opcode: "JUMPDEST"- mem length: 69920 - 1
-10F4	JUMPDEST		 ;; __exit	 
-pc: 10F5 - Opcode: "PUSH1"- mem length: 69920 - 3
-10F5	PUSH1	00	 	 
-pc: 10F7 - Opcode: "PUSH1"- mem length: 69920 - 3
+- stack 0: 0x10F9
+10F2	JUMP		 	  ;; # jal to handler
+pc: 10F9 - Opcode: "JUMPDEST"- mem length: 69920 - 1
+10F9	JUMPDEST		 ;; __jal_c802999a2c779f1742c32df69ce7d49d9dd6c9710ba1d47a164130731bdea3e7__handler	 
+pc: 10FA - Opcode: "PUSH2"- mem length: 69920 - 3
+10FA	PUSH2	10FE	 ;; __exit	 
+pc: 10FD - Opcode: "JUMP"- mem length: 69920 - 8
+- stack 0: 0x10FE
+10FD	JUMP		 	  ;; # JAL zero to __exit
+pc: 10FE - Opcode: "JUMPDEST"- mem length: 69920 - 1
+10FE	JUMPDEST		 ;; __exit	 
+pc: 10FF - Opcode: "PUSH1"- mem length: 69920 - 3
+10FF	PUSH1	00	 	 
+pc: 1101 - Opcode: "PUSH1"- mem length: 69920 - 3
 - stack 0: 0x0
-10F7	PUSH1	00	 	 
-pc: 10F9 - Opcode: "PUSH1"- mem length: 69920 - 3
+1101	PUSH1	00	 	 
+pc: 1103 - Opcode: "PUSH1"- mem length: 69920 - 3
 - stack 1: 0x0
 - stack 0: 0x0
-10F9	PUSH1	00	 	 
-pc: 10FB - Opcode: "RETURN"- mem length: 69920 - 0
+1103	PUSH1	00	 	 
+pc: 1105 - Opcode: "RETURN"- mem length: 69920 - 0
 - stack 2: 0x0
 - stack 1: 0x0
 - stack 0: 0x0
-10FB	RETURN		 	 
+1105	RETURN		 	 
 Returned: 
-gasUsed : 20609
+gasUsed : 20621

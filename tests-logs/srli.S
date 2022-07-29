@@ -17,13 +17,13 @@ Unknown srli,x3,x1,((7),|,(-(((7),>>,11),&,1),<<,11))
 Unknown srli,x3,x1,((14),|,(-(((14),>>,11),&,1),<<,11))
 Unknown srli,x3,x1,((31),|,(-(((31),>>,11),&,1),<<,11))
 Unknown srli,x1,x1,((1),|,(-(((1),>>,11),&,1),<<,11))
-/root/bpf-to-evm/load.ts:118
+/root/bpf-to-evm/load.ts:127
       throw new Error("Unknown register " + regName);
             ^
 Error: Unknown register ((1)
-    at readRegister (/root/bpf-to-evm/load.ts:118:13)
-    at emitSllSrl (/root/bpf-to-evm/load.ts:302:3)
-    at Object.<anonymous> (/root/bpf-to-evm/load.ts:673:7)
+    at readRegister (/root/bpf-to-evm/load.ts:127:13)
+    at emitSllSrl (/root/bpf-to-evm/load.ts:311:3)
+    at Object.<anonymous> (/root/bpf-to-evm/load.ts:681:7)
     at Module._compile (node:internal/modules/cjs/loader:1099:14)
     at Module.m._compile (/root/bpf-to-evm/node_modules/ts-node/src/index.ts:1618:23)
     at Module._extensions..js (node:internal/modules/cjs/loader:1153:10)

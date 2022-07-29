@@ -101,13 +101,22 @@ interface EVMOpCode {
     opcode: string;
     name?: string;
     find_name?: string;
+    relative_to_opcode?: number;
     parameter?: string;
     comment?: string;
     pc?: number;
     data_offset?: number;
 }
 
+interface JAL {
+  rd: string;
+  randoLabel: string;
+  symbol: string;
+  relative_to_opcode: number;
+}
+
 const opcodes: EVMOpCode[] = [];
+const jals: JAL[] = [];
 
 function readRegister(regName: string) {
   if (regName == "zero" || regName == "x0") {
@@ -390,15 +399,14 @@ function emitLi(rd: string, imm: number|null, rawImm: string) {
 }
 
 function emitJal(rd: string, symbol: string) {
-  const randoLabel = "__jal_return_" + crypto.randomBytes(32).toString("hex");
+  // PUSH2, XX, XX, JUMP = pc + 4
+  const randoLabel = "__jal_" + crypto.randomBytes(32).toString("hex");
+  opcodes.push({opcode: "PUSH2", find_name: randoLabel + "__handler"});
+
+  jals.push({rd: rd, randoLabel, symbol: symbol, relative_to_opcode: opcodes.length - 1});
+  opcodes.push({opcode: "JUMP", comment: "jal to handler"});
   if (!(rd == "zero" || rd == "x0")) {
-    opcodes.push({opcode: "PUSH2", find_name: randoLabel});
-    writeRegister(rd, false);
-  }
-  opcodes.push({opcode: "PUSH2", find_name: symbol});
-  opcodes.push({opcode: "JUMP", comment: "jal"});
-  if (!(rd == "zero" || rd == "x0")) {
-    opcodes.push({opcode: "JUMPDEST", name: randoLabel});
+    opcodes.push({opcode: "JUMPDEST", name: randoLabel + "__return" });
   }
 }
 
@@ -697,7 +705,7 @@ for (let i = 0; i < linesTokenized.length; i++) {
       break;
     case "jal":
       if (line.length == 2) {
-        emitJal("zero", line[1]);
+        emitJal("ra", line[1]);
       } else {
         emitJal(line[1], line[2]);
       }
@@ -775,6 +783,15 @@ for (let i = 0; i < linesTokenized.length; i++) {
   }
 }
 
+for (let i = 0; i < jals.length; i++) {
+  opcodes.push({opcode: "JUMPDEST", name: jals[i].randoLabel + "__handler"});
+  if (!(jals[i].rd == "zero" || jals[i].rd == "x0")) {
+    opcodes.push({opcode: "PUSH2", find_name: jals[i].randoLabel + "__return"});
+  }
+  opcodes.push({opcode: "PUSH2", find_name: jals[i].symbol, relative_to_opcode: jals[i].relative_to_opcode});
+  opcodes.push({opcode: "JUMP", comment: "JAL " + jals[i].rd + " to " + jals[i].symbol});
+}
+
 opcodes.push({opcode: "JUMPDEST", name: "__exit"});
 opcodes.push({opcode: "PUSH1", parameter: "00"});
 opcodes.push({opcode: "PUSH1", parameter: "00"});
@@ -820,6 +837,7 @@ function resolveNamesAndOffsets() {
     const e = opcodes[p];
     if (e.find_name) {
       let i = 0;
+      //console.log("find_name", JSON.stringify(e));
       for (; i < opcodes.length; i++) {
         if (opcodes[i].name == e.find_name) {
           const pcR = opcodes[i].pc;
@@ -832,7 +850,12 @@ function resolveNamesAndOffsets() {
       }
       if (i == opcodes.length) {
         if (e.find_name.endsWith("b")) {
-          for (i = p; i >= 0; i--) {
+          console.log("Searching backwards...");
+          let from = p;
+          if (e.relative_to_opcode) {
+            from= e.relative_to_opcode;
+          }
+          for (i = from; i >= 0; i--) {
             if (
               opcodes[i].name == e.find_name.slice(0, e.find_name.length - 1)
             ) {
@@ -853,8 +876,15 @@ function resolveNamesAndOffsets() {
             );
           }
         } else if (e.find_name.endsWith("f")) {
-          for (i = p; p < opcodes.length; i++) {
-            console.log(opcodes[i]);
+          console.log("Searching forwards...");
+          let from = p; 
+          if (e.relative_to_opcode) {
+            from = e.relative_to_opcode;
+          }
+          for (i = from; i < opcodes.length; i++) {
+            if (!opcodes[i]) {
+              throw new Error("no opcode in" + i);
+            }
             if (
               opcodes[i].name == e.find_name.slice(0, e.find_name.length - 1)
             ) {

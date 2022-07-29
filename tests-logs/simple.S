@@ -240,11 +240,11 @@ Unknown .balign,4
   },
   {
     "opcode": "PUSH2",
-    "find_name": ".prname_next"
+    "find_name": "__jal_b5bc49a903930ca06a974b9a2c0b35ed46fca85f32f8f1d3737046e343f37da6__handler"
   },
   {
     "opcode": "JUMP",
-    "comment": "jal"
+    "comment": "jal to handler"
   },
   {
     "opcode": "JUMPDEST",
@@ -624,15 +624,41 @@ Unknown .balign,4
   },
   {
     "opcode": "PUSH2",
-    "find_name": "__exit"
+    "find_name": "__jal_9cd6033e50cb17c22599c5953cc112bd48f7aa351b18cb018ed137da922ddc92__handler"
   },
   {
     "opcode": "JUMP",
-    "comment": "jal"
+    "comment": "jal to handler"
   },
   {
     "opcode": "JUMPDEST",
     "name": ".test_name"
+  },
+  {
+    "opcode": "JUMPDEST",
+    "name": "__jal_b5bc49a903930ca06a974b9a2c0b35ed46fca85f32f8f1d3737046e343f37da6__handler"
+  },
+  {
+    "opcode": "PUSH2",
+    "find_name": ".prname_next",
+    "relative_to_opcode": 60
+  },
+  {
+    "opcode": "JUMP",
+    "comment": "JAL zero to .prname_next"
+  },
+  {
+    "opcode": "JUMPDEST",
+    "name": "__jal_9cd6033e50cb17c22599c5953cc112bd48f7aa351b18cb018ed137da922ddc92__handler"
+  },
+  {
+    "opcode": "PUSH2",
+    "find_name": "__exit",
+    "relative_to_opcode": 161
+  },
+  {
+    "opcode": "JUMP",
+    "comment": "JAL zero to __exit"
   },
   {
     "opcode": "JUMPDEST",
@@ -687,7 +713,7 @@ Unknown .balign,4
 { opcode: 'MLOAD', comment: 'read from a0', pc: 201 }
 { opcode: 'ADD', comment: 'ADDI', pc: 235 }
 { opcode: 'MSTORE', comment: 'store to a0', pc: 239 }
-{ opcode: 'JUMP', comment: 'jal', pc: 243 }
+{ opcode: 'JUMP', comment: 'jal to handler', pc: 243 }
 { opcode: 'JUMPDEST', name: '.prname_done', pc: 244 }
 { opcode: 'ADD', comment: 'ADDI', pc: 280 }
 { opcode: 'MSTORE', comment: 'store to a1', pc: 284 }
@@ -748,11 +774,23 @@ Unknown .balign,4
 { opcode: 'ADD', pc: 831 }
 { opcode: 'SWAP1', pc: 832 }
 { opcode: 'MSTORE', comment: 'sw', pc: 833 }
-{ opcode: 'JUMP', comment: 'jal', pc: 837 }
+{ opcode: 'JUMP', comment: 'jal to handler', pc: 837 }
 { opcode: 'JUMPDEST', name: '.test_name', pc: 838 }
-{ opcode: 'JUMPDEST', name: '__exit', pc: 839 }
-{ opcode: 'RETURN', pc: 846 }
-Final bytecode: 610004565b6300010000610140526101405161034601610140526300000000610180525b610140517f0000000000000000000000000000000000000000000000000000000000000002185160f81c60000b63ffffffff16610160526101605163ffffffff16600063ffffffff16146100f457610180517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101605160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000000010161014052610023565b60007f000000000000000000000000000000000000000000000000000000000000002e0161016052610180517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101605160e01b019052610180517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101605160e01b01905263000000006101405260007f000000000000000000000000000000000000000000000000000000000000004f016101605260007f000000000000000000000000000000000000000000000000000000000000004b016101805260007f000000000000000000000000000000000000000000000000000000000000000a016101a052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101605160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101805160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101a05160e01b019052610347565b5b600060006000f3
+{
+  opcode: 'JUMPDEST',
+  name: '__jal_b5bc49a903930ca06a974b9a2c0b35ed46fca85f32f8f1d3737046e343f37da6__handler',
+  pc: 839
+}
+{ opcode: 'JUMP', comment: 'JAL zero to .prname_next', pc: 843 }
+{
+  opcode: 'JUMPDEST',
+  name: '__jal_9cd6033e50cb17c22599c5953cc112bd48f7aa351b18cb018ed137da922ddc92__handler',
+  pc: 844
+}
+{ opcode: 'JUMP', comment: 'JAL zero to __exit', pc: 848 }
+{ opcode: 'JUMPDEST', name: '__exit', pc: 849 }
+{ opcode: 'RETURN', pc: 856 }
+Final bytecode: 610004565b6300010000610140526101405161034601610140526300000000610180525b610140517f0000000000000000000000000000000000000000000000000000000000000002185160f81c60000b63ffffffff16610160526101605163ffffffff16600063ffffffff16146100f457610180517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101605160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000000010161014052610347565b60007f000000000000000000000000000000000000000000000000000000000000002e0161016052610180517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101605160e01b019052610180517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101605160e01b01905263000000006101405260007f000000000000000000000000000000000000000000000000000000000000004f016101605260007f000000000000000000000000000000000000000000000000000000000000004b016101805260007f000000000000000000000000000000000000000000000000000000000000000a016101a052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101605160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101805160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101a05160e01b01905261034c565b5b610023565b610351565b600060006000f3
 Data section: [109,105,115,0,108,0,0,0,0]
 Data labels: {".test_name":0}
 Running in EVM:
@@ -1294,25 +1332,32 @@ pc: 341 - Opcode: "MSTORE"- mem length: 66432 - 3
 341	MSTORE		 	  ;; # sw
 [DEBUG] output = �                           
 pc: 342 - Opcode: "PUSH2"- mem length: 66432 - 3
-342	PUSH2	0347	 ;; __exit	 
+342	PUSH2	034C	 ;; __jal_9cd6033e50cb17c22599c5953cc112bd48f7aa351b18cb018ed137da922ddc92__handler	 
 pc: 345 - Opcode: "JUMP"- mem length: 66432 - 8
-- stack 0: 0x347
-345	JUMP		 	  ;; # jal
-pc: 347 - Opcode: "JUMPDEST"- mem length: 66432 - 1
-347	JUMPDEST		 ;; __exit	 
-pc: 348 - Opcode: "PUSH1"- mem length: 66432 - 3
-348	PUSH1	00	 	 
-pc: 34A - Opcode: "PUSH1"- mem length: 66432 - 3
+- stack 0: 0x34C
+345	JUMP		 	  ;; # jal to handler
+pc: 34C - Opcode: "JUMPDEST"- mem length: 66432 - 1
+34C	JUMPDEST		 ;; __jal_9cd6033e50cb17c22599c5953cc112bd48f7aa351b18cb018ed137da922ddc92__handler	 
+pc: 34D - Opcode: "PUSH2"- mem length: 66432 - 3
+34D	PUSH2	0351	 ;; __exit	 
+pc: 350 - Opcode: "JUMP"- mem length: 66432 - 8
+- stack 0: 0x351
+350	JUMP		 	  ;; # JAL zero to __exit
+pc: 351 - Opcode: "JUMPDEST"- mem length: 66432 - 1
+351	JUMPDEST		 ;; __exit	 
+pc: 352 - Opcode: "PUSH1"- mem length: 66432 - 3
+352	PUSH1	00	 	 
+pc: 354 - Opcode: "PUSH1"- mem length: 66432 - 3
 - stack 0: 0x0
-34A	PUSH1	00	 	 
-pc: 34C - Opcode: "PUSH1"- mem length: 66432 - 3
+354	PUSH1	00	 	 
+pc: 356 - Opcode: "PUSH1"- mem length: 66432 - 3
 - stack 1: 0x0
 - stack 0: 0x0
-34C	PUSH1	00	 	 
-pc: 34E - Opcode: "RETURN"- mem length: 66432 - 0
+356	PUSH1	00	 	 
+pc: 358 - Opcode: "RETURN"- mem length: 66432 - 0
 - stack 2: 0x0
 - stack 1: 0x0
 - stack 0: 0x0
-34E	RETURN		 	 
+358	RETURN		 	 
 Returned: 
-gasUsed : 15088
+gasUsed : 15100

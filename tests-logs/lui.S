@@ -1,13 +1,13 @@
 Unknown .text
 Unknown .global,main
 Unknown .global,__exit
-/root/bpf-to-evm/load.ts:118
+/root/bpf-to-evm/load.ts:127
       throw new Error("Unknown register " + regName);
             ^
 Error: Unknown register 1
-    at readRegister (/root/bpf-to-evm/load.ts:118:13)
-    at emitSra (/root/bpf-to-evm/load.ts:223:3)
-    at Object.<anonymous> (/root/bpf-to-evm/load.ts:685:7)
+    at readRegister (/root/bpf-to-evm/load.ts:127:13)
+    at emitSra (/root/bpf-to-evm/load.ts:232:3)
+    at Object.<anonymous> (/root/bpf-to-evm/load.ts:693:7)
     at Module._compile (node:internal/modules/cjs/loader:1099:14)
     at Module.m._compile (/root/bpf-to-evm/node_modules/ts-node/src/index.ts:1618:23)
     at Module._extensions..js (node:internal/modules/cjs/loader:1153:10)

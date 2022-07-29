@@ -242,11 +242,11 @@ Unknown .balign,4
   },
   {
     "opcode": "PUSH2",
-    "find_name": ".prname_next"
+    "find_name": "__jal_5585b0e34d06aa4362850a7d56ea0d1c49d5ed2139f0f879ab2efc51b8174bdb__handler"
   },
   {
     "opcode": "JUMP",
-    "comment": "jal"
+    "comment": "jal to handler"
   },
   {
     "opcode": "JUMPDEST",
@@ -419,11 +419,15 @@ Unknown .balign,4
   },
   {
     "opcode": "PUSH2",
-    "find_name": "target_2"
+    "find_name": "__jal_71595174154b066fa025b2f55d504bb053f428e4933c16fd243bc0ecb0f75554__handler"
   },
   {
     "opcode": "JUMP",
-    "comment": "jal"
+    "comment": "jal to handler"
+  },
+  {
+    "opcode": "JUMPDEST",
+    "name": "__jal_71595174154b066fa025b2f55d504bb053f428e4933c16fd243bc0ecb0f75554__return"
   },
   {
     "opcode": "PUSH2",
@@ -528,11 +532,15 @@ Unknown .balign,4
   },
   {
     "opcode": "PUSH2",
-    "find_name": "1f"
+    "find_name": "__jal_aff15d98f712341cbb326fe089d216fe549406ce172ba3ab813cd32a0fd8149f__handler"
   },
   {
     "opcode": "JUMP",
-    "comment": "jal"
+    "comment": "jal to handler"
+  },
+  {
+    "opcode": "JUMPDEST",
+    "name": "__jal_aff15d98f712341cbb326fe089d216fe549406ce172ba3ab813cd32a0fd8149f__return"
   },
   {
     "opcode": "PUSH2",
@@ -1462,15 +1470,75 @@ Unknown .balign,4
   },
   {
     "opcode": "PUSH2",
-    "find_name": "__exit"
+    "find_name": "__jal_0defa51f2b982f1d06a350e9468612134073041c6cf46191811f6dca5df76e4a__handler"
   },
   {
     "opcode": "JUMP",
-    "comment": "jal"
+    "comment": "jal to handler"
   },
   {
     "opcode": "JUMPDEST",
     "name": ".test_name"
+  },
+  {
+    "opcode": "JUMPDEST",
+    "name": "__jal_5585b0e34d06aa4362850a7d56ea0d1c49d5ed2139f0f879ab2efc51b8174bdb__handler"
+  },
+  {
+    "opcode": "PUSH2",
+    "find_name": ".prname_next",
+    "relative_to_opcode": 60
+  },
+  {
+    "opcode": "JUMP",
+    "comment": "JAL zero to .prname_next"
+  },
+  {
+    "opcode": "JUMPDEST",
+    "name": "__jal_71595174154b066fa025b2f55d504bb053f428e4933c16fd243bc0ecb0f75554__handler"
+  },
+  {
+    "opcode": "PUSH2",
+    "find_name": "__jal_71595174154b066fa025b2f55d504bb053f428e4933c16fd243bc0ecb0f75554__return"
+  },
+  {
+    "opcode": "PUSH2",
+    "find_name": "target_2",
+    "relative_to_opcode": 106
+  },
+  {
+    "opcode": "JUMP",
+    "comment": "JAL ra to target_2"
+  },
+  {
+    "opcode": "JUMPDEST",
+    "name": "__jal_aff15d98f712341cbb326fe089d216fe549406ce172ba3ab813cd32a0fd8149f__handler"
+  },
+  {
+    "opcode": "PUSH2",
+    "find_name": "__jal_aff15d98f712341cbb326fe089d216fe549406ce172ba3ab813cd32a0fd8149f__return"
+  },
+  {
+    "opcode": "PUSH2",
+    "find_name": "1f",
+    "relative_to_opcode": 134
+  },
+  {
+    "opcode": "JUMP",
+    "comment": "JAL ra to 1f"
+  },
+  {
+    "opcode": "JUMPDEST",
+    "name": "__jal_0defa51f2b982f1d06a350e9468612134073041c6cf46191811f6dca5df76e4a__handler"
+  },
+  {
+    "opcode": "PUSH2",
+    "find_name": "__exit",
+    "relative_to_opcode": 376
+  },
+  {
+    "opcode": "JUMP",
+    "comment": "JAL zero to __exit"
   },
   {
     "opcode": "JUMPDEST",
@@ -1525,7 +1593,7 @@ Unknown .balign,4
 { opcode: 'MLOAD', comment: 'read from a0', pc: 201 }
 { opcode: 'ADD', comment: 'ADDI', pc: 235 }
 { opcode: 'MSTORE', comment: 'store to a0', pc: 239 }
-{ opcode: 'JUMP', comment: 'jal', pc: 243 }
+{ opcode: 'JUMP', comment: 'jal to handler', pc: 243 }
 { opcode: 'JUMPDEST', name: '.prname_done', pc: 244 }
 { opcode: 'ADD', comment: 'ADDI', pc: 280 }
 { opcode: 'MSTORE', comment: 'store to a1', pc: 284 }
@@ -1553,212 +1621,200 @@ Unknown .balign,4
 { opcode: 'MSTORE', comment: 'store to x28', pc: 462 }
 { opcode: 'MSTORE', comment: 'store to ra', pc: 471 }
 { opcode: 'JUMPDEST', name: 'linkaddr_2', pc: 472 }
-{ opcode: 'JUMP', comment: 'jal', pc: 476 }
-{ opcode: 'JUMP', comment: 'j', pc: 480 }
-{ opcode: 'JUMPDEST', name: 'target_2', pc: 481 }
-{ opcode: 'MSTORE', comment: 'store to x2', pc: 488 }
-{ opcode: 'MLOAD', comment: 'read from x2', pc: 492 }
-{ opcode: 'ADD', comment: 'ADDI', pc: 526 }
-{ opcode: 'MSTORE', comment: 'store to x2', pc: 530 }
-{ opcode: 'MLOAD', comment: 'read from x2', pc: 534 }
-{ opcode: 'MLOAD', comment: 'read from ra', pc: 538 }
-{ opcode: 'SUB', pc: 539 }
-{ opcode: 'AND', comment: 'mask to 32 bits', pc: 545 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 549 }
-{ opcode: 'JUMPDEST', name: 'test_3', pc: 550 }
-{ opcode: 'MSTORE', comment: 'store to x2', pc: 559 }
-{ opcode: 'JUMP', comment: 'jal', pc: 563 }
-{ opcode: 'MLOAD', comment: 'read from x2', pc: 567 }
-{ opcode: 'ADD', comment: 'ADDI', pc: 601 }
-{ opcode: 'MSTORE', comment: 'store to x2', pc: 605 }
-{ opcode: 'MLOAD', comment: 'read from x2', pc: 609 }
-{ opcode: 'ADD', comment: 'ADDI', pc: 643 }
-{ opcode: 'MSTORE', comment: 'store to x2', pc: 647 }
-{ opcode: 'MLOAD', comment: 'read from x2', pc: 651 }
-{ opcode: 'ADD', comment: 'ADDI', pc: 685 }
-{ opcode: 'MSTORE', comment: 'store to x2', pc: 689 }
-{ opcode: 'MLOAD', comment: 'read from x2', pc: 693 }
-{ opcode: 'ADD', comment: 'ADDI', pc: 727 }
-{ opcode: 'MSTORE', comment: 'store to x2', pc: 731 }
-{ opcode: 'JUMPDEST', name: '1', pc: 732 }
-{ opcode: 'MLOAD', comment: 'read from x2', pc: 736 }
-{ opcode: 'ADD', comment: 'ADDI', pc: 770 }
-{ opcode: 'MSTORE', comment: 'store to x2', pc: 774 }
-{ opcode: 'MLOAD', comment: 'read from x2', pc: 778 }
-{ opcode: 'ADD', comment: 'ADDI', pc: 812 }
-{ opcode: 'MSTORE', comment: 'store to x2', pc: 816 }
-{ opcode: 'MSTORE', comment: 'store to x29', pc: 825 }
-{ opcode: 'MSTORE', comment: 'store to x28', pc: 834 }
-{ opcode: 'MLOAD', comment: 'read from x2', pc: 838 }
-{ opcode: 'MLOAD', comment: 'read from x29', pc: 842 }
-{ opcode: 'SUB', pc: 843 }
-{ opcode: 'AND', comment: 'mask to 32 bits', pc: 849 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 853 }
-{ opcode: 'MLOAD', comment: 'read from x28', pc: 859 }
-{ opcode: 'SUB', pc: 860 }
-{ opcode: 'AND', comment: 'mask to 32 bits', pc: 866 }
-{ opcode: 'JUMPI', comment: 'bne', pc: 870 }
-{ opcode: 'JUMPDEST', name: 'fail', pc: 871 }
-{ opcode: 'MSTORE', comment: 'store to a0', pc: 880 }
-{ opcode: 'ADD', comment: 'ADDI', pc: 916 }
-{ opcode: 'MSTORE', comment: 'store to a1', pc: 920 }
-{ opcode: 'ADD', comment: 'ADDI', pc: 956 }
-{ opcode: 'MSTORE', comment: 'store to a2', pc: 960 }
-{ opcode: 'ADD', comment: 'ADDI', pc: 996 }
-{ opcode: 'MSTORE', comment: 'store to a3', pc: 1000 }
-{ opcode: 'ADD', comment: 'ADDI', pc: 1036 }
-{ opcode: 'MSTORE', comment: 'store to a4', pc: 1040 }
-{ opcode: 'MLOAD', comment: 'read from a0', pc: 1044 }
-{ opcode: 'ADD', pc: 1078 }
-{ opcode: 'DUP1', pc: 1079 }
-{ opcode: 'MLOAD', comment: 'fetch', pc: 1080 }
-{ opcode: 'AND', pc: 1114 }
-{ opcode: 'MLOAD', comment: 'read from a1', pc: 1118 }
-{ opcode: 'SHL', pc: 1121 }
-{ opcode: 'ADD', pc: 1122 }
-{ opcode: 'SWAP1', pc: 1123 }
-{ opcode: 'MSTORE', comment: 'sw', pc: 1124 }
-{ opcode: 'MLOAD', comment: 'read from a0', pc: 1128 }
-{ opcode: 'ADD', pc: 1162 }
-{ opcode: 'DUP1', pc: 1163 }
-{ opcode: 'MLOAD', comment: 'fetch', pc: 1164 }
-{ opcode: 'AND', pc: 1198 }
-{ opcode: 'MLOAD', comment: 'read from a2', pc: 1202 }
-{ opcode: 'SHL', pc: 1205 }
-{ opcode: 'ADD', pc: 1206 }
-{ opcode: 'SWAP1', pc: 1207 }
-{ opcode: 'MSTORE', comment: 'sw', pc: 1208 }
-{ opcode: 'MLOAD', comment: 'read from a0', pc: 1212 }
-{ opcode: 'ADD', pc: 1246 }
-{ opcode: 'DUP1', pc: 1247 }
-{ opcode: 'MLOAD', comment: 'fetch', pc: 1248 }
-{ opcode: 'AND', pc: 1282 }
-{ opcode: 'MLOAD', comment: 'read from a2', pc: 1286 }
-{ opcode: 'SHL', pc: 1289 }
-{ opcode: 'ADD', pc: 1290 }
-{ opcode: 'SWAP1', pc: 1291 }
-{ opcode: 'MSTORE', comment: 'sw', pc: 1292 }
-{ opcode: 'MLOAD', comment: 'read from a0', pc: 1296 }
-{ opcode: 'ADD', pc: 1330 }
-{ opcode: 'DUP1', pc: 1331 }
-{ opcode: 'MLOAD', comment: 'fetch', pc: 1332 }
-{ opcode: 'AND', pc: 1366 }
-{ opcode: 'MLOAD', comment: 'read from a3', pc: 1370 }
-{ opcode: 'SHL', pc: 1373 }
-{ opcode: 'ADD', pc: 1374 }
-{ opcode: 'SWAP1', pc: 1375 }
-{ opcode: 'MSTORE', comment: 'sw', pc: 1376 }
-{ opcode: 'MLOAD', comment: 'read from a0', pc: 1380 }
-{ opcode: 'ADD', pc: 1414 }
-{ opcode: 'DUP1', pc: 1415 }
-{ opcode: 'MLOAD', comment: 'fetch', pc: 1416 }
-{ opcode: 'AND', pc: 1450 }
-{ opcode: 'MLOAD', comment: 'read from a2', pc: 1454 }
-{ opcode: 'SHL', pc: 1457 }
-{ opcode: 'ADD', pc: 1458 }
-{ opcode: 'SWAP1', pc: 1459 }
-{ opcode: 'MSTORE', comment: 'sw', pc: 1460 }
-{ opcode: 'MLOAD', comment: 'read from a0', pc: 1464 }
-{ opcode: 'ADD', pc: 1498 }
-{ opcode: 'DUP1', pc: 1499 }
-{ opcode: 'MLOAD', comment: 'fetch', pc: 1500 }
-{ opcode: 'AND', pc: 1534 }
-{ opcode: 'MLOAD', comment: 'read from a4', pc: 1538 }
-{ opcode: 'SHL', pc: 1541 }
-{ opcode: 'ADD', pc: 1542 }
-{ opcode: 'SWAP1', pc: 1543 }
-{ opcode: 'MSTORE', comment: 'sw', pc: 1544 }
-{ opcode: 'INVALID', comment: 'ebreak', pc: 1545 }
-{ opcode: 'JUMPDEST', name: 'pass', pc: 1546 }
-{ opcode: 'MSTORE', comment: 'store to a0', pc: 1555 }
-{ opcode: 'ADD', comment: 'ADDI', pc: 1591 }
-{ opcode: 'MSTORE', comment: 'store to a1', pc: 1595 }
-{ opcode: 'ADD', comment: 'ADDI', pc: 1631 }
-{ opcode: 'MSTORE', comment: 'store to a2', pc: 1635 }
-{ opcode: 'ADD', comment: 'ADDI', pc: 1671 }
-{ opcode: 'MSTORE', comment: 'store to a3', pc: 1675 }
-{ opcode: 'MLOAD', comment: 'read from a0', pc: 1679 }
-{ opcode: 'ADD', pc: 1713 }
-{ opcode: 'DUP1', pc: 1714 }
-{ opcode: 'MLOAD', comment: 'fetch', pc: 1715 }
-{ opcode: 'AND', pc: 1749 }
-{ opcode: 'MLOAD', comment: 'read from a1', pc: 1753 }
-{ opcode: 'SHL', pc: 1756 }
-{ opcode: 'ADD', pc: 1757 }
-{ opcode: 'SWAP1', pc: 1758 }
-{ opcode: 'MSTORE', comment: 'sw', pc: 1759 }
-{ opcode: 'MLOAD', comment: 'read from a0', pc: 1763 }
-{ opcode: 'ADD', pc: 1797 }
-{ opcode: 'DUP1', pc: 1798 }
-{ opcode: 'MLOAD', comment: 'fetch', pc: 1799 }
-{ opcode: 'AND', pc: 1833 }
-{ opcode: 'MLOAD', comment: 'read from a2', pc: 1837 }
-{ opcode: 'SHL', pc: 1840 }
-{ opcode: 'ADD', pc: 1841 }
-{ opcode: 'SWAP1', pc: 1842 }
-{ opcode: 'MSTORE', comment: 'sw', pc: 1843 }
-{ opcode: 'MLOAD', comment: 'read from a0', pc: 1847 }
-{ opcode: 'ADD', pc: 1881 }
-{ opcode: 'DUP1', pc: 1882 }
-{ opcode: 'MLOAD', comment: 'fetch', pc: 1883 }
-{ opcode: 'AND', pc: 1917 }
-{ opcode: 'MLOAD', comment: 'read from a3', pc: 1921 }
-{ opcode: 'SHL', pc: 1924 }
-{ opcode: 'ADD', pc: 1925 }
-{ opcode: 'SWAP1', pc: 1926 }
-{ opcode: 'MSTORE', comment: 'sw', pc: 1927 }
-{ opcode: 'JUMP', comment: 'jal', pc: 1931 }
-{ opcode: 'JUMPDEST', name: '.test_name', pc: 1932 }
-{ opcode: 'JUMPDEST', name: '__exit', pc: 1933 }
-{ opcode: 'RETURN', pc: 1940 }
-{ opcode: 'PUSH2', find_name: '1f', pc: 560 }
-{ opcode: 'JUMP', comment: 'jal', pc: 563 }
-{ opcode: 'PUSH2', parameter: '0040', pc: 564 }
-{ opcode: 'MLOAD', comment: 'read from x2', pc: 567 }
+{ opcode: 'JUMP', comment: 'jal to handler', pc: 476 }
 {
-  opcode: 'PUSH32',
-  parameter: '0000000000000000000000000000000000000000000000000000000000000001',
-  comment: 'signextended 1',
-  pc: 568
+  opcode: 'JUMPDEST',
+  name: '__jal_71595174154b066fa025b2f55d504bb053f428e4933c16fd243bc0ecb0f75554__return',
+  pc: 477
 }
-{ opcode: 'ADD', comment: 'ADDI', pc: 601 }
-{ opcode: 'PUSH2', parameter: '0040', pc: 602 }
-{ opcode: 'MSTORE', comment: 'store to x2', pc: 605 }
-{ opcode: 'PUSH2', parameter: '0040', pc: 606 }
-{ opcode: 'MLOAD', comment: 'read from x2', pc: 609 }
+{ opcode: 'JUMP', comment: 'j', pc: 481 }
+{ opcode: 'JUMPDEST', name: 'target_2', pc: 482 }
+{ opcode: 'MSTORE', comment: 'store to x2', pc: 489 }
+{ opcode: 'MLOAD', comment: 'read from x2', pc: 493 }
+{ opcode: 'ADD', comment: 'ADDI', pc: 527 }
+{ opcode: 'MSTORE', comment: 'store to x2', pc: 531 }
+{ opcode: 'MLOAD', comment: 'read from x2', pc: 535 }
+{ opcode: 'MLOAD', comment: 'read from ra', pc: 539 }
+{ opcode: 'SUB', pc: 540 }
+{ opcode: 'AND', comment: 'mask to 32 bits', pc: 546 }
+{ opcode: 'JUMPI', comment: 'bne', pc: 550 }
+{ opcode: 'JUMPDEST', name: 'test_3', pc: 551 }
+{ opcode: 'MSTORE', comment: 'store to x2', pc: 560 }
+{ opcode: 'JUMP', comment: 'jal to handler', pc: 564 }
 {
-  opcode: 'PUSH32',
-  parameter: '0000000000000000000000000000000000000000000000000000000000000001',
-  comment: 'signextended 1',
-  pc: 610
+  opcode: 'JUMPDEST',
+  name: '__jal_aff15d98f712341cbb326fe089d216fe549406ce172ba3ab813cd32a0fd8149f__return',
+  pc: 565
 }
-{ opcode: 'ADD', comment: 'ADDI', pc: 643 }
-{ opcode: 'PUSH2', parameter: '0040', pc: 644 }
-{ opcode: 'MSTORE', comment: 'store to x2', pc: 647 }
-{ opcode: 'PUSH2', parameter: '0040', pc: 648 }
-{ opcode: 'MLOAD', comment: 'read from x2', pc: 651 }
+{ opcode: 'MLOAD', comment: 'read from x2', pc: 569 }
+{ opcode: 'ADD', comment: 'ADDI', pc: 603 }
+{ opcode: 'MSTORE', comment: 'store to x2', pc: 607 }
+{ opcode: 'MLOAD', comment: 'read from x2', pc: 611 }
+{ opcode: 'ADD', comment: 'ADDI', pc: 645 }
+{ opcode: 'MSTORE', comment: 'store to x2', pc: 649 }
+{ opcode: 'MLOAD', comment: 'read from x2', pc: 653 }
+{ opcode: 'ADD', comment: 'ADDI', pc: 687 }
+{ opcode: 'MSTORE', comment: 'store to x2', pc: 691 }
+{ opcode: 'MLOAD', comment: 'read from x2', pc: 695 }
+{ opcode: 'ADD', comment: 'ADDI', pc: 729 }
+{ opcode: 'MSTORE', comment: 'store to x2', pc: 733 }
+{ opcode: 'JUMPDEST', name: '1', pc: 734 }
+{ opcode: 'MLOAD', comment: 'read from x2', pc: 738 }
+{ opcode: 'ADD', comment: 'ADDI', pc: 772 }
+{ opcode: 'MSTORE', comment: 'store to x2', pc: 776 }
+{ opcode: 'MLOAD', comment: 'read from x2', pc: 780 }
+{ opcode: 'ADD', comment: 'ADDI', pc: 814 }
+{ opcode: 'MSTORE', comment: 'store to x2', pc: 818 }
+{ opcode: 'MSTORE', comment: 'store to x29', pc: 827 }
+{ opcode: 'MSTORE', comment: 'store to x28', pc: 836 }
+{ opcode: 'MLOAD', comment: 'read from x2', pc: 840 }
+{ opcode: 'MLOAD', comment: 'read from x29', pc: 844 }
+{ opcode: 'SUB', pc: 845 }
+{ opcode: 'AND', comment: 'mask to 32 bits', pc: 851 }
+{ opcode: 'JUMPI', comment: 'bne', pc: 855 }
+{ opcode: 'MLOAD', comment: 'read from x28', pc: 861 }
+{ opcode: 'SUB', pc: 862 }
+{ opcode: 'AND', comment: 'mask to 32 bits', pc: 868 }
+{ opcode: 'JUMPI', comment: 'bne', pc: 872 }
+{ opcode: 'JUMPDEST', name: 'fail', pc: 873 }
+{ opcode: 'MSTORE', comment: 'store to a0', pc: 882 }
+{ opcode: 'ADD', comment: 'ADDI', pc: 918 }
+{ opcode: 'MSTORE', comment: 'store to a1', pc: 922 }
+{ opcode: 'ADD', comment: 'ADDI', pc: 958 }
+{ opcode: 'MSTORE', comment: 'store to a2', pc: 962 }
+{ opcode: 'ADD', comment: 'ADDI', pc: 998 }
+{ opcode: 'MSTORE', comment: 'store to a3', pc: 1002 }
+{ opcode: 'ADD', comment: 'ADDI', pc: 1038 }
+{ opcode: 'MSTORE', comment: 'store to a4', pc: 1042 }
+{ opcode: 'MLOAD', comment: 'read from a0', pc: 1046 }
+{ opcode: 'ADD', pc: 1080 }
+{ opcode: 'DUP1', pc: 1081 }
+{ opcode: 'MLOAD', comment: 'fetch', pc: 1082 }
+{ opcode: 'AND', pc: 1116 }
+{ opcode: 'MLOAD', comment: 'read from a1', pc: 1120 }
+{ opcode: 'SHL', pc: 1123 }
+{ opcode: 'ADD', pc: 1124 }
+{ opcode: 'SWAP1', pc: 1125 }
+{ opcode: 'MSTORE', comment: 'sw', pc: 1126 }
+{ opcode: 'MLOAD', comment: 'read from a0', pc: 1130 }
+{ opcode: 'ADD', pc: 1164 }
+{ opcode: 'DUP1', pc: 1165 }
+{ opcode: 'MLOAD', comment: 'fetch', pc: 1166 }
+{ opcode: 'AND', pc: 1200 }
+{ opcode: 'MLOAD', comment: 'read from a2', pc: 1204 }
+{ opcode: 'SHL', pc: 1207 }
+{ opcode: 'ADD', pc: 1208 }
+{ opcode: 'SWAP1', pc: 1209 }
+{ opcode: 'MSTORE', comment: 'sw', pc: 1210 }
+{ opcode: 'MLOAD', comment: 'read from a0', pc: 1214 }
+{ opcode: 'ADD', pc: 1248 }
+{ opcode: 'DUP1', pc: 1249 }
+{ opcode: 'MLOAD', comment: 'fetch', pc: 1250 }
+{ opcode: 'AND', pc: 1284 }
+{ opcode: 'MLOAD', comment: 'read from a2', pc: 1288 }
+{ opcode: 'SHL', pc: 1291 }
+{ opcode: 'ADD', pc: 1292 }
+{ opcode: 'SWAP1', pc: 1293 }
+{ opcode: 'MSTORE', comment: 'sw', pc: 1294 }
+{ opcode: 'MLOAD', comment: 'read from a0', pc: 1298 }
+{ opcode: 'ADD', pc: 1332 }
+{ opcode: 'DUP1', pc: 1333 }
+{ opcode: 'MLOAD', comment: 'fetch', pc: 1334 }
+{ opcode: 'AND', pc: 1368 }
+{ opcode: 'MLOAD', comment: 'read from a3', pc: 1372 }
+{ opcode: 'SHL', pc: 1375 }
+{ opcode: 'ADD', pc: 1376 }
+{ opcode: 'SWAP1', pc: 1377 }
+{ opcode: 'MSTORE', comment: 'sw', pc: 1378 }
+{ opcode: 'MLOAD', comment: 'read from a0', pc: 1382 }
+{ opcode: 'ADD', pc: 1416 }
+{ opcode: 'DUP1', pc: 1417 }
+{ opcode: 'MLOAD', comment: 'fetch', pc: 1418 }
+{ opcode: 'AND', pc: 1452 }
+{ opcode: 'MLOAD', comment: 'read from a2', pc: 1456 }
+{ opcode: 'SHL', pc: 1459 }
+{ opcode: 'ADD', pc: 1460 }
+{ opcode: 'SWAP1', pc: 1461 }
+{ opcode: 'MSTORE', comment: 'sw', pc: 1462 }
+{ opcode: 'MLOAD', comment: 'read from a0', pc: 1466 }
+{ opcode: 'ADD', pc: 1500 }
+{ opcode: 'DUP1', pc: 1501 }
+{ opcode: 'MLOAD', comment: 'fetch', pc: 1502 }
+{ opcode: 'AND', pc: 1536 }
+{ opcode: 'MLOAD', comment: 'read from a4', pc: 1540 }
+{ opcode: 'SHL', pc: 1543 }
+{ opcode: 'ADD', pc: 1544 }
+{ opcode: 'SWAP1', pc: 1545 }
+{ opcode: 'MSTORE', comment: 'sw', pc: 1546 }
+{ opcode: 'INVALID', comment: 'ebreak', pc: 1547 }
+{ opcode: 'JUMPDEST', name: 'pass', pc: 1548 }
+{ opcode: 'MSTORE', comment: 'store to a0', pc: 1557 }
+{ opcode: 'ADD', comment: 'ADDI', pc: 1593 }
+{ opcode: 'MSTORE', comment: 'store to a1', pc: 1597 }
+{ opcode: 'ADD', comment: 'ADDI', pc: 1633 }
+{ opcode: 'MSTORE', comment: 'store to a2', pc: 1637 }
+{ opcode: 'ADD', comment: 'ADDI', pc: 1673 }
+{ opcode: 'MSTORE', comment: 'store to a3', pc: 1677 }
+{ opcode: 'MLOAD', comment: 'read from a0', pc: 1681 }
+{ opcode: 'ADD', pc: 1715 }
+{ opcode: 'DUP1', pc: 1716 }
+{ opcode: 'MLOAD', comment: 'fetch', pc: 1717 }
+{ opcode: 'AND', pc: 1751 }
+{ opcode: 'MLOAD', comment: 'read from a1', pc: 1755 }
+{ opcode: 'SHL', pc: 1758 }
+{ opcode: 'ADD', pc: 1759 }
+{ opcode: 'SWAP1', pc: 1760 }
+{ opcode: 'MSTORE', comment: 'sw', pc: 1761 }
+{ opcode: 'MLOAD', comment: 'read from a0', pc: 1765 }
+{ opcode: 'ADD', pc: 1799 }
+{ opcode: 'DUP1', pc: 1800 }
+{ opcode: 'MLOAD', comment: 'fetch', pc: 1801 }
+{ opcode: 'AND', pc: 1835 }
+{ opcode: 'MLOAD', comment: 'read from a2', pc: 1839 }
+{ opcode: 'SHL', pc: 1842 }
+{ opcode: 'ADD', pc: 1843 }
+{ opcode: 'SWAP1', pc: 1844 }
+{ opcode: 'MSTORE', comment: 'sw', pc: 1845 }
+{ opcode: 'MLOAD', comment: 'read from a0', pc: 1849 }
+{ opcode: 'ADD', pc: 1883 }
+{ opcode: 'DUP1', pc: 1884 }
+{ opcode: 'MLOAD', comment: 'fetch', pc: 1885 }
+{ opcode: 'AND', pc: 1919 }
+{ opcode: 'MLOAD', comment: 'read from a3', pc: 1923 }
+{ opcode: 'SHL', pc: 1926 }
+{ opcode: 'ADD', pc: 1927 }
+{ opcode: 'SWAP1', pc: 1928 }
+{ opcode: 'MSTORE', comment: 'sw', pc: 1929 }
+{ opcode: 'JUMP', comment: 'jal to handler', pc: 1933 }
+{ opcode: 'JUMPDEST', name: '.test_name', pc: 1934 }
 {
-  opcode: 'PUSH32',
-  parameter: '0000000000000000000000000000000000000000000000000000000000000001',
-  comment: 'signextended 1',
-  pc: 652
+  opcode: 'JUMPDEST',
+  name: '__jal_5585b0e34d06aa4362850a7d56ea0d1c49d5ed2139f0f879ab2efc51b8174bdb__handler',
+  pc: 1935
 }
-{ opcode: 'ADD', comment: 'ADDI', pc: 685 }
-{ opcode: 'PUSH2', parameter: '0040', pc: 686 }
-{ opcode: 'MSTORE', comment: 'store to x2', pc: 689 }
-{ opcode: 'PUSH2', parameter: '0040', pc: 690 }
-{ opcode: 'MLOAD', comment: 'read from x2', pc: 693 }
+{ opcode: 'JUMP', comment: 'JAL zero to .prname_next', pc: 1939 }
 {
-  opcode: 'PUSH32',
-  parameter: '0000000000000000000000000000000000000000000000000000000000000001',
-  comment: 'signextended 1',
-  pc: 694
+  opcode: 'JUMPDEST',
+  name: '__jal_71595174154b066fa025b2f55d504bb053f428e4933c16fd243bc0ecb0f75554__handler',
+  pc: 1940
 }
-{ opcode: 'ADD', comment: 'ADDI', pc: 727 }
-{ opcode: 'PUSH2', parameter: '0040', pc: 728 }
-{ opcode: 'MSTORE', comment: 'store to x2', pc: 731 }
-{ opcode: 'JUMPDEST', name: '1', pc: 732 }
-Final bytecode: 610004565b6300010000610140526101405161078c01610140526300000000610180525b610140517f0000000000000000000000000000000000000000000000000000000000000002185160f81c60000b63ffffffff16610160526101605163ffffffff16600063ffffffff16146100f457610180517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101605160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000000010161014052610023565b60007f000000000000000000000000000000000000000000000000000000000000002e0161016052610180517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101605160e01b019052610180517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101605160e01b0190525b6300000002610380526300000000610020525b6101e156610367565b6101d861004052610040517f0000000000000000000000000000000000000000000000000000000000000004016100405261004051610020510363ffffffff16610367575b6300000001610040526102dc56610040517f00000000000000000000000000000000000000000000000000000000000000010161004052610040517f00000000000000000000000000000000000000000000000000000000000000010161004052610040517f00000000000000000000000000000000000000000000000000000000000000010161004052610040517f000000000000000000000000000000000000000000000000000000000000000101610040525b610040517f00000000000000000000000000000000000000000000000000000000000000010161004052610040517f0000000000000000000000000000000000000000000000000000000000000001016100405263000000036103a052630000000361038052610040516103a0510363ffffffff16610367576000610380510363ffffffff1661060a575b63000000006101405260007f0000000000000000000000000000000000000000000000000000000000000045016101605260007f0000000000000000000000000000000000000000000000000000000000000052016101805260007f000000000000000000000000000000000000000000000000000000000000004f016101a05260007f000000000000000000000000000000000000000000000000000000000000000a016101c052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101605160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101805160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101805160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101a05160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101805160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101c05160e01b019052fe5b63000000006101405260007f000000000000000000000000000000000000000000000000000000000000004f016101605260007f000000000000000000000000000000000000000000000000000000000000004b016101805260007f000000000000000000000000000000000000000000000000000000000000000a016101a052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101605160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101805160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101a05160e01b01905261078d565b5b600060006000f3
+{ opcode: 'JUMP', comment: 'JAL ra to target_2', pc: 1947 }
+{
+  opcode: 'JUMPDEST',
+  name: '__jal_aff15d98f712341cbb326fe089d216fe549406ce172ba3ab813cd32a0fd8149f__handler',
+  pc: 1948
+}
+{ opcode: 'JUMP', comment: 'JAL ra to 1f', pc: 1955 }
+{
+  opcode: 'JUMPDEST',
+  name: '__jal_0defa51f2b982f1d06a350e9468612134073041c6cf46191811f6dca5df76e4a__handler',
+  pc: 1956
+}
+{ opcode: 'JUMP', comment: 'JAL zero to __exit', pc: 1960 }
+{ opcode: 'JUMPDEST', name: '__exit', pc: 1961 }
+{ opcode: 'RETURN', pc: 1968 }
+Searching forwards...
+Final bytecode: 610004565b6300010000610140526101405161078e01610140526300000000610180525b610140517f0000000000000000000000000000000000000000000000000000000000000002185160f81c60000b63ffffffff16610160526101605163ffffffff16600063ffffffff16146100f457610180517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101605160e01b019052610140517f0000000000000000000000000000000000000000000000000000000000000001016101405261078f565b60007f000000000000000000000000000000000000000000000000000000000000002e0161016052610180517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101605160e01b019052610180517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101605160e01b0190525b6300000002610380526300000000610020525b610794565b610369565b6101d861004052610040517f0000000000000000000000000000000000000000000000000000000000000004016100405261004051610020510363ffffffff16610369575b63000000016100405261079c565b610040517f00000000000000000000000000000000000000000000000000000000000000010161004052610040517f00000000000000000000000000000000000000000000000000000000000000010161004052610040517f00000000000000000000000000000000000000000000000000000000000000010161004052610040517f000000000000000000000000000000000000000000000000000000000000000101610040525b610040517f00000000000000000000000000000000000000000000000000000000000000010161004052610040517f0000000000000000000000000000000000000000000000000000000000000001016100405263000000036103a052630000000361038052610040516103a0510363ffffffff16610369576000610380510363ffffffff1661060c575b63000000006101405260007f0000000000000000000000000000000000000000000000000000000000000045016101605260007f0000000000000000000000000000000000000000000000000000000000000052016101805260007f000000000000000000000000000000000000000000000000000000000000004f016101a05260007f000000000000000000000000000000000000000000000000000000000000000a016101c052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101605160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101805160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101805160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101a05160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101805160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101c05160e01b019052fe5b63000000006101405260007f000000000000000000000000000000000000000000000000000000000000004f016101605260007f000000000000000000000000000000000000000000000000000000000000004b016101805260007f000000000000000000000000000000000000000000000000000000000000000a016101a052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101605160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101805160e01b019052610140517f00000000000000000000000000000000000000000000000000000000000004000180517f00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff166101a05160e01b0190526107a4565b5b610023565b6101dd6101e2565b6102356102de565b6107a9565b600060006000f3
 Data section: [108,97,106,0,0]
 Data labels: {".test_name":0}
 Running in EVM:
@@ -1787,19 +1843,19 @@ pc: 11 - Opcode: "MLOAD"- mem length: 352 - 3
 [MEM LOAD] from 0x140
 pc: 12 - Opcode: "PUSH2"- mem length: 352 - 3
 - stack 0: 0x10000
-12	PUSH2	078C	 ;; .test_name	 
+12	PUSH2	078E	 ;; .test_name	 
 pc: 15 - Opcode: "ADD"- mem length: 352 - 3
 - stack 1: 0x10000
-- stack 0: 0x78C
+- stack 0: 0x78E
 15	ADD		 	  ;; # ADDI
 pc: 16 - Opcode: "PUSH2"- mem length: 352 - 3
-- stack 0: 0x1078C
+- stack 0: 0x1078E
 16	PUSH2	0140	 	 
 pc: 19 - Opcode: "MSTORE"- mem length: 352 - 3
-- stack 1: 0x1078C
+- stack 1: 0x1078E
 - stack 0: 0x140
 19	MSTORE		 	  ;; # store to a0
-[MEM WRITE] 1078c to 0x140
+[MEM WRITE] 1078e to 0x140
 pc: 1A - Opcode: "PUSH4"- mem length: 352 - 3
 1A	PUSH4	00000000	 	  ;; # LUI
 pc: 1F - Opcode: "PUSH2"- mem length: 352 - 3
@@ -1819,16 +1875,16 @@ pc: 27 - Opcode: "MLOAD"- mem length: 416 - 3
 27	MLOAD		 	  ;; # read from a0
 [MEM LOAD] from 0x140
 pc: 28 - Opcode: "PUSH32"- mem length: 416 - 3
-- stack 0: 0x1078C
+- stack 0: 0x1078E
 28	PUSH32	2	 	 
 pc: 49 - Opcode: "XOR"- mem length: 416 - 3
-- stack 1: 0x1078C
+- stack 1: 0x1078E
 - stack 0: 0x2
 49	XOR		 	 
 pc: 4A - Opcode: "MLOAD"- mem length: 416 - 14989
-- stack 0: 0x1078E
+- stack 0: 0x1078C
 4A	MLOAD		 	 
-[MEM LOAD] from 0x1078e
+[MEM LOAD] from 0x1078c
 pc: 4B - Opcode: "PUSH1"- mem length: 67520 - 3
 - stack 0: 0x0
 4B	PUSH1	F8	 	 
@@ -2068,546 +2124,691 @@ pc: 1D7 - Opcode: "MSTORE"- mem length: 67520 - 3
 pc: 1D8 - Opcode: "JUMPDEST"- mem length: 67520 - 1
 1D8	JUMPDEST		 ;; linkaddr_2	 
 pc: 1D9 - Opcode: "PUSH2"- mem length: 67520 - 3
-1D9	PUSH2	01E1	 ;; target_2	 
+1D9	PUSH2	0794	 ;; __jal_71595174154b066fa025b2f55d504bb053f428e4933c16fd243bc0ecb0f75554__handler	 
 pc: 1DC - Opcode: "JUMP"- mem length: 67520 - 8
-- stack 0: 0x1E1
-1DC	JUMP		 	  ;; # jal
-pc: 1E1 - Opcode: "JUMPDEST"- mem length: 67520 - 1
-1E1	JUMPDEST		 ;; target_2	 
-pc: 1E2 - Opcode: "PUSH2"- mem length: 67520 - 3
-1E2	PUSH2	01D8	 ;; linkaddr_2	 
-pc: 1E5 - Opcode: "PUSH2"- mem length: 67520 - 3
+- stack 0: 0x794
+1DC	JUMP		 	  ;; # jal to handler
+pc: 794 - Opcode: "JUMPDEST"- mem length: 67520 - 1
+794	JUMPDEST		 ;; __jal_71595174154b066fa025b2f55d504bb053f428e4933c16fd243bc0ecb0f75554__handler	 
+pc: 795 - Opcode: "PUSH2"- mem length: 67520 - 3
+795	PUSH2	01DD	 ;; __jal_71595174154b066fa025b2f55d504bb053f428e4933c16fd243bc0ecb0f75554__return	 
+pc: 798 - Opcode: "PUSH2"- mem length: 67520 - 3
+- stack 0: 0x1DD
+798	PUSH2	01E2	 ;; target_2	 
+pc: 79B - Opcode: "JUMP"- mem length: 67520 - 8
+- stack 1: 0x1DD
+- stack 0: 0x1E2
+79B	JUMP		 	  ;; # JAL ra to target_2
+pc: 1E2 - Opcode: "JUMPDEST"- mem length: 67520 - 1
+- stack 0: 0x1DD
+1E2	JUMPDEST		 ;; target_2	 
+pc: 1E3 - Opcode: "PUSH2"- mem length: 67520 - 3
+- stack 0: 0x1DD
+1E3	PUSH2	01D8	 ;; linkaddr_2	 
+pc: 1E6 - Opcode: "PUSH2"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x1D8
-1E5	PUSH2	0040	 	 
-pc: 1E8 - Opcode: "MSTORE"- mem length: 67520 - 3
+1E6	PUSH2	0040	 	 
+pc: 1E9 - Opcode: "MSTORE"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x1D8
 - stack 0: 0x40
-1E8	MSTORE		 	  ;; # store to x2
+1E9	MSTORE		 	  ;; # store to x2
 [MEM WRITE] 1d8 to 0x40
-pc: 1E9 - Opcode: "PUSH2"- mem length: 67520 - 3
-1E9	PUSH2	0040	 	 
-pc: 1EC - Opcode: "MLOAD"- mem length: 67520 - 3
+pc: 1EA - Opcode: "PUSH2"- mem length: 67520 - 3
+- stack 0: 0x1DD
+1EA	PUSH2	0040	 	 
+pc: 1ED - Opcode: "MLOAD"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x40
-1EC	MLOAD		 	  ;; # read from x2
+1ED	MLOAD		 	  ;; # read from x2
 [MEM LOAD] from 0x40
-pc: 1ED - Opcode: "PUSH32"- mem length: 67520 - 3
+pc: 1EE - Opcode: "PUSH32"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x1D8
-1ED	PUSH32	0000000000000000000000000000000000000000000000000000000000000004	 	  ;; # signextended 4
-pc: 20E - Opcode: "ADD"- mem length: 67520 - 3
+1EE	PUSH32	0000000000000000000000000000000000000000000000000000000000000004	 	  ;; # signextended 4
+pc: 20F - Opcode: "ADD"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x1D8
 - stack 0: 0x4
-20E	ADD		 	  ;; # ADDI
-pc: 20F - Opcode: "PUSH2"- mem length: 67520 - 3
+20F	ADD		 	  ;; # ADDI
+pc: 210 - Opcode: "PUSH2"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x1DC
-20F	PUSH2	0040	 	 
-pc: 212 - Opcode: "MSTORE"- mem length: 67520 - 3
+210	PUSH2	0040	 	 
+pc: 213 - Opcode: "MSTORE"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x1DC
 - stack 0: 0x40
-212	MSTORE		 	  ;; # store to x2
+213	MSTORE		 	  ;; # store to x2
 [MEM WRITE] 1dc to 0x40
-pc: 213 - Opcode: "PUSH2"- mem length: 67520 - 3
-213	PUSH2	0040	 	 
-pc: 216 - Opcode: "MLOAD"- mem length: 67520 - 3
+pc: 214 - Opcode: "PUSH2"- mem length: 67520 - 3
+- stack 0: 0x1DD
+214	PUSH2	0040	 	 
+pc: 217 - Opcode: "MLOAD"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x40
-216	MLOAD		 	  ;; # read from x2
+217	MLOAD		 	  ;; # read from x2
 [MEM LOAD] from 0x40
-pc: 217 - Opcode: "PUSH2"- mem length: 67520 - 3
+pc: 218 - Opcode: "PUSH2"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x1DC
-217	PUSH2	0020	 	 
-pc: 21A - Opcode: "MLOAD"- mem length: 67520 - 3
+218	PUSH2	0020	 	 
+pc: 21B - Opcode: "MLOAD"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x1DC
 - stack 0: 0x20
-21A	MLOAD		 	  ;; # read from ra
+21B	MLOAD		 	  ;; # read from ra
 [MEM LOAD] from 0x20
-pc: 21B - Opcode: "SUB"- mem length: 67520 - 3
+pc: 21C - Opcode: "SUB"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x1DC
 - stack 0: 0x0
-21B	SUB		 	 
-pc: 21C - Opcode: "PUSH4"- mem length: 67520 - 3
+21C	SUB		 	 
+pc: 21D - Opcode: "PUSH4"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE24
-21C	PUSH4	FFFFFFFF	 	 
-pc: 221 - Opcode: "AND"- mem length: 67520 - 3
+21D	PUSH4	FFFFFFFF	 	 
+pc: 222 - Opcode: "AND"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE24
 - stack 0: 0xFFFFFFFF
-221	AND		 	  ;; # mask to 32 bits
-pc: 222 - Opcode: "PUSH2"- mem length: 67520 - 3
+222	AND		 	  ;; # mask to 32 bits
+pc: 223 - Opcode: "PUSH2"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0xFFFFFE24
-222	PUSH2	0367	 ;; fail	 
-pc: 225 - Opcode: "JUMPI"- mem length: 67520 - 10
+223	PUSH2	0369	 ;; fail	 
+pc: 226 - Opcode: "JUMPI"- mem length: 67520 - 10
+- stack 2: 0x1DD
 - stack 1: 0xFFFFFE24
-- stack 0: 0x367
-225	JUMPI		 	  ;; # bne
-pc: 367 - Opcode: "JUMPDEST"- mem length: 67520 - 1
-367	JUMPDEST		 ;; fail	 
-pc: 368 - Opcode: "PUSH4"- mem length: 67520 - 3
-368	PUSH4	00000000	 	  ;; # LUI
-pc: 36D - Opcode: "PUSH2"- mem length: 67520 - 3
+- stack 0: 0x369
+226	JUMPI		 	  ;; # bne
+pc: 369 - Opcode: "JUMPDEST"- mem length: 67520 - 1
+- stack 0: 0x1DD
+369	JUMPDEST		 ;; fail	 
+pc: 36A - Opcode: "PUSH4"- mem length: 67520 - 3
+- stack 0: 0x1DD
+36A	PUSH4	00000000	 	  ;; # LUI
+pc: 36F - Opcode: "PUSH2"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x0
-36D	PUSH2	0140	 	 
-pc: 370 - Opcode: "MSTORE"- mem length: 67520 - 3
+36F	PUSH2	0140	 	 
+pc: 372 - Opcode: "MSTORE"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x0
 - stack 0: 0x140
-370	MSTORE		 	  ;; # store to a0
+372	MSTORE		 	  ;; # store to a0
 [MEM WRITE] 0 to 0x140
-pc: 371 - Opcode: "PUSH1"- mem length: 67520 - 3
-371	PUSH1	00	 	 
-pc: 373 - Opcode: "PUSH32"- mem length: 67520 - 3
+pc: 373 - Opcode: "PUSH1"- mem length: 67520 - 3
+- stack 0: 0x1DD
+373	PUSH1	00	 	 
+pc: 375 - Opcode: "PUSH32"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x0
-373	PUSH32	0000000000000000000000000000000000000000000000000000000000000045	 	  ;; # signextended 69
-pc: 394 - Opcode: "ADD"- mem length: 67520 - 3
+375	PUSH32	0000000000000000000000000000000000000000000000000000000000000045	 	  ;; # signextended 69
+pc: 396 - Opcode: "ADD"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x0
 - stack 0: 0x45
-394	ADD		 	  ;; # ADDI
-pc: 395 - Opcode: "PUSH2"- mem length: 67520 - 3
+396	ADD		 	  ;; # ADDI
+pc: 397 - Opcode: "PUSH2"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x45
-395	PUSH2	0160	 	 
-pc: 398 - Opcode: "MSTORE"- mem length: 67520 - 3
+397	PUSH2	0160	 	 
+pc: 39A - Opcode: "MSTORE"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x45
 - stack 0: 0x160
-398	MSTORE		 	  ;; # store to a1
+39A	MSTORE		 	  ;; # store to a1
 [MEM WRITE] 45 to 0x160
-pc: 399 - Opcode: "PUSH1"- mem length: 67520 - 3
-399	PUSH1	00	 	 
-pc: 39B - Opcode: "PUSH32"- mem length: 67520 - 3
+pc: 39B - Opcode: "PUSH1"- mem length: 67520 - 3
+- stack 0: 0x1DD
+39B	PUSH1	00	 	 
+pc: 39D - Opcode: "PUSH32"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x0
-39B	PUSH32	0000000000000000000000000000000000000000000000000000000000000052	 	  ;; # signextended 82
-pc: 3BC - Opcode: "ADD"- mem length: 67520 - 3
+39D	PUSH32	0000000000000000000000000000000000000000000000000000000000000052	 	  ;; # signextended 82
+pc: 3BE - Opcode: "ADD"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x0
 - stack 0: 0x52
-3BC	ADD		 	  ;; # ADDI
-pc: 3BD - Opcode: "PUSH2"- mem length: 67520 - 3
+3BE	ADD		 	  ;; # ADDI
+pc: 3BF - Opcode: "PUSH2"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x52
-3BD	PUSH2	0180	 	 
-pc: 3C0 - Opcode: "MSTORE"- mem length: 67520 - 3
+3BF	PUSH2	0180	 	 
+pc: 3C2 - Opcode: "MSTORE"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x52
 - stack 0: 0x180
-3C0	MSTORE		 	  ;; # store to a2
+3C2	MSTORE		 	  ;; # store to a2
 [MEM WRITE] 52 to 0x180
-pc: 3C1 - Opcode: "PUSH1"- mem length: 67520 - 3
-3C1	PUSH1	00	 	 
-pc: 3C3 - Opcode: "PUSH32"- mem length: 67520 - 3
+pc: 3C3 - Opcode: "PUSH1"- mem length: 67520 - 3
+- stack 0: 0x1DD
+3C3	PUSH1	00	 	 
+pc: 3C5 - Opcode: "PUSH32"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x0
-3C3	PUSH32	000000000000000000000000000000000000000000000000000000000000004F	 	  ;; # signextended 79
-pc: 3E4 - Opcode: "ADD"- mem length: 67520 - 3
+3C5	PUSH32	000000000000000000000000000000000000000000000000000000000000004F	 	  ;; # signextended 79
+pc: 3E6 - Opcode: "ADD"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x0
 - stack 0: 0x4F
-3E4	ADD		 	  ;; # ADDI
-pc: 3E5 - Opcode: "PUSH2"- mem length: 67520 - 3
+3E6	ADD		 	  ;; # ADDI
+pc: 3E7 - Opcode: "PUSH2"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x4F
-3E5	PUSH2	01A0	 	 
-pc: 3E8 - Opcode: "MSTORE"- mem length: 67520 - 3
+3E7	PUSH2	01A0	 	 
+pc: 3EA - Opcode: "MSTORE"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x4F
 - stack 0: 0x1A0
-3E8	MSTORE		 	  ;; # store to a3
+3EA	MSTORE		 	  ;; # store to a3
 [MEM WRITE] 4f to 0x1a0
-pc: 3E9 - Opcode: "PUSH1"- mem length: 67520 - 3
-3E9	PUSH1	00	 	 
-pc: 3EB - Opcode: "PUSH32"- mem length: 67520 - 3
+pc: 3EB - Opcode: "PUSH1"- mem length: 67520 - 3
+- stack 0: 0x1DD
+3EB	PUSH1	00	 	 
+pc: 3ED - Opcode: "PUSH32"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x0
-3EB	PUSH32	000000000000000000000000000000000000000000000000000000000000000A	 	  ;; # signextended 10
-pc: 40C - Opcode: "ADD"- mem length: 67520 - 3
+3ED	PUSH32	000000000000000000000000000000000000000000000000000000000000000A	 	  ;; # signextended 10
+pc: 40E - Opcode: "ADD"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x0
 - stack 0: 0xA
-40C	ADD		 	  ;; # ADDI
-pc: 40D - Opcode: "PUSH2"- mem length: 67520 - 3
+40E	ADD		 	  ;; # ADDI
+pc: 40F - Opcode: "PUSH2"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0xA
-40D	PUSH2	01C0	 	 
-pc: 410 - Opcode: "MSTORE"- mem length: 67520 - 3
+40F	PUSH2	01C0	 	 
+pc: 412 - Opcode: "MSTORE"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0xA
 - stack 0: 0x1C0
-410	MSTORE		 	  ;; # store to a4
+412	MSTORE		 	  ;; # store to a4
 [MEM WRITE] a to 0x1c0
-pc: 411 - Opcode: "PUSH2"- mem length: 67520 - 3
-411	PUSH2	0140	 	 
-pc: 414 - Opcode: "MLOAD"- mem length: 67520 - 3
+pc: 413 - Opcode: "PUSH2"- mem length: 67520 - 3
+- stack 0: 0x1DD
+413	PUSH2	0140	 	 
+pc: 416 - Opcode: "MLOAD"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x140
-414	MLOAD		 	  ;; # read from a0
+416	MLOAD		 	  ;; # read from a0
 [MEM LOAD] from 0x140
-pc: 415 - Opcode: "PUSH32"- mem length: 67520 - 3
+pc: 417 - Opcode: "PUSH32"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x0
-415	PUSH32	0000000000000000000000000000000000000000000000000000000000000400	 	  ;; # signextended 1024
-pc: 436 - Opcode: "ADD"- mem length: 67520 - 3
+417	PUSH32	0000000000000000000000000000000000000000000000000000000000000400	 	  ;; # signextended 1024
+pc: 438 - Opcode: "ADD"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x0
 - stack 0: 0x400
-436	ADD		 	 
-pc: 437 - Opcode: "DUP1"- mem length: 67520 - 3
+438	ADD		 	 
+pc: 439 - Opcode: "DUP1"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x400
-437	DUP1		 	 
-pc: 438 - Opcode: "MLOAD"- mem length: 67520 - 3
+439	DUP1		 	 
+pc: 43A - Opcode: "MLOAD"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x400
 - stack 0: 0x400
-438	MLOAD		 	  ;; # fetch
+43A	MLOAD		 	  ;; # fetch
 [MEM LOAD] from 0x400
-pc: 439 - Opcode: "PUSH32"- mem length: 67520 - 3
+pc: 43B - Opcode: "PUSH32"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x400
 - stack 0: 0x2E00000000000000000000000000000000000000000000000000000000
-439	PUSH32	00000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	 
-pc: 45A - Opcode: "AND"- mem length: 67520 - 3
+43B	PUSH32	00000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	 
+pc: 45C - Opcode: "AND"- mem length: 67520 - 3
+- stack 3: 0x1DD
 - stack 2: 0x400
 - stack 1: 0x2E00000000000000000000000000000000000000000000000000000000
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-45A	AND		 	 
-pc: 45B - Opcode: "PUSH2"- mem length: 67520 - 3
+45C	AND		 	 
+pc: 45D - Opcode: "PUSH2"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x400
 - stack 0: 0x0
-45B	PUSH2	0160	 	 
-pc: 45E - Opcode: "MLOAD"- mem length: 67520 - 3
+45D	PUSH2	0160	 	 
+pc: 460 - Opcode: "MLOAD"- mem length: 67520 - 3
+- stack 3: 0x1DD
 - stack 2: 0x400
 - stack 1: 0x0
 - stack 0: 0x160
-45E	MLOAD		 	  ;; # read from a1
+460	MLOAD		 	  ;; # read from a1
 [MEM LOAD] from 0x160
-pc: 45F - Opcode: "PUSH1"- mem length: 67520 - 3
+pc: 461 - Opcode: "PUSH1"- mem length: 67520 - 3
+- stack 3: 0x1DD
 - stack 2: 0x400
 - stack 1: 0x0
 - stack 0: 0x45
-45F	PUSH1	E0	 	 
-pc: 461 - Opcode: "SHL"- mem length: 67520 - 3
+461	PUSH1	E0	 	 
+pc: 463 - Opcode: "SHL"- mem length: 67520 - 3
+- stack 4: 0x1DD
 - stack 3: 0x400
 - stack 2: 0x0
 - stack 1: 0x45
 - stack 0: 0xE0
-461	SHL		 	 
-pc: 462 - Opcode: "ADD"- mem length: 67520 - 3
+463	SHL		 	 
+pc: 464 - Opcode: "ADD"- mem length: 67520 - 3
+- stack 3: 0x1DD
 - stack 2: 0x400
 - stack 1: 0x0
 - stack 0: 0x4500000000000000000000000000000000000000000000000000000000
-462	ADD		 	 
-pc: 463 - Opcode: "SWAP1"- mem length: 67520 - 3
+464	ADD		 	 
+pc: 465 - Opcode: "SWAP1"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x400
 - stack 0: 0x4500000000000000000000000000000000000000000000000000000000
-463	SWAP1		 	 
-pc: 464 - Opcode: "MSTORE"- mem length: 67520 - 3
+465	SWAP1		 	 
+pc: 466 - Opcode: "MSTORE"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x4500000000000000000000000000000000000000000000000000000000
 - stack 0: 0x400
-464	MSTORE		 	  ;; # sw
+466	MSTORE		 	  ;; # sw
 [DEBUG] output = E                            
-pc: 465 - Opcode: "PUSH2"- mem length: 67520 - 3
-465	PUSH2	0140	 	 
-pc: 468 - Opcode: "MLOAD"- mem length: 67520 - 3
+pc: 467 - Opcode: "PUSH2"- mem length: 67520 - 3
+- stack 0: 0x1DD
+467	PUSH2	0140	 	 
+pc: 46A - Opcode: "MLOAD"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x140
-468	MLOAD		 	  ;; # read from a0
+46A	MLOAD		 	  ;; # read from a0
 [MEM LOAD] from 0x140
-pc: 469 - Opcode: "PUSH32"- mem length: 67520 - 3
+pc: 46B - Opcode: "PUSH32"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x0
-469	PUSH32	0000000000000000000000000000000000000000000000000000000000000400	 	  ;; # signextended 1024
-pc: 48A - Opcode: "ADD"- mem length: 67520 - 3
+46B	PUSH32	0000000000000000000000000000000000000000000000000000000000000400	 	  ;; # signextended 1024
+pc: 48C - Opcode: "ADD"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x0
 - stack 0: 0x400
-48A	ADD		 	 
-pc: 48B - Opcode: "DUP1"- mem length: 67520 - 3
+48C	ADD		 	 
+pc: 48D - Opcode: "DUP1"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x400
-48B	DUP1		 	 
-pc: 48C - Opcode: "MLOAD"- mem length: 67520 - 3
+48D	DUP1		 	 
+pc: 48E - Opcode: "MLOAD"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x400
 - stack 0: 0x400
-48C	MLOAD		 	  ;; # fetch
+48E	MLOAD		 	  ;; # fetch
 [MEM LOAD] from 0x400
-pc: 48D - Opcode: "PUSH32"- mem length: 67520 - 3
+pc: 48F - Opcode: "PUSH32"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x400
 - stack 0: 0x4500000000000000000000000000000000000000000000000000000000
-48D	PUSH32	00000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	 
-pc: 4AE - Opcode: "AND"- mem length: 67520 - 3
+48F	PUSH32	00000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	 
+pc: 4B0 - Opcode: "AND"- mem length: 67520 - 3
+- stack 3: 0x1DD
 - stack 2: 0x400
 - stack 1: 0x4500000000000000000000000000000000000000000000000000000000
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-4AE	AND		 	 
-pc: 4AF - Opcode: "PUSH2"- mem length: 67520 - 3
+4B0	AND		 	 
+pc: 4B1 - Opcode: "PUSH2"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x400
 - stack 0: 0x0
-4AF	PUSH2	0180	 	 
-pc: 4B2 - Opcode: "MLOAD"- mem length: 67520 - 3
+4B1	PUSH2	0180	 	 
+pc: 4B4 - Opcode: "MLOAD"- mem length: 67520 - 3
+- stack 3: 0x1DD
 - stack 2: 0x400
 - stack 1: 0x0
 - stack 0: 0x180
-4B2	MLOAD		 	  ;; # read from a2
+4B4	MLOAD		 	  ;; # read from a2
 [MEM LOAD] from 0x180
-pc: 4B3 - Opcode: "PUSH1"- mem length: 67520 - 3
+pc: 4B5 - Opcode: "PUSH1"- mem length: 67520 - 3
+- stack 3: 0x1DD
 - stack 2: 0x400
 - stack 1: 0x0
 - stack 0: 0x52
-4B3	PUSH1	E0	 	 
-pc: 4B5 - Opcode: "SHL"- mem length: 67520 - 3
+4B5	PUSH1	E0	 	 
+pc: 4B7 - Opcode: "SHL"- mem length: 67520 - 3
+- stack 4: 0x1DD
 - stack 3: 0x400
 - stack 2: 0x0
 - stack 1: 0x52
 - stack 0: 0xE0
-4B5	SHL		 	 
-pc: 4B6 - Opcode: "ADD"- mem length: 67520 - 3
+4B7	SHL		 	 
+pc: 4B8 - Opcode: "ADD"- mem length: 67520 - 3
+- stack 3: 0x1DD
 - stack 2: 0x400
 - stack 1: 0x0
 - stack 0: 0x5200000000000000000000000000000000000000000000000000000000
-4B6	ADD		 	 
-pc: 4B7 - Opcode: "SWAP1"- mem length: 67520 - 3
+4B8	ADD		 	 
+pc: 4B9 - Opcode: "SWAP1"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x400
 - stack 0: 0x5200000000000000000000000000000000000000000000000000000000
-4B7	SWAP1		 	 
-pc: 4B8 - Opcode: "MSTORE"- mem length: 67520 - 3
+4B9	SWAP1		 	 
+pc: 4BA - Opcode: "MSTORE"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x5200000000000000000000000000000000000000000000000000000000
 - stack 0: 0x400
-4B8	MSTORE		 	  ;; # sw
+4BA	MSTORE		 	  ;; # sw
 [DEBUG] output = R                            
-pc: 4B9 - Opcode: "PUSH2"- mem length: 67520 - 3
-4B9	PUSH2	0140	 	 
-pc: 4BC - Opcode: "MLOAD"- mem length: 67520 - 3
+pc: 4BB - Opcode: "PUSH2"- mem length: 67520 - 3
+- stack 0: 0x1DD
+4BB	PUSH2	0140	 	 
+pc: 4BE - Opcode: "MLOAD"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x140
-4BC	MLOAD		 	  ;; # read from a0
+4BE	MLOAD		 	  ;; # read from a0
 [MEM LOAD] from 0x140
-pc: 4BD - Opcode: "PUSH32"- mem length: 67520 - 3
+pc: 4BF - Opcode: "PUSH32"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x0
-4BD	PUSH32	0000000000000000000000000000000000000000000000000000000000000400	 	  ;; # signextended 1024
-pc: 4DE - Opcode: "ADD"- mem length: 67520 - 3
+4BF	PUSH32	0000000000000000000000000000000000000000000000000000000000000400	 	  ;; # signextended 1024
+pc: 4E0 - Opcode: "ADD"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x0
 - stack 0: 0x400
-4DE	ADD		 	 
-pc: 4DF - Opcode: "DUP1"- mem length: 67520 - 3
+4E0	ADD		 	 
+pc: 4E1 - Opcode: "DUP1"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x400
-4DF	DUP1		 	 
-pc: 4E0 - Opcode: "MLOAD"- mem length: 67520 - 3
+4E1	DUP1		 	 
+pc: 4E2 - Opcode: "MLOAD"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x400
 - stack 0: 0x400
-4E0	MLOAD		 	  ;; # fetch
+4E2	MLOAD		 	  ;; # fetch
 [MEM LOAD] from 0x400
-pc: 4E1 - Opcode: "PUSH32"- mem length: 67520 - 3
+pc: 4E3 - Opcode: "PUSH32"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x400
 - stack 0: 0x5200000000000000000000000000000000000000000000000000000000
-4E1	PUSH32	00000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	 
-pc: 502 - Opcode: "AND"- mem length: 67520 - 3
+4E3	PUSH32	00000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	 
+pc: 504 - Opcode: "AND"- mem length: 67520 - 3
+- stack 3: 0x1DD
 - stack 2: 0x400
 - stack 1: 0x5200000000000000000000000000000000000000000000000000000000
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-502	AND		 	 
-pc: 503 - Opcode: "PUSH2"- mem length: 67520 - 3
+504	AND		 	 
+pc: 505 - Opcode: "PUSH2"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x400
 - stack 0: 0x0
-503	PUSH2	0180	 	 
-pc: 506 - Opcode: "MLOAD"- mem length: 67520 - 3
+505	PUSH2	0180	 	 
+pc: 508 - Opcode: "MLOAD"- mem length: 67520 - 3
+- stack 3: 0x1DD
 - stack 2: 0x400
 - stack 1: 0x0
 - stack 0: 0x180
-506	MLOAD		 	  ;; # read from a2
+508	MLOAD		 	  ;; # read from a2
 [MEM LOAD] from 0x180
-pc: 507 - Opcode: "PUSH1"- mem length: 67520 - 3
+pc: 509 - Opcode: "PUSH1"- mem length: 67520 - 3
+- stack 3: 0x1DD
 - stack 2: 0x400
 - stack 1: 0x0
 - stack 0: 0x52
-507	PUSH1	E0	 	 
-pc: 509 - Opcode: "SHL"- mem length: 67520 - 3
+509	PUSH1	E0	 	 
+pc: 50B - Opcode: "SHL"- mem length: 67520 - 3
+- stack 4: 0x1DD
 - stack 3: 0x400
 - stack 2: 0x0
 - stack 1: 0x52
 - stack 0: 0xE0
-509	SHL		 	 
-pc: 50A - Opcode: "ADD"- mem length: 67520 - 3
+50B	SHL		 	 
+pc: 50C - Opcode: "ADD"- mem length: 67520 - 3
+- stack 3: 0x1DD
 - stack 2: 0x400
 - stack 1: 0x0
 - stack 0: 0x5200000000000000000000000000000000000000000000000000000000
-50A	ADD		 	 
-pc: 50B - Opcode: "SWAP1"- mem length: 67520 - 3
+50C	ADD		 	 
+pc: 50D - Opcode: "SWAP1"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x400
 - stack 0: 0x5200000000000000000000000000000000000000000000000000000000
-50B	SWAP1		 	 
-pc: 50C - Opcode: "MSTORE"- mem length: 67520 - 3
+50D	SWAP1		 	 
+pc: 50E - Opcode: "MSTORE"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x5200000000000000000000000000000000000000000000000000000000
 - stack 0: 0x400
-50C	MSTORE		 	  ;; # sw
+50E	MSTORE		 	  ;; # sw
 [DEBUG] output = R                            
-pc: 50D - Opcode: "PUSH2"- mem length: 67520 - 3
-50D	PUSH2	0140	 	 
-pc: 510 - Opcode: "MLOAD"- mem length: 67520 - 3
+pc: 50F - Opcode: "PUSH2"- mem length: 67520 - 3
+- stack 0: 0x1DD
+50F	PUSH2	0140	 	 
+pc: 512 - Opcode: "MLOAD"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x140
-510	MLOAD		 	  ;; # read from a0
+512	MLOAD		 	  ;; # read from a0
 [MEM LOAD] from 0x140
-pc: 511 - Opcode: "PUSH32"- mem length: 67520 - 3
+pc: 513 - Opcode: "PUSH32"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x0
-511	PUSH32	0000000000000000000000000000000000000000000000000000000000000400	 	  ;; # signextended 1024
-pc: 532 - Opcode: "ADD"- mem length: 67520 - 3
+513	PUSH32	0000000000000000000000000000000000000000000000000000000000000400	 	  ;; # signextended 1024
+pc: 534 - Opcode: "ADD"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x0
 - stack 0: 0x400
-532	ADD		 	 
-pc: 533 - Opcode: "DUP1"- mem length: 67520 - 3
+534	ADD		 	 
+pc: 535 - Opcode: "DUP1"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x400
-533	DUP1		 	 
-pc: 534 - Opcode: "MLOAD"- mem length: 67520 - 3
+535	DUP1		 	 
+pc: 536 - Opcode: "MLOAD"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x400
 - stack 0: 0x400
-534	MLOAD		 	  ;; # fetch
+536	MLOAD		 	  ;; # fetch
 [MEM LOAD] from 0x400
-pc: 535 - Opcode: "PUSH32"- mem length: 67520 - 3
+pc: 537 - Opcode: "PUSH32"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x400
 - stack 0: 0x5200000000000000000000000000000000000000000000000000000000
-535	PUSH32	00000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	 
-pc: 556 - Opcode: "AND"- mem length: 67520 - 3
+537	PUSH32	00000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	 
+pc: 558 - Opcode: "AND"- mem length: 67520 - 3
+- stack 3: 0x1DD
 - stack 2: 0x400
 - stack 1: 0x5200000000000000000000000000000000000000000000000000000000
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-556	AND		 	 
-pc: 557 - Opcode: "PUSH2"- mem length: 67520 - 3
+558	AND		 	 
+pc: 559 - Opcode: "PUSH2"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x400
 - stack 0: 0x0
-557	PUSH2	01A0	 	 
-pc: 55A - Opcode: "MLOAD"- mem length: 67520 - 3
+559	PUSH2	01A0	 	 
+pc: 55C - Opcode: "MLOAD"- mem length: 67520 - 3
+- stack 3: 0x1DD
 - stack 2: 0x400
 - stack 1: 0x0
 - stack 0: 0x1A0
-55A	MLOAD		 	  ;; # read from a3
+55C	MLOAD		 	  ;; # read from a3
 [MEM LOAD] from 0x1a0
-pc: 55B - Opcode: "PUSH1"- mem length: 67520 - 3
+pc: 55D - Opcode: "PUSH1"- mem length: 67520 - 3
+- stack 3: 0x1DD
 - stack 2: 0x400
 - stack 1: 0x0
 - stack 0: 0x4F
-55B	PUSH1	E0	 	 
-pc: 55D - Opcode: "SHL"- mem length: 67520 - 3
+55D	PUSH1	E0	 	 
+pc: 55F - Opcode: "SHL"- mem length: 67520 - 3
+- stack 4: 0x1DD
 - stack 3: 0x400
 - stack 2: 0x0
 - stack 1: 0x4F
 - stack 0: 0xE0
-55D	SHL		 	 
-pc: 55E - Opcode: "ADD"- mem length: 67520 - 3
+55F	SHL		 	 
+pc: 560 - Opcode: "ADD"- mem length: 67520 - 3
+- stack 3: 0x1DD
 - stack 2: 0x400
 - stack 1: 0x0
 - stack 0: 0x4F00000000000000000000000000000000000000000000000000000000
-55E	ADD		 	 
-pc: 55F - Opcode: "SWAP1"- mem length: 67520 - 3
+560	ADD		 	 
+pc: 561 - Opcode: "SWAP1"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x400
 - stack 0: 0x4F00000000000000000000000000000000000000000000000000000000
-55F	SWAP1		 	 
-pc: 560 - Opcode: "MSTORE"- mem length: 67520 - 3
+561	SWAP1		 	 
+pc: 562 - Opcode: "MSTORE"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x4F00000000000000000000000000000000000000000000000000000000
 - stack 0: 0x400
-560	MSTORE		 	  ;; # sw
+562	MSTORE		 	  ;; # sw
 [DEBUG] output = O                            
-pc: 561 - Opcode: "PUSH2"- mem length: 67520 - 3
-561	PUSH2	0140	 	 
-pc: 564 - Opcode: "MLOAD"- mem length: 67520 - 3
+pc: 563 - Opcode: "PUSH2"- mem length: 67520 - 3
+- stack 0: 0x1DD
+563	PUSH2	0140	 	 
+pc: 566 - Opcode: "MLOAD"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x140
-564	MLOAD		 	  ;; # read from a0
+566	MLOAD		 	  ;; # read from a0
 [MEM LOAD] from 0x140
-pc: 565 - Opcode: "PUSH32"- mem length: 67520 - 3
+pc: 567 - Opcode: "PUSH32"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x0
-565	PUSH32	0000000000000000000000000000000000000000000000000000000000000400	 	  ;; # signextended 1024
-pc: 586 - Opcode: "ADD"- mem length: 67520 - 3
+567	PUSH32	0000000000000000000000000000000000000000000000000000000000000400	 	  ;; # signextended 1024
+pc: 588 - Opcode: "ADD"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x0
 - stack 0: 0x400
-586	ADD		 	 
-pc: 587 - Opcode: "DUP1"- mem length: 67520 - 3
+588	ADD		 	 
+pc: 589 - Opcode: "DUP1"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x400
-587	DUP1		 	 
-pc: 588 - Opcode: "MLOAD"- mem length: 67520 - 3
+589	DUP1		 	 
+pc: 58A - Opcode: "MLOAD"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x400
 - stack 0: 0x400
-588	MLOAD		 	  ;; # fetch
+58A	MLOAD		 	  ;; # fetch
 [MEM LOAD] from 0x400
-pc: 589 - Opcode: "PUSH32"- mem length: 67520 - 3
+pc: 58B - Opcode: "PUSH32"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x400
 - stack 0: 0x4F00000000000000000000000000000000000000000000000000000000
-589	PUSH32	00000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	 
-pc: 5AA - Opcode: "AND"- mem length: 67520 - 3
+58B	PUSH32	00000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	 
+pc: 5AC - Opcode: "AND"- mem length: 67520 - 3
+- stack 3: 0x1DD
 - stack 2: 0x400
 - stack 1: 0x4F00000000000000000000000000000000000000000000000000000000
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-5AA	AND		 	 
-pc: 5AB - Opcode: "PUSH2"- mem length: 67520 - 3
+5AC	AND		 	 
+pc: 5AD - Opcode: "PUSH2"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x400
 - stack 0: 0x0
-5AB	PUSH2	0180	 	 
-pc: 5AE - Opcode: "MLOAD"- mem length: 67520 - 3
+5AD	PUSH2	0180	 	 
+pc: 5B0 - Opcode: "MLOAD"- mem length: 67520 - 3
+- stack 3: 0x1DD
 - stack 2: 0x400
 - stack 1: 0x0
 - stack 0: 0x180
-5AE	MLOAD		 	  ;; # read from a2
+5B0	MLOAD		 	  ;; # read from a2
 [MEM LOAD] from 0x180
-pc: 5AF - Opcode: "PUSH1"- mem length: 67520 - 3
+pc: 5B1 - Opcode: "PUSH1"- mem length: 67520 - 3
+- stack 3: 0x1DD
 - stack 2: 0x400
 - stack 1: 0x0
 - stack 0: 0x52
-5AF	PUSH1	E0	 	 
-pc: 5B1 - Opcode: "SHL"- mem length: 67520 - 3
+5B1	PUSH1	E0	 	 
+pc: 5B3 - Opcode: "SHL"- mem length: 67520 - 3
+- stack 4: 0x1DD
 - stack 3: 0x400
 - stack 2: 0x0
 - stack 1: 0x52
 - stack 0: 0xE0
-5B1	SHL		 	 
-pc: 5B2 - Opcode: "ADD"- mem length: 67520 - 3
+5B3	SHL		 	 
+pc: 5B4 - Opcode: "ADD"- mem length: 67520 - 3
+- stack 3: 0x1DD
 - stack 2: 0x400
 - stack 1: 0x0
 - stack 0: 0x5200000000000000000000000000000000000000000000000000000000
-5B2	ADD		 	 
-pc: 5B3 - Opcode: "SWAP1"- mem length: 67520 - 3
+5B4	ADD		 	 
+pc: 5B5 - Opcode: "SWAP1"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x400
 - stack 0: 0x5200000000000000000000000000000000000000000000000000000000
-5B3	SWAP1		 	 
-pc: 5B4 - Opcode: "MSTORE"- mem length: 67520 - 3
+5B5	SWAP1		 	 
+pc: 5B6 - Opcode: "MSTORE"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x5200000000000000000000000000000000000000000000000000000000
 - stack 0: 0x400
-5B4	MSTORE		 	  ;; # sw
+5B6	MSTORE		 	  ;; # sw
 [DEBUG] output = R                            
-pc: 5B5 - Opcode: "PUSH2"- mem length: 67520 - 3
-5B5	PUSH2	0140	 	 
-pc: 5B8 - Opcode: "MLOAD"- mem length: 67520 - 3
+pc: 5B7 - Opcode: "PUSH2"- mem length: 67520 - 3
+- stack 0: 0x1DD
+5B7	PUSH2	0140	 	 
+pc: 5BA - Opcode: "MLOAD"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x140
-5B8	MLOAD		 	  ;; # read from a0
+5BA	MLOAD		 	  ;; # read from a0
 [MEM LOAD] from 0x140
-pc: 5B9 - Opcode: "PUSH32"- mem length: 67520 - 3
+pc: 5BB - Opcode: "PUSH32"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x0
-5B9	PUSH32	0000000000000000000000000000000000000000000000000000000000000400	 	  ;; # signextended 1024
-pc: 5DA - Opcode: "ADD"- mem length: 67520 - 3
+5BB	PUSH32	0000000000000000000000000000000000000000000000000000000000000400	 	  ;; # signextended 1024
+pc: 5DC - Opcode: "ADD"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x0
 - stack 0: 0x400
-5DA	ADD		 	 
-pc: 5DB - Opcode: "DUP1"- mem length: 67520 - 3
+5DC	ADD		 	 
+pc: 5DD - Opcode: "DUP1"- mem length: 67520 - 3
+- stack 1: 0x1DD
 - stack 0: 0x400
-5DB	DUP1		 	 
-pc: 5DC - Opcode: "MLOAD"- mem length: 67520 - 3
+5DD	DUP1		 	 
+pc: 5DE - Opcode: "MLOAD"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x400
 - stack 0: 0x400
-5DC	MLOAD		 	  ;; # fetch
+5DE	MLOAD		 	  ;; # fetch
 [MEM LOAD] from 0x400
-pc: 5DD - Opcode: "PUSH32"- mem length: 67520 - 3
+pc: 5DF - Opcode: "PUSH32"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x400
 - stack 0: 0x5200000000000000000000000000000000000000000000000000000000
-5DD	PUSH32	00000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	 
-pc: 5FE - Opcode: "AND"- mem length: 67520 - 3
+5DF	PUSH32	00000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	 
+pc: 600 - Opcode: "AND"- mem length: 67520 - 3
+- stack 3: 0x1DD
 - stack 2: 0x400
 - stack 1: 0x5200000000000000000000000000000000000000000000000000000000
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-5FE	AND		 	 
-pc: 5FF - Opcode: "PUSH2"- mem length: 67520 - 3
+600	AND		 	 
+pc: 601 - Opcode: "PUSH2"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x400
 - stack 0: 0x0
-5FF	PUSH2	01C0	 	 
-pc: 602 - Opcode: "MLOAD"- mem length: 67520 - 3
+601	PUSH2	01C0	 	 
+pc: 604 - Opcode: "MLOAD"- mem length: 67520 - 3
+- stack 3: 0x1DD
 - stack 2: 0x400
 - stack 1: 0x0
 - stack 0: 0x1C0
-602	MLOAD		 	  ;; # read from a4
+604	MLOAD		 	  ;; # read from a4
 [MEM LOAD] from 0x1c0
-pc: 603 - Opcode: "PUSH1"- mem length: 67520 - 3
+pc: 605 - Opcode: "PUSH1"- mem length: 67520 - 3
+- stack 3: 0x1DD
 - stack 2: 0x400
 - stack 1: 0x0
 - stack 0: 0xA
-603	PUSH1	E0	 	 
-pc: 605 - Opcode: "SHL"- mem length: 67520 - 3
+605	PUSH1	E0	 	 
+pc: 607 - Opcode: "SHL"- mem length: 67520 - 3
+- stack 4: 0x1DD
 - stack 3: 0x400
 - stack 2: 0x0
 - stack 1: 0xA
 - stack 0: 0xE0
-605	SHL		 	 
-pc: 606 - Opcode: "ADD"- mem length: 67520 - 3
+607	SHL		 	 
+pc: 608 - Opcode: "ADD"- mem length: 67520 - 3
+- stack 3: 0x1DD
 - stack 2: 0x400
 - stack 1: 0x0
 - stack 0: 0xA00000000000000000000000000000000000000000000000000000000
-606	ADD		 	 
-pc: 607 - Opcode: "SWAP1"- mem length: 67520 - 3
+608	ADD		 	 
+pc: 609 - Opcode: "SWAP1"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0x400
 - stack 0: 0xA00000000000000000000000000000000000000000000000000000000
-607	SWAP1		 	 
-pc: 608 - Opcode: "MSTORE"- mem length: 67520 - 3
+609	SWAP1		 	 
+pc: 60A - Opcode: "MSTORE"- mem length: 67520 - 3
+- stack 2: 0x1DD
 - stack 1: 0xA00000000000000000000000000000000000000000000000000000000
 - stack 0: 0x400
-608	MSTORE		 	  ;; # sw
+60A	MSTORE		 	  ;; # sw
 [DEBUG] output = �                           
-pc: 609 - Opcode: "INVALID"- mem length: 67520 - 0
-609	INVALID		 	  ;; # ebreak
+pc: 60B - Opcode: "INVALID"- mem length: 67520 - 0
+- stack 0: 0x1DD
+60B	INVALID		 	  ;; # ebreak
 Error: {"error":"invalid opcode","errorType":"VmError"}
-    at invokeRiscv (/root/bpf-to-evm/load.ts:962:11)
+    at invokeRiscv (/root/bpf-to-evm/load.ts:992:11)
