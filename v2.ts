@@ -15,8 +15,8 @@ interface EVMOpCode {
   pc?: number;
 }
 
-const text_area = fs.readFileSync("tests/simple.text");
-const full_ram = fs.readFileSync("tests/simple.ramimage");
+const text_area = fs.readFileSync(process.argv[2] + ".text");
+const full_ram = fs.readFileSync(process.argv[2] + ".ramimage");
 
 const WORD_REPLACE_MASK =
   "00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff".toUpperCase();
@@ -102,10 +102,10 @@ function writeRegister(regId: number, doMask: boolean) {
 
 opcodes.push({
   opcode: "PUSH4",
-  parameter: full_ram.length.toString(16).toUpperCase().padStart(2, "0"),
+  parameter: full_ram.length.toString(16).toUpperCase().padStart(4, "0"),
 });
 
-opcodes.push({ opcode: "PUSH4", find_name: "_rambegin" });
+opcodes.push({ opcode: "PUSH2", find_name: "_rambegin" });
 opcodes.push({ opcode: "PUSH1", parameter: "01"});
 opcodes.push({ opcode: "ADD"}); //
 
@@ -133,7 +133,7 @@ opcodes.push({ opcode: "SHR" });
 opcodes.push({ opcode: "JUMP" });
 
 function goNextInst() {
-  opcodes.push({ opcode: "PUSH4", find_name: "_pcplus4" });
+  opcodes.push({ opcode: "PUSH2", find_name: "_pcplus4" });
   opcodes.push({ opcode: "JUMP" });
 }
 
@@ -311,9 +311,10 @@ function emitSltiu(rd: number, rs1: number, imm: number) {
 function emitLui(rd: number, imm: number) {
   opcodes.push({
     opcode: "PUSH4",
-    parameter: (imm << 12).toString(16).toUpperCase().padStart(8, "0"),
+    parameter: (imm << 12 >>> 0).toString(16).toUpperCase().padStart(8, "0"),
     comment: "LUI",
   });
+  console.log("LUI: " +  (imm << 12 >>> 0).toString(16).toUpperCase().padStart(8, "0"));
   writeRegister(rd, false);
 }
 
@@ -355,6 +356,30 @@ function bswap32() {
   opcodes.push({ opcode: "OR" });
 }
 
+function emitBne(rs1: number, rs2: number, imm: number) {
+  const rando = crypto.randomBytes(32).toString("hex");
+  readRegister(rs1);
+  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); 
+  opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
+  readRegister(rs2);
+  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); 
+  opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
+  opcodes.push({ opcode: "SUB"});
+  opcodes.push({ opcode: "PUSH2", find_name: "_neq_" + rando})
+  opcodes.push({ opcode: "JUMPI"});
+  opcodes.push({ opcode: "PUSH2", find_name: "_neq_after_" + rando})
+  opcodes.push({ opcode: "JUMP"});
+  opcodes.push({ opcode: "JUMPDEST", name: "_neq_" + rando});
+  // pc on stack
+  signExtendTo256(imm);
+  opcodes.push({opcode: "ADD"});
+  opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
+  opcodes.push({opcode: "AND", comment: "mask to 32 bits" });
+  opcodes.push({opcode: "PUSH2", find_name: "_execute"});
+  opcodes.push({opcode: "JUMP"});
+  opcodes.push({opcode: "JUMPDEST", name: "_neq_after_" + rando});
+}
+
 function emitSw(rs1: number, rs2: number, imm: number) {
   // grab 32 bit value from rs2 (value)
   readRegister(rs2);
@@ -382,7 +407,7 @@ function emitSw(rs1: number, rs2: number, imm: number) {
 function emitEcall() {
   const rando = crypto.randomBytes(32).toString("hex");
   readRegister(10); // a0
-  opcodes.push({ opcode: "PUSH4", find_name: "_ecall_" + rando})
+  opcodes.push({ opcode: "PUSH2", find_name: "_ecall_" + rando})
   opcodes.push({ opcode: "JUMPI"});
   // if a0 == 0, return
   opcodes.push({ opcode: "PUSH1", parameter: "20"});
@@ -489,15 +514,17 @@ function convertRISCVtoFunction(pc: number, buf: Buffer): string {
       case "SLTIU": {
         emitSltiu(parsed.rd, parsed.rs1, parsed.imm);
         break;
-      }
+      }     
       // branches
-      case "BEQ":
       case "BNE":
+        emitBne(parsed.rs1, parsed.rs2, parsed.imm);
+        break;
+      case "BEQ":
       case "BLT":
       case "BGE":
       case "BLTU":
       case "BGEU":
-        throw new Error("branches not implemented");
+        throw new Error("branches not implemented: " + parsed.instructionName);
       // jump & link
       case "JAL": {
         emitJal(parsed.rd, parsed.imm);
@@ -568,6 +595,9 @@ function resolveNamesAndOffsets() {
                   if (pcR == undefined){
                       throw new Error("Missing pc");
                   }
+                  if (Math.round(pcR) !== pcR) {
+                    throw new Error("Non-integer pc looking for " + JSON.stringify(e) + " found in " + JSON.stringify(opcodes[i]) );
+                  }
                   e.parameter = pcR.toString(16).padStart(4, '0').toUpperCase();
                   break;
               }
@@ -592,12 +622,14 @@ function performAssembly(): string {
           preAssembly.push([result[i].opcode]);
         }
       } else {
+        console.log("32 bit ptr: " + JSON.stringify(result[i]));
         if (!para) {
           throw new Error("32bitptr without parameter");
         }
         ptrAssembly = ptrAssembly + "0000" + para;
       }
   }
+  console.log("assembly: " + assemble(preAssembly).length);
   return assemble(preAssembly) + ptrAssembly;
 }
 
@@ -634,11 +666,14 @@ for (let i = 0; i < opcodesToConvert.length; i++) {
 addProgramCounters();
 resolveNamesAndOffsets();
 
-console.log(opcodes);
+console.log(JSON.stringify(opcodes));
+console.log("Rest of RAM size: " + full_ram.slice(text_area.length, full_ram.length).length)
 const restOfRAM = full_ram.slice(text_area.length, full_ram.length);
-const finalBytecode = Buffer.concat([Buffer.from(performAssembly(), "hex"), restOfRAM]);
+const assembled = performAssembly();
+const finalBytecode = Buffer.concat([Buffer.from(assembled, "hex"), restOfRAM]);
 console.log("Final bytecode: " + finalBytecode.toString("hex"))
-
+console.log("Final bytecode length; " + finalBytecode.length);
+console.log("Final bytecode length; " + assembled.length);
 async function invokeRiscv() {
   const common = new Common({ chain: Chain.Mainnet, hardfork: Hardfork.London })
   const vm = new VM({ common })
@@ -658,13 +693,14 @@ async function invokeRiscv() {
     for (let l = 0; l < data.stack.length; l++) {
        console.log("- stack " + (data.stack.length - 1 - l) + ": 0x" + data.stack[l].toString(16).toUpperCase());
     }
+    /*
     let mem = data.memory.toString("hex");
     let l = 0;
     for (let l = 0; l < mem.length; l += 8) {   
         if (mem.substring(l, l+8) != "00000000") {
             console.log("- mem " + (l/2).toString(16).toUpperCase().padStart(8, "0") + " - " + mem.substring(l, l+8));
         }
-    }
+    } */
     for (let l = 0; l < opcodes.length; l++) {
       if (opcodes[l].pc == data.pc) {
           printO(opcodes[l]);
