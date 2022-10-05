@@ -15,7 +15,11 @@ interface EVMOpCode {
   pc?: number;
 }
 
-const ram = fs.readFileSync("file");
+const text_area = fs.readFileSync("tests/simple.text");
+const full_ram = fs.readFileSync("tests/simple.ramimage");
+
+const WORD_REPLACE_MASK =
+  "00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff".toUpperCase();
 
 const emittedFunctions: Record<string, string> = {};
 const opcodes: EVMOpCode[] = [];
@@ -94,20 +98,25 @@ function writeRegister(regId: number, doMask: boolean) {
     opcodes.push({ opcode: "MSTORE", comment: "store to x" + regId });
   }
 }
-/*
-opcodes.push({ opcode: "PUSH4", find_name: "__ram" });
+
+
 opcodes.push({
   opcode: "PUSH4",
-  parameter: ram.length.toString(16).toUpperCase().padStart(2, "0"),
+  parameter: full_ram.length.toString(16).toUpperCase().padStart(2, "0"),
 });
+
+opcodes.push({ opcode: "PUSH4", find_name: "_rambegin" });
+opcodes.push({ opcode: "PUSH1", parameter: "01"});
+opcodes.push({ opcode: "ADD"}); //
+
 opcodes.push({
   opcode: "PUSH2",
-  parameter: (0x100).toString(16).toUpperCase().padStart(2, "0"),
+  parameter: (0x400).toString(16).toUpperCase().padStart(2, "0"),
 });
-opcodes.push({ opcode: "CODECOPY" });
-*/ 
 
-opcodes.push({ opcode: "PUSH2", parameter: "0100" }); // _start
+opcodes.push({ opcode: "CODECOPY" });
+
+opcodes.push({ opcode: "PUSH2", parameter: "0400" }); // _start
 opcodes.push({ opcode: "PUSH2", find_name: "_execute" });
 opcodes.push({ opcode: "JUMP" });
 
@@ -119,7 +128,7 @@ opcodes.push({ opcode: "ADD" });
 opcodes.push({ opcode: "JUMPDEST", name: "_execute" });
 opcodes.push({ opcode: "DUP1" });
 opcodes.push({ opcode: "MLOAD" });
-opcodes.push({ opcode: "PUSH1", parameter: "E0" });
+opcodes.push({ opcode: "PUSH1", parameter: "E0" }); // to get the 32-bit value as it's all the way left
 opcodes.push({ opcode: "SHR" });
 opcodes.push({ opcode: "JUMP" });
 
@@ -190,11 +199,6 @@ function emitAndOrXor(type: string, rd: number, rs1: number, rs2: number) {
 }
 
 function emitAndOrXori(type: string, rd: number, rs1: number, imm: number) {
-  opcodes.push({
-    opcode: "JUMPDEST",
-    name: "_" + type + "_" + rd + "_" + rs1 + "_" + imm,
-  });
-
   signExtendTo256(imm);
   readRegister(rs1);
 
@@ -272,6 +276,38 @@ function emitSlt(rd: number, rs1: number, rs2: number) {
   writeRegister(rd, false);
 }
 
+function emitSltu(rd: number, rs1: number, rs2: number) {
+  // this is already 32-bitting it
+  readRegister(rs2);
+  opcodes.push({ opcode: "PUSH1", parameter: "03" });
+  opcodes.push({ opcode: "SIGNEXTEND" });
+  readRegister(rs1);
+  opcodes.push({ opcode: "PUSH1", parameter: "03" });
+  opcodes.push({ opcode: "SIGNEXTEND" });
+  opcodes.push({ opcode: "LT" });
+  writeRegister(rd, false);
+}
+
+function emitSlti(rd: number, rs1: number, imm: number) {
+  signExtendTo256(imm);
+  readRegister(rs1);
+  opcodes.push({ opcode: "PUSH1", parameter: "03" });
+  opcodes.push({ opcode: "SIGNEXTEND" });
+
+  opcodes.push({ opcode: "SLT" });
+  writeRegister(rd, false);
+}
+
+function emitSltiu(rd: number, rs1: number, imm: number) {
+  signExtendTo256(imm);
+  readRegister(rs1);
+  opcodes.push({ opcode: "PUSH1", parameter: "03" });
+  opcodes.push({ opcode: "SIGNEXTEND" });
+
+  opcodes.push({ opcode: "LT" });
+  writeRegister(rd, false);
+}
+
 function emitLui(rd: number, imm: number) {
   opcodes.push({
     opcode: "PUSH4",
@@ -279,6 +315,84 @@ function emitLui(rd: number, imm: number) {
     comment: "LUI",
   });
   writeRegister(rd, false);
+}
+
+function emitAuipc(rd: number, imm: number) {
+  throw new Error("Unimplemented: auipc");
+  // assume PC is top of stack
+  opcodes.push({ opcode: "DUP1" });
+  // XXX pc + sext(imm[31:12] << 12)
+}
+
+function emitJal(rd: number, imm: number) {
+  // XXX this may be more optimal with using SUB ..
+  opcodes.push({ opcode: "DUP1" }); // pc pc
+  signExtendTo256(imm); // imm-signextended pc pc
+  opcodes.push({ opcode: "ADD" }); // pc+imm-signextended(256 bit) pc
+  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended pc
+  opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
+  opcodes.push({ opcode: "SWAP1" }); // pc  pc+imm-signextended
+  opcodes.push({ opcode: "PUSH1", parameter: "04" });
+  opcodes.push({ opcode: "ADD" }); // pc+4 pc+imm-signextended
+  writeRegister(rd, false);
+  // pc+mm-signextended
+  opcodes.push({ opcode: "PUSH4", find_name: "_execute" });
+  opcodes.push({ opcode: "JUMP" });
+}
+
+function bswap32() {
+  opcodes.push({ opcode: "DUP1" });
+  opcodes.push({ opcode: "DUP1" });
+  opcodes.push({ opcode: "PUSH1", parameter: "08" });
+  opcodes.push({ opcode: "SHL" });
+  opcodes.push({ opcode: "PUSH2", parameter: "FF00" });
+  opcodes.push({ opcode: "AND" });
+  opcodes.push({ opcode: "SWAP1" });
+  opcodes.push({ opcode: "PUSH1", parameter: "08" });
+  opcodes.push({ opcode: "SHR" });
+  opcodes.push({ opcode: "PUSH2", parameter: "00FF" });
+  opcodes.push({ opcode: "AND" });
+  opcodes.push({ opcode: "OR" });
+}
+
+function emitSw(rs1: number, rs2: number, imm: number) {
+  // grab 32 bit value from rs2 (value)
+  readRegister(rs2);
+  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" });
+  opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
+
+  bswap32(); // fucking big endian EVM
+
+  readRegister(rs1); // read rs1 (addr)
+  signExtendTo256(imm); // add imm
+
+  opcodes.push({ opcode: "ADD" });
+  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // narrow down to 32-bit
+  opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
+
+  opcodes.push({ opcode: "DUP1" });
+  opcodes.push({ opcode: "MLOAD", comment: "fetch" });
+  opcodes.push({ opcode: "SWAP1" });
+  opcodes.push({ opcode: "PUSH32", parameter: WORD_REPLACE_MASK });
+  opcodes.push({ opcode: "AND" });
+  opcodes.push({ opcode: "SWAP1" });
+  opcodes.push({ opcode: "MSTORE" });
+}
+
+function emitEcall() {
+  const rando = crypto.randomBytes(32).toString("hex");
+  readRegister(10); // a0
+  opcodes.push({ opcode: "PUSH4", find_name: "_ecall_" + rando})
+  opcodes.push({ opcode: "JUMPI"});
+  // if a0 == 0, return
+  opcodes.push({ opcode: "PUSH1", parameter: "20"});
+  opcodes.push({ opcode: "PUSH2", parameter: reg2mem["a0"].toString(16).padStart(4, "0")});
+  opcodes.push({ opcode: "RETURN"});
+
+  opcodes.push({ opcode: "JUMPDEST", name: "_ecall_" + rando});
+  opcodes.push({ opcode: "PUSH1", parameter: "04"});
+  readRegister(11); // a1
+  opcodes.push({ opcode: "LOG0"});
 }
 
 function convertRISCVtoFunction(pc: number, buf: Buffer): string {
@@ -293,51 +407,298 @@ function convertRISCVtoFunction(pc: number, buf: Buffer): string {
     return "_riscv_" + hash;
   }
   emittedFunctions[hash] = "_riscv_" + hash;
-  opcodes.push({ opcode: "JUMPDEST", name: "_riscv_" + hash });
+  opcodes.push({ opcode: "JUMPDEST", name: "_riscv_" + hash, comment: "pc 0x" + pc.toString(16) + " buffer: " + buf.toString("hex")  });
 
   for (let i = 0; i < buf.length; i += 4) {
     const instr = buf.readUInt32LE(i);
     const parsed = parseInstruction(instr);
     switch (parsed.instructionName) {
-        case "ADD": {
-            emitAdd(parsed.rd, parsed.rs1, parsed.rs2); break;
-        }
-        case "SUB": {
-            emitSub(parsed.rd, parsed.rs1, parsed.rs2); break;
-        }
-        case "ADDI": {
-            emitAddi(parsed.rd, parsed.rs1, parsed.imm); break;
-        }
-        case "SLL":
-        case "SRL": {
-            emitSllSrl(parsed.instructionName, parsed.rd, parsed.rs1, parsed.rs2); break;
-        }
+      // shifts
+      case "SLL":
+      case "SRL": {
+        emitSllSrl(parsed.instructionName, parsed.rd, parsed.rs1, parsed.rs2);
+        break;
+      }
+      case "SLLI":
+      case "SRLI": {
+        emitSlliSrli(parsed.instructionName, parsed.rd, parsed.rs1, parsed.imm);
+        break;
+      }
+      case "SRA": {
+        emitSra(parsed.rd, parsed.rs1, parsed.rs2);
+        break;
+      }
+      case "SRAI": {
+        emitSrai(parsed.rd, parsed.rs1, parsed.imm);
+        break;
+      }
+      // arithmetic
+      case "ADD": {
+        emitAdd(parsed.rd, parsed.rs1, parsed.rs2);
+        break;
+      }
+      case "ADDI": {
+        emitAddi(parsed.rd, parsed.rs1, parsed.imm);
+        break;
+      }
+      case "SUB": {
+        emitSub(parsed.rd, parsed.rs1, parsed.rs2);
+        break;
+      }
+      case "LUI": {
+        emitLui(parsed.rd, parsed.imm);
+        break;
+      }
+      case "AUIPC": {
+        emitAuipc(parsed.rd, parsed.imm);
+        break;
+      }
+      case "OR":
+      case "XOR":
+      case "AND": {
+        emitAndOrXor(parsed.instructionName, parsed.rd, parsed.rs1, parsed.rs2);
+        break;
+      }
+      case "ORI":
+      case "XORI":
+      case "ANDI": {
+        emitAndOrXori(
+          parsed.instructionName,
+          parsed.rd,
+          parsed.rs1,
+          parsed.imm
+        );
+        break;
+      }
+      // compare
+      case "SLT": {
+        emitSlt(parsed.rd, parsed.rs1, parsed.rs2);
+        break;
+      }
 
+      case "SLTU": {
+        emitSltu(parsed.rd, parsed.rs1, parsed.rs2);
+        break;
+      }
 
-        case "OR":
-        case "XOR":
-        case "AND": {
-            emitAndOrXor(parsed.instructionName, parsed.rd, parsed.rs1, parsed.rs2); break;
-        }
-        case "LUI": {
-            emitLui(parsed.rd, parsed.imm); break;
-        }
-        case "AUIPC":
-        case "LW":
-        case "SLTIU":
-        case "JALR": {
-            // unimplemented
-            break;
-        }
-        default:
-            throw new Error("Unknown instruction: " + parsed.instructionName);
+      case "SLTI": {
+        emitSlti(parsed.rd, parsed.rs1, parsed.imm);
+        break;
+      }
+
+      case "SLTIU": {
+        emitSltiu(parsed.rd, parsed.rs1, parsed.imm);
+        break;
+      }
+      // branches
+      case "BEQ":
+      case "BNE":
+      case "BLT":
+      case "BGE":
+      case "BLTU":
+      case "BGEU":
+        throw new Error("branches not implemented");
+      // jump & link
+      case "JAL": {
+        emitJal(parsed.rd, parsed.imm);
+        break;
+      }
+      case "JALR": {
+        throw new Error("JAL not implemented");
+      }
+      // Synch (do nothing, single-thread)
+      case "FENCE":
+      case "FENCE.I":
+        break;
+      // environment
+      case "EBREAK":
+        opcodes.push({opcode: "INVALID", comment: "EBREAK"});
+        break;
+      case "ECALL":
+        emitEcall();
+        break;
+      // loads
+      case "LB":
+      case "LH":
+      case "LBU":
+      case "LHU":
+      case "LW":
+        throw new Error("loads not implemented");
+      // stores
+      case "SB":
+      case "SH":
+      case "SW":
+        throw new Error("stores not implemented");
+      default:
+        throw new Error("Unknown instruction: " + parsed.instructionName);
     }
   }
+  goNextInst();
   return "_riscv_" + hash;
 }
 
-for (let i = 0; i < ram.length; i +=4) {
-    convertRISCVtoFunction(0, ram.slice(i, i+4));
+function addProgramCounters(): number {
+  let pc = 0;
+  for (const e of opcodes) {
+      const para = e.parameter;
+      const find_name = e.find_name;
+      if (e.opcode === "_32bitptr") {
+        continue;
+      }
+      e.pc = pc;
+      if (find_name) {
+          pc += assemble([[e.opcode, "0000"]]).length / 2;
+      } else if (para) {
+          pc += assemble([[e.opcode, para]]).length / 2;
+      } else {
+          console.log(e);
+          pc += assemble([[e.opcode]]).length / 2;
+      }
+  }
+  return pc;
 }
 
-console.log(opcodes.length);
+function resolveNamesAndOffsets() {
+  for (const e of opcodes) {
+      if (e.find_name) {
+          let i = 0;
+          for (; i < opcodes.length; i++) {
+              if (opcodes[i].name == e.find_name) {
+                  const pcR = opcodes[i].pc;
+                  if (pcR == undefined){
+                      throw new Error("Missing pc");
+                  }
+                  e.parameter = pcR.toString(16).padStart(4, '0').toUpperCase();
+                  break;
+              }
+          }
+          if (i == opcodes.length) {
+              throw new Error("Could not find " + e.find_name);
+          }
+      }
+  }
+}
+
+function performAssembly(): string {
+  let preAssembly: string[][] = [];
+  let ptrAssembly: string = "";
+  const result = opcodes;
+  for (let i = 0; i < result.length; i++) {
+      const para = result[i].parameter
+      if (result[i].opcode !== "_32bitptr") {
+        if (para) {
+          preAssembly.push([result[i].opcode, para]);
+        } else {
+          preAssembly.push([result[i].opcode]);
+        }
+      } else {
+        if (!para) {
+          throw new Error("32bitptr without parameter");
+        }
+        ptrAssembly = ptrAssembly + "0000" + para;
+      }
+  }
+  return assemble(preAssembly) + ptrAssembly;
+}
+
+function printO(op: EVMOpCode) {
+  const pc = op.pc;
+  if (pc == undefined) {
+      throw new Error("Missing pc");
+  }
+  console.log(
+    pc.toString(16).toUpperCase() +
+      "\t" +
+      op.opcode +
+      "\t" +
+      (op.parameter ? op.parameter : "") +
+      "\t " +
+      (op.name ? ";; " + op.name : "") +
+      (op.find_name ? ";; " + op.find_name : "") +
+      "\t " +
+      (op.comment ? " ;; # " + op.comment : "")
+  );
+}
+
+const opcodesToConvert: EVMOpCode[] = [];
+opcodesToConvert.push({opcode: "JUMPDEST", name: "_rambegin"});
+for (let i = 0; i < text_area.length; i += 4) {
+  console.log("Processing: " + text_area.slice(i, i + 4).toString("hex"))
+  const name = convertRISCVtoFunction(i, text_area.slice(i, i + 4));
+  opcodesToConvert.push({opcode: "_32bitptr", find_name: name});
+}
+for (let i = 0; i < opcodesToConvert.length; i++) {
+  opcodes.push(opcodesToConvert[i]);
+}
+
+addProgramCounters();
+resolveNamesAndOffsets();
+
+console.log(opcodes);
+const restOfRAM = full_ram.slice(text_area.length, full_ram.length);
+const finalBytecode = Buffer.concat([Buffer.from(performAssembly(), "hex"), restOfRAM]);
+console.log("Final bytecode: " + finalBytecode.toString("hex"))
+
+async function invokeRiscv() {
+  const common = new Common({ chain: Chain.Mainnet, hardfork: Hardfork.London })
+  const vm = new VM({ common })
+  vm.on('step', function (data: any) {
+    console.log(`pc: ${data.pc.toString(16).toUpperCase()} - Opcode: ${JSON.stringify(data.opcode.name)}- mem length: ${data.memory.length} - ${data.opcode.dynamicFee}`)
+    
+    if (data.opcode.name === "LOG0") {
+      let ptr = Number(data.stack[data.stack.length - 1]);
+      let str = "";
+      while (data.memory[ptr] !== 0) {
+        console.log(ptr);
+        str += String.fromCharCode(data.memory[ptr]);
+        ptr = ptr + 1;
+      }
+      console.log("*** PRINT: " + str);
+    }
+    for (let l = 0; l < data.stack.length; l++) {
+       console.log("- stack " + (data.stack.length - 1 - l) + ": 0x" + data.stack[l].toString(16).toUpperCase());
+    }
+    let mem = data.memory.toString("hex");
+    let l = 0;
+    for (let l = 0; l < mem.length; l += 8) {   
+        if (mem.substring(l, l+8) != "00000000") {
+            console.log("- mem " + (l/2).toString(16).toUpperCase().padStart(8, "0") + " - " + mem.substring(l, l+8));
+        }
+    }
+    for (let l = 0; l < opcodes.length; l++) {
+      if (opcodes[l].pc == data.pc) {
+          printO(opcodes[l]);
+      }
+    }  
+    if (data.opcode.name == "MLOAD") {
+      if (data.stack[data.stack.length - 1] >= 0x10000000) {
+        throw new Error("Trying to access high memory");
+      }
+      console.log("[MEM LOAD] from 0x" + data.stack[data.stack.length - 1].toString(16));
+    } else if (data.opcode.name == "MSTORE") {
+      if (data.stack[data.stack.length - 1] >= 0x10000000) {
+        throw new Error("Trying to access high memory");
+      }
+      console.log("[MEM WRITE] " + data.stack[data.stack.length - 2].toString(16) + " to 0x" + data.stack[data.stack.length - 1].toString(16));
+      if (data.stack[data.stack.length - 1] < 32) {
+          throw new Error("Trying to write to 0");
+      }
+    }
+  });
+
+  console.log("Running in EVM:");
+  const results = await vm.runCode({
+      code: finalBytecode,
+      data: Buffer.alloc(0),
+      gasLimit: new BN(0xffffffffff),
+  });
+  if (results.exceptionError) {
+    throw new Error(JSON.stringify(results.exceptionError));
+  }
+  console.log(`Returned: ${results.returnValue.toString('hex')}`)
+  console.log(`gasUsed : ${results.gasUsed.toString()}`);
+}
+
+invokeRiscv().catch((err) => {
+  console.log(err);
+})

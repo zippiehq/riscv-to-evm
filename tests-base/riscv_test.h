@@ -14,47 +14,31 @@
 	.text;				\
 	.global TEST_FUNC_NAME;		\
 	.global TEST_FUNC_RET;		\
+	.global _start;	\
+_start: \
 TEST_FUNC_NAME:				\
-	lui	a0,%hi(.test_name);	\
-	addi	a0,a0,%lo(.test_name);	\
-	lui	a2,0x0;	\
-.prname_next:				\
-	lb	a1,0(a0);		\
-	beq	a1,zero,.prname_done;	\
-	sw	a1,1024(a2);		\
-	addi	a0,a0,1;		\
-	jal	zero,.prname_next;	\
-.prname_done:				\
-	addi	a1,zero,'.';		\
-	sw	a1,1024(a2);		\
-	sw	a1,1024(a2);
+	lui	a1,%hi(.test_name);	\
+	addi	a1,a1,%lo(.test_name);	\
+	lui	a0,0x42;	\
+	ecall   // println
 
 #define RVTEST_PASS			\
-	lui	a0,0x0;	\
-	addi	a1,zero,'O';		\
-	addi	a2,zero,'K';		\
-	addi	a3,zero,'\n';		\
-	sw	a1,1024(a0);		\
-	sw	a2,1024(a0);		\
-	sw	a3,1024(a0);		\
-	jal	zero,TEST_FUNC_RET;
+	lui	a1,%hi(.ok_msg);	\
+	addi	a1,a1,%lo(.ok_msg);	\
+	lui	a0,0x42;	\
+	ecall;   \
+	lui	a0,0x0; \
+	ecall;
 
 #define RVTEST_FAIL			\
-	lui	a0,0x0 >> 12;	\
-	addi	a1,zero,'E';		\
-	addi	a2,zero,'R';		\
-	addi	a3,zero,'O';		\
-	addi	a4,zero,'\n';		\
-	sw	a1,1024(a0);		\
-	sw	a2,1024(a0);		\
-	sw	a2,1024(a0);		\
-	sw	a3,1024(a0);		\
-	sw	a2,1024(a0);		\
-	sw	a4,1024(a0);		\
+	lui	a1,%hi(.ok_msg);	\
+	addi	a1,a1,%lo(.ok_msg);	\
+	lui	a0,0x42;	\
+	ecall;   \
 	ebreak;
 
 #define RVTEST_CODE_END
-#define RVTEST_DATA_BEGIN .test_name: .ascii TEST_FUNC_TXT; byte 0x00; .balign 4;
+#define RVTEST_DATA_BEGIN .test_name: .ascii TEST_FUNC_TXT; .byte 0x00; .balign 4; .error_msg: .ascii "ERO"; .byte 0x00; .balign 4; .ok_msg: .ascii "OK"; .byte 0x0; .align 4;
 #define RVTEST_DATA_END
 
 #endif
