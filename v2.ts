@@ -252,7 +252,7 @@ function emitSllSrl(type: string, rd: number, rs1: number, rs2: number) {
 
 function emitSlliSrli(func: string, rd: number, rs1: number, imm: number) {
   readRegister(rs1);
-  if (func == "srli") {
+  if (func == "SRLI") {
     opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" });
     opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
   }
@@ -260,8 +260,8 @@ function emitSlliSrli(func: string, rd: number, rs1: number, imm: number) {
     opcode: "PUSH1",
     parameter: imm.toString(16).toUpperCase().padStart(2, "0"),
   });
-  opcodes.push({ opcode: func == "slli" ? "SHL" : "SHR", comment: func });
-  writeRegister(rd, func == "slli"); // don't need to mask if shl, but we do if shr (XXX what?)
+  opcodes.push({ opcode: func == "SLLI" ? "SHL" : "SHR", comment: func });
+  writeRegister(rd, func == "SLLI"); // don't need to mask if shl, but we do if shr (XXX what?)
 }
 
 function emitSlt(rd: number, rs1: number, rs2: number) {
@@ -373,6 +373,132 @@ function emitBne(rs1: number, rs2: number, imm: number) {
   opcodes.push({opcode: "PUSH2", find_name: "_execute"});
   opcodes.push({opcode: "JUMP"});
   opcodes.push({opcode: "JUMPDEST", name: "_neq_after_" + rando});
+}
+
+function emitBeq(rs1: number, rs2: number, imm: number) {
+  const rando = crypto.randomBytes(32).toString("hex");
+  readRegister(rs1);
+  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); 
+  opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
+  readRegister(rs2);
+  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); 
+  opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
+  opcodes.push({ opcode: "EQ"});
+
+  opcodes.push({ opcode: "PUSH2", find_name: "_beq_" + rando})
+  opcodes.push({ opcode: "JUMPI"});
+  opcodes.push({ opcode: "PUSH2", find_name: "_beq_after_" + rando})
+  opcodes.push({ opcode: "JUMP"});
+  opcodes.push({ opcode: "JUMPDEST", name: "_beq_" + rando});
+  // pc on stack
+  signExtendTo256(imm);
+  opcodes.push({opcode: "ADD"});
+  opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
+  opcodes.push({opcode: "AND", comment: "mask to 32 bits" });
+  opcodes.push({opcode: "PUSH2", find_name: "_execute"});
+  opcodes.push({opcode: "JUMP"});
+  opcodes.push({opcode: "JUMPDEST", name: "_beq_after_" + rando});
+}
+
+function emitBlt(rs1: number, rs2: number, imm: number) {
+  const rando = crypto.randomBytes(32).toString("hex");
+  readRegister(rs2);
+  opcodes.push({opcode: "PUSH1", parameter: "03"});
+  opcodes.push({opcode: "SIGNEXTEND"});
+  readRegister(rs1);
+  opcodes.push({opcode: "PUSH1", parameter: "03"});
+  opcodes.push({opcode: "SIGNEXTEND"});
+  opcodes.push({ opcode: "SLT", comment: "BLT"});
+  opcodes.push({ opcode: "PUSH2", find_name: "_blt_" + rando})
+  opcodes.push({ opcode: "JUMPI"});
+  opcodes.push({ opcode: "PUSH2", find_name: "_blt_after_" + rando})
+  opcodes.push({ opcode: "JUMP"});
+  opcodes.push({ opcode: "JUMPDEST", name: "_blt_" + rando});
+  // pc on stack
+  signExtendTo256(imm);
+  opcodes.push({opcode: "ADD"});
+  opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
+  opcodes.push({opcode: "AND", comment: "mask to 32 bits" });
+  opcodes.push({opcode: "PUSH2", find_name: "_execute"});
+  opcodes.push({opcode: "JUMP"});
+  opcodes.push({opcode: "JUMPDEST", name: "_blt_after_" + rando});
+}
+
+function emitBge(rs1: number, rs2: number, imm: number) {
+  const rando = crypto.randomBytes(32).toString("hex");
+  readRegister(rs2);
+  opcodes.push({opcode: "PUSH1", parameter: "03"});
+  opcodes.push({opcode: "SIGNEXTEND"});
+  readRegister(rs1);
+  opcodes.push({opcode: "PUSH1", parameter: "03"});
+  opcodes.push({opcode: "SIGNEXTEND"});
+  opcodes.push({ opcode: "SLT", comment: "bge"});
+  opcodes.push({ opcode: "ISZERO"});
+
+  opcodes.push({ opcode: "PUSH2", find_name: "_bge_" + rando})
+  opcodes.push({ opcode: "JUMPI"});
+  opcodes.push({ opcode: "PUSH2", find_name: "_bge_after_" + rando})
+  opcodes.push({ opcode: "JUMP"});
+  opcodes.push({ opcode: "JUMPDEST", name: "_bge_" + rando});
+  // pc on stack
+  signExtendTo256(imm);
+  opcodes.push({opcode: "ADD"});
+  opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
+  opcodes.push({opcode: "AND", comment: "mask to 32 bits" });
+  opcodes.push({opcode: "PUSH2", find_name: "_execute"});
+  opcodes.push({opcode: "JUMP"});
+  opcodes.push({opcode: "JUMPDEST", name: "_bge_after_" + rando});
+}
+
+function emitBgeu(rs1: number, rs2: number, imm: number) {
+  const rando = crypto.randomBytes(32).toString("hex");
+  readRegister(rs2);
+  opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
+  opcodes.push({opcode: "AND", comment: "mask to 32 bits" });
+  readRegister(rs1);
+  opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
+  opcodes.push({opcode: "AND", comment: "mask to 32 bits" });
+  opcodes.push({ opcode: "LT", comment: "bgeu"});
+  opcodes.push({ opcode: "ISZERO"});
+
+  opcodes.push({ opcode: "PUSH2", find_name: "_bgeu_" + rando})
+  opcodes.push({ opcode: "JUMPI"});
+  opcodes.push({ opcode: "PUSH2", find_name: "_bgeu_after_" + rando})
+  opcodes.push({ opcode: "JUMP"});
+  opcodes.push({ opcode: "JUMPDEST", name: "_bgeu_" + rando});
+  // pc on stack
+  signExtendTo256(imm);
+  opcodes.push({opcode: "ADD"});
+  opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
+  opcodes.push({opcode: "AND", comment: "mask to 32 bits" });
+  opcodes.push({opcode: "PUSH2", find_name: "_execute"});
+  opcodes.push({opcode: "JUMP"});
+  opcodes.push({opcode: "JUMPDEST", name: "_bgeu_after_" + rando});
+}
+
+function emitBltu(rs1: number, rs2: number, imm: number) {
+  const rando = crypto.randomBytes(32).toString("hex");
+  readRegister(rs2);
+  opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
+  opcodes.push({opcode: "AND", comment: "mask to 32 bits" });
+  readRegister(rs1);
+  opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
+  opcodes.push({opcode: "AND", comment: "mask to 32 bits" });
+  opcodes.push({ opcode: "LT", comment: "bltu"});
+
+  opcodes.push({ opcode: "PUSH2", find_name: "_bltu_" + rando})
+  opcodes.push({ opcode: "JUMPI"});
+  opcodes.push({ opcode: "PUSH2", find_name: "_bltu_after_" + rando})
+  opcodes.push({ opcode: "JUMP"});
+  opcodes.push({ opcode: "JUMPDEST", name: "_bltu_" + rando});
+  // pc on stack
+  signExtendTo256(imm);
+  opcodes.push({opcode: "ADD"});
+  opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
+  opcodes.push({opcode: "AND", comment: "mask to 32 bits" });
+  opcodes.push({opcode: "PUSH2", find_name: "_execute"});
+  opcodes.push({opcode: "JUMP"});
+  opcodes.push({opcode: "JUMPDEST", name: "_bltu_after_" + rando});
 }
 
 function emitSw(rs1: number, rs2: number, imm: number) {
@@ -515,11 +641,20 @@ function convertRISCVtoFunction(pc: number, buf: Buffer): string {
         emitBne(parsed.rs1, parsed.rs2, parsed.imm);
         break;
       case "BEQ":
+        emitBeq(parsed.rs1, parsed.rs2, parsed.imm);
+        break;
       case "BLT":
+        emitBlt(parsed.rs1, parsed.rs2, parsed.imm);
+        break;
       case "BGE":
+        emitBge(parsed.rs1, parsed.rs2, parsed.imm);
+        break;
       case "BLTU":
+        emitBltu(parsed.rs1, parsed.rs2, parsed.imm);
+        break;
       case "BGEU":
-        throw new Error("branches not implemented: " + parsed.instructionName);
+        emitBgeu(parsed.rs1, parsed.rs2, parsed.imm);
+        break;
       // jump & link
       case "JAL": {
         emitJal(parsed.rd, parsed.imm);
