@@ -185,13 +185,13 @@ function emitAndOrXor(type: string, rd: number, rs1: number, rs2: number) {
   readRegister(rs2);
   readRegister(rs1);
   switch (type) {
-    case "and":
+    case "AND":
       opcodes.push({ opcode: "AND", comment: "AND" });
       break;
-    case "or":
+    case "OR":
       opcodes.push({ opcode: "OR", comment: "OR" });
       break;
-    case "xor":
+    case "XOR":
       opcodes.push({ opcode: "XOR", comment: "XOR" });
       break;
   }
@@ -203,13 +203,13 @@ function emitAndOrXori(type: string, rd: number, rs1: number, imm: number) {
   readRegister(rs1);
 
   switch (type) {
-    case "andi":
+    case "ANDI":
       opcodes.push({ opcode: "AND", comment: "ANDI" });
       break;
-    case "ori":
+    case "ORI":
       opcodes.push({ opcode: "OR", comment: "ORI" });
       break;
-    case "xori":
+    case "XORI":
       opcodes.push({ opcode: "XOR", comment: "XORI" });
       break;
   }
