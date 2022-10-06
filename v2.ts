@@ -228,11 +228,11 @@ function emitSra(rd: number, rs1: number, rs2: number) {
 function emitSrai(rd: number, rs1: number, imm: number) {
   readRegister(rs1);
   // this is already 32-bit
-  opcodes.push({ opcode: "PUSH1", parameter: "03" });
+  opcodes.push({ opcode: "PUSH1", parameter: "03"});
   opcodes.push({ opcode: "SIGNEXTEND" });
   opcodes.push({
-    opcode: "PUSH1",
-    parameter: imm.toString(16).toUpperCase().padStart(2, "0"),
+    opcode: "PUSH2",
+    parameter: imm.toString(16).toUpperCase().padStart(4, "0"),
   });
   opcodes.push({ opcode: "SAR" });
   writeRegister(rd, false);
@@ -309,12 +309,7 @@ function emitSltiu(rd: number, rs1: number, imm: number) {
 }
 
 function emitLui(rd: number, imm: number) {
-  opcodes.push({
-    opcode: "PUSH4",
-    parameter: (imm << 12 >>> 0).toString(16).toUpperCase().padStart(8, "0"),
-    comment: "LUI",
-  });
-  console.log("LUI: " +  (imm << 12 >>> 0).toString(16).toUpperCase().padStart(8, "0"));
+  signExtendTo256(imm << 12 >> 0);
   writeRegister(rd, false);
 }
 
@@ -432,8 +427,7 @@ function convertRISCVtoFunction(pc: number, buf: Buffer): string {
     return "_riscv_" + hash;
   }
   emittedFunctions[hash] = "_riscv_" + hash;
-  opcodes.push({ opcode: "JUMPDEST", name: "_riscv_" + hash, comment: "pc 0x" + pc.toString(16) + " buffer: " + buf.toString("hex")  });
-
+  opcodes.push({ opcode: "JUMPDEST", name: "_riscv_" + hash, comment: "pc 0x" + pc.toString(16) + " buffer: " + buf.toString("hex") + " decode " + parseInstruction(buf.readUInt32LE(0)).assembly });
   for (let i = 0; i < buf.length; i += 4) {
     const instr = buf.readUInt32LE(i);
     const parsed = parseInstruction(instr);
@@ -446,7 +440,7 @@ function convertRISCVtoFunction(pc: number, buf: Buffer): string {
       }
       case "SLLI":
       case "SRLI": {
-        emitSlliSrli(parsed.instructionName, parsed.rd, parsed.rs1, parsed.imm);
+        emitSlliSrli(parsed.instructionName, parsed.rd, parsed.rs1, parsed.imm & 0x1F);
         break;
       }
       case "SRA": {
@@ -454,7 +448,8 @@ function convertRISCVtoFunction(pc: number, buf: Buffer): string {
         break;
       }
       case "SRAI": {
-        emitSrai(parsed.rd, parsed.rs1, parsed.imm);
+        console.log("SRAI: " + JSON.stringify(parsed));
+        emitSrai(parsed.rd, parsed.rs1, parsed.imm & 0x1F);
         break;
       }
       // arithmetic
@@ -581,6 +576,9 @@ function addProgramCounters(): number {
           console.log(e);
           pc += assemble([[e.opcode]]).length / 2;
       }
+      if (Math.round(pc) !== pc) {
+        throw new Error("Would do a decimal PC in " + JSON.stringify(e));
+      }
   }
   return pc;
 }
@@ -693,10 +691,16 @@ async function invokeRiscv() {
     for (let l = 0; l < data.stack.length; l++) {
        console.log("- stack " + (data.stack.length - 1 - l) + ": 0x" + data.stack[l].toString(16).toUpperCase());
     }
-    /*
-    let mem = data.memory.toString("hex");
+    const regs = Object.keys(reg2mem);
+    for (let i = 0; i < regs.length; i++) {
+      let loc = reg2mem[regs[i]];
+      if (loc < data.memory.length + 32) {
+        console.log("reg " + regs[i] + "\t" + Buffer.from(data.memory).slice(loc, loc+32).toString("hex"));
+      }
+    }
+    /* let mem = data.memory.toString("hex");
     let l = 0;
-    for (let l = 0; l < mem.length; l += 8) {   
+    for (let l = 0; l < data.memory.length; l += 8) {   
         if (mem.substring(l, l+8) != "00000000") {
             console.log("- mem " + (l/2).toString(16).toUpperCase().padStart(8, "0") + " - " + mem.substring(l, l+8));
         }
