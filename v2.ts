@@ -247,8 +247,8 @@ function emitSllSrl(type: string, rd: number, rs1: number, rs2: number) {
   opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
 
   readRegister(rs2);
-  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" });
-  opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
+  opcodes.push({ opcode: "PUSH1", parameter: "1F" });
+  opcodes.push({ opcode: "AND", comment: "mask to 5 bits" });
   opcodes.push({ opcode: type == "SLL" ? "SHL" : "SHR" });
   writeRegister(rd, false);
 }
@@ -311,8 +311,8 @@ function emitSltiu(rd: number, rs1: number, imm: number) {
   writeRegister(rd, false);
 }
 
-function emitLui(rd: number, imm: number) {
-  signExtendTo256(imm << 12 >> 0);
+function emitLui(rd: number, insn: number) {
+  opcodes.push({opcode: "PUSH4", parameter: ((insn & 0xfffff000) >>> 0).toString(16).padStart(8, "0")});
   writeRegister(rd, false);
 }
 
@@ -598,7 +598,7 @@ function convertRISCVtoFunction(pc: number, buf: Buffer): string {
         break;
       }
       case "LUI": {
-        emitLui(parsed.rd, parsed.imm);
+        emitLui(parsed.rd, parsed.unparsedInstruction);
         break;
       }
       case "AUIPC": {
