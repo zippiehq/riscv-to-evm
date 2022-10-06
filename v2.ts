@@ -221,7 +221,10 @@ function emitSra(rd: number, rs1: number, rs2: number) {
   opcodes.push({ opcode: "PUSH1", parameter: "03" });
   opcodes.push({ opcode: "SIGNEXTEND" });
   readRegister(rs2);
+  opcodes.push({ opcode: "PUSH1", parameter: "1F" });
+  opcodes.push({ opcode: "AND", comment: "mask to 5 bits" });
   opcodes.push({ opcode: "SAR" });
+
   writeRegister(rd, false);
 }
 
