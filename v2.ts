@@ -314,9 +314,12 @@ function emitLui(rd: number, imm: number) {
 }
 
 function emitAuipc(rd: number, imm: number) {
-  throw new Error("Unimplemented: auipc");
   // assume PC is top of stack
   opcodes.push({ opcode: "DUP1" });
+  signExtendTo256(imm << 12 >> 0);
+  opcodes.push({ opcode: "ADD" });
+  writeRegister(rd, false);
+
   // XXX pc + sext(imm[31:12] << 12)
 }
 
