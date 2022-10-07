@@ -334,7 +334,7 @@ function emitJal(rd: number, imm: number) {
   opcodes.push({ opcode: "ADD" }); // pc+imm-signextended(256 bit) pc
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended pc
   opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
-  opcodes.push({ opcode: "SWAP1" }); // pc  pc+imm-signextended
+  opcodes.push({ opcode: "SWAP1" }); // pc  pc+imm-signextended 
   opcodes.push({ opcode: "PUSH1", parameter: "04" });
   opcodes.push({ opcode: "ADD" }); // pc+4 pc+imm-signextended
   writeRegister(rd, false);
@@ -342,6 +342,24 @@ function emitJal(rd: number, imm: number) {
   opcodes.push({ opcode: "PUSH4", find_name: "_execute" });
   opcodes.push({ opcode: "JUMP" });
 }
+
+function emitJalr(rd: number, rs1: number, imm: number) {
+  // XXX this may be more optimal with using SUB ..
+  readRegister(rs1);
+  signExtendTo256(imm);
+  opcodes.push({ opcode: "ADD" }); // rs1+imm-signextended(256 bit) pc
+  opcodes.push({ opcode: "PUSH4", parameter: "0xFFFFFFFE" }); // pc+imm-signextended pc
+  opcodes.push({ opcode: "AND", comment: "mask ~1" });
+  opcodes.push({ opcode: "SWAP1" }); // pc  pc+imm-signextended 
+  opcodes.push({ opcode: "PUSH1", parameter: "04" });
+  opcodes.push({ opcode: "ADD" }); // pc+4 pc+imm-signextended
+  writeRegister(rd, false);
+  // pc+mm-signextended
+  opcodes.push({ opcode: "PUSH4", find_name: "_execute" });
+  opcodes.push({ opcode: "JUMP" });
+}
+
+
 
 function bswap32() {
   opcodes.push({ opcode: "DUP1" });
@@ -671,7 +689,8 @@ function convertRISCVtoFunction(pc: number, buf: Buffer): string {
         break;
       }
       case "JALR": {
-        throw new Error("JAL not implemented");
+        emitJalr(parsed.rd, parsed.rs1, parsed.imm);
+        break;
       }
       // Synch (do nothing, single-thread)
       case "FENCE":
