@@ -5,6 +5,7 @@ import { BN } from "ethereumjs-util";
 import fs from "fs";
 import crypto from "crypto";
 import { parseInstruction } from "./instructionParser";
+import { parse } from "node:path/win32";
 
 interface EVMOpCode {
   opcode: string;
@@ -563,6 +564,9 @@ function convertRISCVtoFunction(pc: number, buf: Buffer): string {
   for (let i = 0; i < buf.length; i += 4) {
     const instr = buf.readUInt32LE(i);
     const parsed = parseInstruction(instr);
+    if (parsed.instructionName == "SRAI" && ((parsed.imm & 0x400) == 0)) {
+      parsed.instructionName = "SRLI";
+    }
     switch (parsed.instructionName) {
       // shifts
       case "SLL":

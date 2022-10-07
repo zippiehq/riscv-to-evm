@@ -31,14 +31,14 @@ TEST_FUNC_NAME:				\
 	ecall;
 
 #define RVTEST_FAIL			\
-	lui	a1,%hi(.ok_msg);	\
-	addi	a1,a1,%lo(.ok_msg);	\
+	lui	a1,%hi(.error_msg);	\
+	addi	a1,a1,%lo(.error_msg);	\
 	lui	a0,0x42;	\
 	ecall;   \
 	ebreak;
 
 #define RVTEST_CODE_END
-#define RVTEST_DATA_BEGIN .test_name: .ascii TEST_FUNC_TXT; .byte 0x00; .balign 4; .error_msg: .ascii "ERO"; .byte 0x00; .balign 4; .ok_msg: .ascii "OK"; .byte 0x0; .align 4;
+#define RVTEST_DATA_BEGIN .test_name: .ascii TEST_FUNC_TXT; .byte 0x00; .balign 4; .error_msg: .ascii "ERR"; .byte 0x00; .balign 4; .ok_msg: .ascii "OK"; .byte 0x0; .align 4;
 #define RVTEST_DATA_END
 
 #endif
