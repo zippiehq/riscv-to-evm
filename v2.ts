@@ -22,6 +22,8 @@ const full_ram = fs.readFileSync(process.argv[2] + ".ramimage");
 const WORD_REPLACE_MASK =
   "00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff".toUpperCase();
 
+const HALFWORD_REPLACE_MASK = "0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff".toUpperCase();
+
 const emittedFunctions: Record<string, string> = {};
 const opcodes: EVMOpCode[] = [];
 
@@ -323,8 +325,6 @@ function emitAuipc(rd: number, imm: number) {
   signExtendTo256(imm << 12 >> 0);
   opcodes.push({ opcode: "ADD" });
   writeRegister(rd, false);
-
-  // XXX pc + sext(imm[31:12] << 12)
 }
 
 function emitJal(rd: number, imm: number) {
@@ -359,21 +359,47 @@ function emitJalr(rd: number, rs1: number, imm: number) {
   opcodes.push({ opcode: "JUMP" });
 }
 
+function bswap16() {
+  opcodes.push({opcode: "DUP1", comment: "begin bswap16"});
+  opcodes.push({opcode: "PUSH1", parameter: "8"});
+  opcodes.push({opcode: "SHL"});
+  opcodes.push({opcode: "DUP2"});
+  opcodes.push({opcode: "PUSH2", parameter: "FF00"});
+  opcodes.push({opcode: "AND"});
+  opcodes.push({opcode: "PUSH1", parameter: "08"});
+  opcodes.push({opcode: "SHR"});
+  opcodes.push({opcode: "OR"});
+  opcodes.push({opcode: "PUSH2", parameter: "FFFF"});
+  opcodes.push({opcode: "AND"});
+  opcodes.push({opcode: "SWAP1"});
+  opcodes.push({opcode: "POP", comment: "end bswap16"});
+}
 
 
 function bswap32() {
-  opcodes.push({ opcode: "DUP1" });
-  opcodes.push({ opcode: "DUP1" });
-  opcodes.push({ opcode: "PUSH1", parameter: "08" });
-  opcodes.push({ opcode: "SHL" });
-  opcodes.push({ opcode: "PUSH2", parameter: "FF00" });
-  opcodes.push({ opcode: "AND" });
-  opcodes.push({ opcode: "SWAP1" });
-  opcodes.push({ opcode: "PUSH1", parameter: "08" });
-  opcodes.push({ opcode: "SHR" });
-  opcodes.push({ opcode: "PUSH2", parameter: "00FF" });
-  opcodes.push({ opcode: "AND" });
-  opcodes.push({ opcode: "OR" });
+  opcodes.push({opcode: "DUP1"});
+  opcodes.push({opcode: "PUSH1", parameter: "18"}); // 24
+  opcodes.push({opcode: "SHL"});
+  opcodes.push({opcode: "DUP2"});
+  opcodes.push({opcode: "PUSH1", parameter: "08"});
+  opcodes.push({opcode: "SHL"});
+  opcodes.push({opcode: "PUSH3", parameter: "FF0000"});
+  opcodes.push({opcode: "AND"});
+  opcodes.push({opcode: "OR"});
+  opcodes.push({opcode: "DUP2"});
+  opcodes.push({opcode: "PUSH1", parameter: "08"});
+  opcodes.push({opcode: "SHR"});
+  opcodes.push({opcode: "PUSH2", parameter: "FF00"});
+  opcodes.push({opcode: "AND"});
+  opcodes.push({opcode: "DUP3"});
+  opcodes.push({opcode: "PUSH1", parameter: "18"}); // 24
+  opcodes.push({opcode: "SHR"});
+  opcodes.push({opcode: "OR"});
+  opcodes.push({opcode: "OR"});
+  opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF"});
+  opcodes.push({opcode: "AND"});
+  opcodes.push({opcode: "SWAP1"});
+  opcodes.push({opcode: "POP"});
 }
 
 function emitBne(rs1: number, rs2: number, imm: number) {
@@ -526,13 +552,110 @@ function emitBltu(rs1: number, rs2: number, imm: number) {
   opcodes.push({opcode: "JUMPDEST", name: "_bltu_after_" + rando});
 }
 
-function emitSw(rs1: number, rs2: number, imm: number) {
-  // grab 32 bit value from rs2 (value)
-  readRegister(rs2);
+function emitLb(rd: number, rs1: number, imm: number) {
+  readRegister(rs1);
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" });
   opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
+  signExtendTo256(imm); // add imm
+  opcodes.push({ opcode: "ADD"});
+  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // narrow down to 32-bit
+  opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
+  opcodes.push({ opcode: "MLOAD"});
+  opcodes.push({ opcode: "PUSH1", parameter: "F8" }); // to get the 32-bit value as it's all the way left
+  opcodes.push({ opcode: "SHR" });
+
+  opcodes.push({opcode: "PUSH1", parameter: "00"});
+  opcodes.push({opcode: "SIGNEXTEND"});
+
+  writeRegister(rd, false);
+}
+
+function emitLbu(rd: number, rs1: number, imm: number) {
+  // grab 32 bit value from rs2 (value)
+  readRegister(rs1);
+  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" });
+  opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
+  signExtendTo256(imm); // add imm
+  opcodes.push({ opcode: "ADD"});
+  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // narrow down to 32-bit
+  opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
+  opcodes.push({ opcode: "MLOAD"});
+  opcodes.push({ opcode: "PUSH1", parameter: "F8" }); // to get the 32-bit value as it's all the way left
+  opcodes.push({ opcode: "SHR" });
+ 
+  writeRegister(rd, false);
+}
+
+function emitLh(rd: number, rs1: number, imm: number) {
+  // grab 32 bit value from rs2 (value)
+  readRegister(rs1);
+  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" });
+  opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
+  signExtendTo256(imm); // add imm
+  opcodes.push({ opcode: "ADD"});
+  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // narrow down to 32-bit
+  opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
+  opcodes.push({ opcode: "MLOAD"});
+  opcodes.push({ opcode: "PUSH1", parameter: "F0" }); // to get the 32-bit value as it's all the way left
+  opcodes.push({ opcode: "SHR" });
+
+  bswap16(); // fucking big endian EVM XXX we might be able to avoid AND 0xFFFF as we have a signextend
+
+  opcodes.push({opcode: "PUSH1", parameter: "01"});
+  opcodes.push({opcode: "SIGNEXTEND"});
+  writeRegister(rd, false);
+}
+
+function emitLhu(rd: number, rs1: number, imm: number) {
+  // grab 32 bit value from rs2 (value)
+  readRegister(rs1);
+  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" });
+  opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
+  signExtendTo256(imm); // add imm
+  opcodes.push({ opcode: "ADD"});
+  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // narrow down to 32-bit
+  opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
+  opcodes.push({ opcode: "MLOAD"});
+  opcodes.push({ opcode: "PUSH1", parameter: "F0" }); // to get the 32-bit value as it's all the way left
+  opcodes.push({ opcode: "SHR" });
+
+  bswap16(); // fucking big endian EVM
+
+  writeRegister(rd, false);
+}
+
+function emitLw(rd: number, rs1: number, imm: number) {
+  // grab 32 bit value from rs2 (value)
+  readRegister(rs1);
+  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" });
+  opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
+  signExtendTo256(imm); // add imm
+  opcodes.push({ opcode: "ADD"});
+  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // narrow down to 32-bit
+  opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
+  opcodes.push({ opcode: "MLOAD"});
+  opcodes.push({ opcode: "PUSH1", parameter: "E0" }); // to get the 32-bit value as it's all the way left
+  opcodes.push({ opcode: "SHR" });
 
   bswap32(); // fucking big endian EVM
+
+  writeRegister(rd, false);
+}
+
+function emitSb(rs1: number, rs2: number, imm: number) {
+  // grab 32 bit value from rs2 (value)
+  readRegister(rs2);
+
+  readRegister(rs1); // read rs1 (addr)
+  signExtendTo256(imm); // add imm
+
+  opcodes.push({ opcode: "ADD" });
+  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // narrow down to 32-bit
+  opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
+  opcodes.push({ opcode: "MSTORE8" });
+}
+
+function emitSh(rs1: number, rs2: number, imm: number) {
 
   readRegister(rs1); // read rs1 (addr)
   signExtendTo256(imm); // add imm
@@ -543,9 +666,45 @@ function emitSw(rs1: number, rs2: number, imm: number) {
 
   opcodes.push({ opcode: "DUP1" });
   opcodes.push({ opcode: "MLOAD", comment: "fetch" });
+  opcodes.push({ opcode: "PUSH32", parameter: HALFWORD_REPLACE_MASK });
+  opcodes.push({ opcode: "AND" });
+
+  // grab value from rs2 (value)
+  readRegister(rs2);
+  bswap16(); // fucking big endian EVM
+
+  opcodes.push({opcode: "PUSH1", parameter: "F0"});
+  opcodes.push({opcode: "SHL"});
+
+  opcodes.push({ opcode: "ADD" });
+
   opcodes.push({ opcode: "SWAP1" });
+  opcodes.push({ opcode: "MSTORE" });
+}
+
+function emitSw(rs1: number, rs2: number, imm: number) {
+
+  readRegister(rs1); // read rs1 (addr)
+  signExtendTo256(imm); // add imm
+
+  opcodes.push({ opcode: "ADD" });
+  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // narrow down to 32-bit
+  opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
+
+  opcodes.push({ opcode: "DUP1" });
+  opcodes.push({ opcode: "MLOAD", comment: "fetch" });
   opcodes.push({ opcode: "PUSH32", parameter: WORD_REPLACE_MASK });
   opcodes.push({ opcode: "AND" });
+
+  // grab 32 bit value from rs2 (value)
+  readRegister(rs2);
+  bswap32(); // fucking big endian EVM
+
+  opcodes.push({opcode: "PUSH1", parameter: "E0"});
+  opcodes.push({opcode: "SHL"});
+
+  opcodes.push({ opcode: "ADD" });
+
   opcodes.push({ opcode: "SWAP1" });
   opcodes.push({ opcode: "MSTORE" });
 }
@@ -705,16 +864,30 @@ function convertRISCVtoFunction(pc: number, buf: Buffer): string {
         break;
       // loads
       case "LB":
+        emitLb(parsed.rd, parsed.rs1, parsed.imm);
+        break;
       case "LH":
+        emitLh(parsed.rd, parsed.rs1, parsed.imm);
+        break;
       case "LBU":
+        emitLbu(parsed.rd, parsed.rs1, parsed.imm);
+        break;
       case "LHU":
+        emitLhu(parsed.rd, parsed.rs1, parsed.imm);
+        break;
       case "LW":
-        throw new Error("loads not implemented");
+        emitLw(parsed.rd, parsed.rs1, parsed.imm);
+        break;
       // stores
       case "SB":
+        emitSb(parsed.rs1, parsed.rs2, parsed.imm); 
+        break;
       case "SH":
+        emitSh(parsed.rs1, parsed.rs2, parsed.imm);
+        break;
       case "SW":
-        throw new Error("stores not implemented");
+        emitSw(parsed.rs1, parsed.rs2, parsed.imm);
+        break;
       default:
         throw new Error("Unknown instruction: " + parsed.instructionName);
     }
