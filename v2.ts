@@ -351,8 +351,10 @@ function emitLui(rd: number, insn: number) {
 function emitAuipc(rd: number, imm: number) {
   // assume PC is top of stack
   opcodes.push({ opcode: "DUP1" });
-  signExtendTo256(imm << 12 >> 0);
-  opcodes.push({ opcode: "ADD" });
+  if (imm !== 0) {
+    signExtendTo256(imm << 12 >> 0);
+    opcodes.push({ opcode: "ADD" });  
+  }
   writeRegister(rd, false);
 }
 
@@ -567,6 +569,7 @@ function emitBltu(rs1: number, rs2: number, imm: number) {
   readRegister(rs1);
   opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
   opcodes.push({opcode: "AND", comment: "mask to 32 bits" });
+
   opcodes.push({ opcode: "LT", comment: "bltu"});
 
   opcodes.push({ opcode: "PUSH2", find_name: "_bltu_" + rando})
