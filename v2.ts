@@ -373,17 +373,20 @@ function emitJal(rd: number, imm: number) {
 }
 
 function emitJalr(rd: number, rs1: number, imm: number) {
-  // XXX this may be more optimal with using SUB ..
+  if (rd === 0) {
+    opcodes.push({opcode: "POP"});
+  }
   readRegister(rs1);
   signExtendTo256(imm);
   opcodes.push({ opcode: "ADD" }); // rs1+imm-signextended(256 bit) pc
   opcodes.push({ opcode: "PUSH4", parameter: "0xFFFFFFFE" }); // pc+imm-signextended pc
   opcodes.push({ opcode: "AND", comment: "mask ~1" });
-  opcodes.push({ opcode: "SWAP1" }); // pc  pc+imm-signextended 
-  opcodes.push({ opcode: "PUSH1", parameter: "04" });
-  opcodes.push({ opcode: "ADD" }); // pc+4 pc+imm-signextended
-  writeRegister(rd, false);
-  // pc+mm-signextended
+  if (rd !== 0) {
+    opcodes.push({ opcode: "SWAP1" }); // pc  pc+imm-signextended 
+    opcodes.push({ opcode: "PUSH1", parameter: "04" });
+    opcodes.push({ opcode: "ADD" }); // pc+4 pc+imm-signextended
+    writeRegister(rd, false);  
+  }
   opcodes.push({ opcode: "PUSH4", find_name: "_execute" });
   opcodes.push({ opcode: "JUMP" });
 }
@@ -993,12 +996,12 @@ function performAssembly(): string {
   return assemble(preAssembly) + ptrAssembly;
 }
 
-function printO(op: EVMOpCode) {
+function printO(cycle: number, op: EVMOpCode) {
   const pc = op.pc;
   if (pc == undefined) {
       throw new Error("Missing pc");
   }
-  console.log(
+  console.log(cycle + "\t",
     pc.toString(16).toUpperCase() +
       "\t" +
       op.opcode +
@@ -1031,6 +1034,7 @@ const finalBytecode = Buffer.concat([Buffer.from(assembled, "hex"), restOfRAM]);
 console.log("Final bytecode length; " + finalBytecode.length);
 
 async function invokeRiscv() {
+  let cycle = 0;
   const common = new Common({ chain: Chain.Mainnet, hardfork: Hardfork.London })
   const vm = new VM({ common })
   vm.on('step', function (data: any) {
@@ -1065,7 +1069,7 @@ async function invokeRiscv() {
     
     for (let l = 0; l < opcodes.length; l++) {
       if (opcodes[l].pc == data.pc) {
-          printO(opcodes[l]);
+          printO(cycle, opcodes[l]);
       }
     }
     if (data.opcode.name == "MLOAD") {
@@ -1082,6 +1086,7 @@ async function invokeRiscv() {
           throw new Error("Trying to write to 0");
       }
     }
+    cycle = cycle + 1;
   });
 
   console.log("Running in EVM:");
