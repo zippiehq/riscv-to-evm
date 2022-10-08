@@ -152,6 +152,11 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.20.55.tgz#c329cbd434c42164f846b909bd6f85b5537f6240"
   integrity sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==
 
+"@types/node@^14.14.22":
+  version "14.18.31"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.18.31.tgz#4b873dea3122e71af4f77e65ec5841397ff254d3"
+  integrity sha512-vQAnaReSQkEDa8uwAyQby8bYGKu84R/deEc6mg5T8fX6gzCn8QW6rziSgsti1fNvsrswKUKPnVTi7uoB+u62Mw==
+
 "@types/node@^17.0.25":
   version "17.0.45"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.45.tgz#2c0fafd78705e7a18b7906b5201a522719dc5190"
@@ -170,6 +175,11 @@
   integrity sha512-Da66lEIFeIz9ltsdMZcpQvmrmmoqrfju8pm1BH8WbYjZSwUgCwXLb9C+9XYogwBITnbsSaMdVPb2ekf7TV+03w==
   dependencies:
     "@types/node" "*"
+
+"@wokwi/elfist@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@wokwi/elfist/-/elfist-1.0.0.tgz#48cacb88ea714b9e00d989e412e4b72601b5f7bb"
+  integrity sha512-a1pCeNyX6Wpp9E2wIMyhQar7LtT020zy3Rvoms+Kt02Jafca79SWePtqlIuu6c5wKQN+d5SH6YBJV7jb1WPrYw==
 
 abstract-leveldown@^6.2.1:
   version "6.3.0"
@@ -367,6 +377,13 @@ diff@^4.0.1:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/diff/-/diff-4.0.2.tgz#60f3aecb89d5fae520c11aa19efc2bb982aade7d"
   integrity sha512-58lmxKSA4BNyLz+HHMUzlOEpg09FV+ev6ZMe3vJihgdxzgcwZ8VoEEPmALCZG9LmqfVoNMMKpttIYTVG6uDY7A==
+
+elfinfo@^0.4.0-beta:
+  version "0.4.0-beta"
+  resolved "https://registry.yarnpkg.com/elfinfo/-/elfinfo-0.4.0-beta.tgz#e7743747d1ca3c060999e45ceed5b590c1b3e5e7"
+  integrity sha512-wZXXtJmqERZz8S31gIwY+HrqJUdf82g/4YbsrxfR/cpcvLo35WVczjRsn37cBWlLzes0SSl6gvTK7huKNqqYgw==
+  dependencies:
+    "@types/node" "^14.14.22"
 
 elliptic@^6.5.4:
   version "6.5.4"

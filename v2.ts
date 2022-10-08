@@ -3,9 +3,11 @@ import Common, { Chain, Hardfork } from "@ethereumjs/common";
 import VM from "@ethereumjs/vm";
 import { BN } from "ethereumjs-util";
 import fs from "fs";
+import {
+  ELFParser,
+  } from "@wokwi/elfist";
 import crypto from "crypto";
 import { parseInstruction } from "./instructionParser";
-import { parse } from "node:path/win32";
 
 interface EVMOpCode {
   opcode: string;
@@ -18,6 +20,11 @@ interface EVMOpCode {
 
 const text_area = fs.readFileSync(process.argv[2] + ".text");
 const full_ram = fs.readFileSync(process.argv[2] + ".ramimage");
+const elfinfo = new ELFParser(fs.readFileSync(process.argv[2]));
+
+const { header, sections, program, symbols } = elfinfo;
+
+const entryPoint = header.entry;
 
 const WORD_REPLACE_MASK =
   "00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff".toUpperCase();
@@ -114,12 +121,12 @@ opcodes.push({ opcode: "ADD"}); //
 
 opcodes.push({
   opcode: "PUSH2",
-  parameter: (0x400).toString(16).toUpperCase().padStart(2, "0"),
+  parameter: (0x400).toString(16).toUpperCase().padStart(4, "0"), // start of .text
 });
 
 opcodes.push({ opcode: "CODECOPY" });
 
-opcodes.push({ opcode: "PUSH2", parameter: "0400" }); // _start
+opcodes.push({ opcode: "PUSH2", parameter: (entryPoint).toString(16).toUpperCase().padStart(4, "0") }); // _start
 opcodes.push({ opcode: "PUSH2", find_name: "_execute" });
 opcodes.push({ opcode: "JUMP" });
 
