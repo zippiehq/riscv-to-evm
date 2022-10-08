@@ -16,6 +16,8 @@ interface EVMOpCode {
   parameter?: string;
   comment?: string;
   pc?: number;
+  riscv_pc?: number|null;
+  is_branch?: boolean|null;
 }
 
 const text_area = fs.readFileSync(process.argv[2] + ".text");
@@ -760,172 +762,174 @@ function emitEcall() {
   opcodes.push({ opcode: "LOG0"});
 }
 
+// returns true if a branch
+function emitRiscv(instr: number): void {
+  const parsed = parseInstruction(instr);
+  if (parsed.instructionName == "SRAI" && ((parsed.imm & 0x400) == 0)) {
+    parsed.instructionName = "SRLI";
+  }
+  switch (parsed.instructionName) {
+    // shifts
+    case "SLL":
+    case "SRL": {
+      emitSllSrl(parsed.instructionName, parsed.rd, parsed.rs1, parsed.rs2);
+      break;
+    }
+    case "SLLI":
+    case "SRLI": {
+      emitSlliSrli(parsed.instructionName, parsed.rd, parsed.rs1, parsed.imm & 0x1F);
+      break;
+    }
+    case "SRA": {
+      emitSra(parsed.rd, parsed.rs1, parsed.rs2);
+      break;
+    }
+    case "SRAI": {
+      emitSrai(parsed.rd, parsed.rs1, parsed.imm & 0x1F);
+      break;
+    }
+    // arithmetic
+    case "ADD": {
+      emitAdd(parsed.rd, parsed.rs1, parsed.rs2);
+      break;
+    }
+    case "ADDI": {
+      emitAddi(parsed.rd, parsed.rs1, parsed.imm);
+      break;
+    }
+    case "SUB": {
+      emitSub(parsed.rd, parsed.rs1, parsed.rs2);
+      break;
+    }
+    case "LUI": {
+      emitLui(parsed.rd, parsed.unparsedInstruction);
+      break;
+    }
+    case "AUIPC": {
+      emitAuipc(parsed.rd, parsed.imm);
+      break;
+    }
+    case "OR":
+    case "XOR":
+    case "AND": {
+      emitAndOrXor(parsed.instructionName, parsed.rd, parsed.rs1, parsed.rs2);
+      break;
+    }
+    case "ORI":
+    case "XORI":
+    case "ANDI": {
+      emitAndOrXori(
+        parsed.instructionName,
+        parsed.rd,
+        parsed.rs1,
+        parsed.imm
+      );
+      break;
+    }
+    // compare
+    case "SLT": {
+      emitSlt(parsed.rd, parsed.rs1, parsed.rs2);
+      break;
+    }
+
+    case "SLTU": {
+      emitSltu(parsed.rd, parsed.rs1, parsed.rs2);
+      break;
+    }
+
+    case "SLTI": {
+      emitSlti(parsed.rd, parsed.rs1, parsed.imm);
+      break;
+    }
+
+    case "SLTIU": {
+      emitSltiu(parsed.rd, parsed.rs1, parsed.imm);
+      break;
+    }     
+    // branches
+    case "BNE":
+      emitBne(parsed.rs1, parsed.rs2, parsed.imm);
+      break;
+    case "BEQ":
+      emitBeq(parsed.rs1, parsed.rs2, parsed.imm);
+      break;
+    case "BLT":
+      emitBlt(parsed.rs1, parsed.rs2, parsed.imm);
+      break;
+    case "BGE":
+      emitBge(parsed.rs1, parsed.rs2, parsed.imm);
+      break;
+    case "BLTU":
+      emitBltu(parsed.rs1, parsed.rs2, parsed.imm);
+      break;
+    case "BGEU":
+      emitBgeu(parsed.rs1, parsed.rs2, parsed.imm);
+      break;
+    // jump & link
+    case "JAL": {
+      emitJal(parsed.rd, parsed.imm);
+      break;
+    }
+    case "JALR": {
+      emitJalr(parsed.rd, parsed.rs1, parsed.imm);
+      break;
+    }
+    // Synch (do nothing, single-thread)
+    case "FENCE":
+    case "FENCE.I":
+      break;
+    // environment
+    case "EBREAK":
+      opcodes.push({opcode: "INVALID", comment: "EBREAK"});
+      break;
+    case "ECALL":
+      emitEcall();
+      break;
+    // loads
+    case "LB":
+      emitLb(parsed.rd, parsed.rs1, parsed.imm);
+      break;
+    case "LH":
+      emitLh(parsed.rd, parsed.rs1, parsed.imm);
+      break;
+    case "LBU":
+      emitLbu(parsed.rd, parsed.rs1, parsed.imm);
+      break;
+    case "LHU":
+      emitLhu(parsed.rd, parsed.rs1, parsed.imm);
+      break;
+    case "LW":
+      emitLw(parsed.rd, parsed.rs1, parsed.imm);
+      break;
+    // stores
+    case "SB":
+      emitSb(parsed.rs1, parsed.rs2, parsed.imm); 
+      break;
+    case "SH":
+      emitSh(parsed.rs1, parsed.rs2, parsed.imm);
+      break;
+    case "SW":
+      emitSw(parsed.rs1, parsed.rs2, parsed.imm);
+      break;
+    default:
+      throw new Error("Unknown instruction: " + parsed.instructionName);
+  }
+}
+
 function convertRISCVtoFunction(pc: number, buf: Buffer): string {
-  if (buf.length > 4) {
-    throw new Error("Multi-instructions not supported yet");
-  }
-  if (buf.length < 4) {
-    throw new Error("Only 32 bit");
-  }
   const hash = crypto.createHash("sha256").update(buf).digest("hex");
   if (emittedFunctions[hash]) {
     return "_riscv_" + hash;
   }
   emittedFunctions[hash] = "_riscv_" + hash;
-  opcodes.push({ opcode: "JUMPDEST", name: "_riscv_" + hash, comment: "pc 0x" + pc.toString(16) + " buffer: " + buf.toString("hex") + " decode " + parseInstruction(buf.readUInt32LE(0)).assembly });
-  for (let i = 0; i < buf.length; i += 4) {
-    const instr = buf.readUInt32LE(i);
-    const parsed = parseInstruction(instr);
-    if (parsed.instructionName == "SRAI" && ((parsed.imm & 0x400) == 0)) {
-      parsed.instructionName = "SRLI";
-    }
-    switch (parsed.instructionName) {
-      // shifts
-      case "SLL":
-      case "SRL": {
-        emitSllSrl(parsed.instructionName, parsed.rd, parsed.rs1, parsed.rs2);
-        break;
-      }
-      case "SLLI":
-      case "SRLI": {
-        emitSlliSrli(parsed.instructionName, parsed.rd, parsed.rs1, parsed.imm & 0x1F);
-        break;
-      }
-      case "SRA": {
-        emitSra(parsed.rd, parsed.rs1, parsed.rs2);
-        break;
-      }
-      case "SRAI": {
-        emitSrai(parsed.rd, parsed.rs1, parsed.imm & 0x1F);
-        break;
-      }
-      // arithmetic
-      case "ADD": {
-        emitAdd(parsed.rd, parsed.rs1, parsed.rs2);
-        break;
-      }
-      case "ADDI": {
-        emitAddi(parsed.rd, parsed.rs1, parsed.imm);
-        break;
-      }
-      case "SUB": {
-        emitSub(parsed.rd, parsed.rs1, parsed.rs2);
-        break;
-      }
-      case "LUI": {
-        emitLui(parsed.rd, parsed.unparsedInstruction);
-        break;
-      }
-      case "AUIPC": {
-        emitAuipc(parsed.rd, parsed.imm);
-        break;
-      }
-      case "OR":
-      case "XOR":
-      case "AND": {
-        emitAndOrXor(parsed.instructionName, parsed.rd, parsed.rs1, parsed.rs2);
-        break;
-      }
-      case "ORI":
-      case "XORI":
-      case "ANDI": {
-        emitAndOrXori(
-          parsed.instructionName,
-          parsed.rd,
-          parsed.rs1,
-          parsed.imm
-        );
-        break;
-      }
-      // compare
-      case "SLT": {
-        emitSlt(parsed.rd, parsed.rs1, parsed.rs2);
-        break;
-      }
+  const decode = parseInstruction(buf.readUInt32LE(0));
+  const branches = ["AUIPC", "JAL", "JALR", "BNE", "BEQ", "BLT", "BGE", "BLTU", "BGEU"];
+  const isBranch = branches.indexOf(decode.instructionName) !== -1;
+  opcodes.push({ opcode: "JUMPDEST", name: "_riscv_" + hash, comment: "pc 0x" + pc.toString(16) + " buffer: " + buf.toString("hex") + " decode " + decode.assembly, riscv_pc: pc, is_branch: isBranch });
+  
+  const instr = buf.readUInt32LE(0);
+  emitRiscv(instr);
 
-      case "SLTU": {
-        emitSltu(parsed.rd, parsed.rs1, parsed.rs2);
-        break;
-      }
-
-      case "SLTI": {
-        emitSlti(parsed.rd, parsed.rs1, parsed.imm);
-        break;
-      }
-
-      case "SLTIU": {
-        emitSltiu(parsed.rd, parsed.rs1, parsed.imm);
-        break;
-      }     
-      // branches
-      case "BNE":
-        emitBne(parsed.rs1, parsed.rs2, parsed.imm);
-        break;
-      case "BEQ":
-        emitBeq(parsed.rs1, parsed.rs2, parsed.imm);
-        break;
-      case "BLT":
-        emitBlt(parsed.rs1, parsed.rs2, parsed.imm);
-        break;
-      case "BGE":
-        emitBge(parsed.rs1, parsed.rs2, parsed.imm);
-        break;
-      case "BLTU":
-        emitBltu(parsed.rs1, parsed.rs2, parsed.imm);
-        break;
-      case "BGEU":
-        emitBgeu(parsed.rs1, parsed.rs2, parsed.imm);
-        break;
-      // jump & link
-      case "JAL": {
-        emitJal(parsed.rd, parsed.imm);
-        break;
-      }
-      case "JALR": {
-        emitJalr(parsed.rd, parsed.rs1, parsed.imm);
-        break;
-      }
-      // Synch (do nothing, single-thread)
-      case "FENCE":
-      case "FENCE.I":
-        break;
-      // environment
-      case "EBREAK":
-        opcodes.push({opcode: "INVALID", comment: "EBREAK"});
-        break;
-      case "ECALL":
-        emitEcall();
-        break;
-      // loads
-      case "LB":
-        emitLb(parsed.rd, parsed.rs1, parsed.imm);
-        break;
-      case "LH":
-        emitLh(parsed.rd, parsed.rs1, parsed.imm);
-        break;
-      case "LBU":
-        emitLbu(parsed.rd, parsed.rs1, parsed.imm);
-        break;
-      case "LHU":
-        emitLhu(parsed.rd, parsed.rs1, parsed.imm);
-        break;
-      case "LW":
-        emitLw(parsed.rd, parsed.rs1, parsed.imm);
-        break;
-      // stores
-      case "SB":
-        emitSb(parsed.rs1, parsed.rs2, parsed.imm); 
-        break;
-      case "SH":
-        emitSh(parsed.rs1, parsed.rs2, parsed.imm);
-        break;
-      case "SW":
-        emitSw(parsed.rs1, parsed.rs2, parsed.imm);
-        break;
-      default:
-        throw new Error("Unknown instruction: " + parsed.instructionName);
-    }
-  }
   goNextInst();
   return "_riscv_" + hash;
 }
@@ -1040,9 +1044,15 @@ async function invokeRiscv() {
   let cycle = 0;
   const common = new Common({ chain: Chain.Mainnet, hardfork: Hardfork.London })
   const vm = new VM({ common })
+  let range: number[] = [];
+
   vm.on('step', function (data: any) {
     // console.log(`pc: ${data.pc.toString(16).toUpperCase()} - Opcode: ${JSON.stringify(data.opcode.name)}- mem length: ${data.memory.length} - ${data.opcode.dynamicFee}`)
-    
+    for (let l = 0; l < opcodes.length; l++) {
+      if (opcodes[l].pc == data.pc) {
+          printO(cycle, opcodes[l]);
+      }
+    }
     if (data.opcode.name === "LOG0") {
       let ptr = Number(data.stack[data.stack.length - 1]);
       let str = "";
@@ -1070,11 +1080,7 @@ async function invokeRiscv() {
         }
     } */
     
-    for (let l = 0; l < opcodes.length; l++) {
-      if (opcodes[l].pc == data.pc) {
-          printO(cycle, opcodes[l]);
-      }
-    }
+
     if (data.opcode.name == "MLOAD") {
       if (data.stack[data.stack.length - 1] >= 0x10000000) {
         throw new Error("Trying to access high memory");
