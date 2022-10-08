@@ -23,6 +23,19 @@ const full_ram = fs.readFileSync(process.argv[2] + ".ramimage");
 const elfinfo = new ELFParser(fs.readFileSync(process.argv[2]));
 
 const { header, sections, program, symbols } = elfinfo;
+console.log(JSON.stringify(sections));
+
+let firstAddr = 0;
+
+for (let i = 0; i < sections.length; i++) {
+  if (sections[i].addr > 0) {
+    firstAddr = sections[i].addr;
+    break;
+  }
+}
+if (firstAddr == 0) {
+  throw new Error('Invalid first addr')
+}
 
 const entryPoint = header.entry;
 
