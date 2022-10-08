@@ -27,6 +27,18 @@ const elfinfo = new ELFParser(fs.readFileSync(process.argv[2]));
 const { header, sections, program, symbols } = elfinfo;
 //console.log(JSON.stringify(sections));
 
+interface ProfileData {
+  hotness: Record<string, number>;
+  ranges: Record<string, number[]>;
+}
+
+let profile_use = false;
+let profile_data: ProfileData = {"hotness":{},"ranges":{}};
+
+if (process.argv.length > 3) {
+  profile_use = true;
+  profile_data = JSON.parse(fs.readFileSync(process.argv[2] + ".profile").toString("utf8"));
+}
 let firstAddr = 0;
 
 for (let i = 0; i < sections.length; i++) {
@@ -916,6 +928,34 @@ function emitRiscv(instr: number): void {
   }
 }
 
+function convertMultipleRISCVtoFunction(pc: number, buf: Buffer): string {
+  const hash = crypto.createHash("sha256").update("riscopt-" + pc).update(buf).digest("hex");
+  if (emittedFunctions[hash]) {
+    return "_riscvopt_" + hash;
+  }
+  emittedFunctions[hash] = "_riscvopt_" + hash;
+  opcodes.push({ opcode: "JUMPDEST", name: "_riscvopt_" + hash, comment: "pc 0x" + (0x400 + pc).toString(16) + " buffer: " + buf.toString("hex") });
+  opcodes.push({ opcode: "POP" });
+  const range = profile_data.ranges["" + (0x400 + pc)];  
+  if (!range) {
+    throw new Error("No range?");
+  }
+  console.log("making opt for " + (0x400 + pc).toString(16) + " range " + range.map((x) => x.toString(16)));
+  const afterPc = range[range.length - 1] + 4;
+  for (let i = 0; i < buf.length; i += 4) {
+    const instr = buf.readUInt32LE(i);
+    console.log(" *** " + parseInstruction(instr).instructionName);
+    opcodes.push(({opcode: "JUMPDEST", comment: "DEBUG: " + parseInstruction(instr).assembly}));
+    emitRiscv(instr);
+  }
+  console.log("after PC is " + afterPc.toString(16));
+  opcodes.push({opcode: "PUSH2", parameter: afterPc.toString(16).toUpperCase().padStart(4, "0")});
+  opcodes.push({opcode: "PUSH2", find_name: "_execute", comment: "upgrade PC to past optimized"});
+  opcodes.push({opcode: "JUMP"});
+  return "_riscvopt_" + hash;
+
+}
+
 function convertRISCVtoFunction(pc: number, buf: Buffer): string {
   const hash = crypto.createHash("sha256").update(buf).digest("hex");
   if (emittedFunctions[hash]) {
@@ -925,7 +965,7 @@ function convertRISCVtoFunction(pc: number, buf: Buffer): string {
   const decode = parseInstruction(buf.readUInt32LE(0));
   const branches = ["AUIPC", "JAL", "JALR", "BNE", "BEQ", "BLT", "BGE", "BLTU", "BGEU"];
   const isBranch = branches.indexOf(decode.instructionName) !== -1;
-  opcodes.push({ opcode: "JUMPDEST", name: "_riscv_" + hash, comment: "pc 0x" + pc.toString(16) + " buffer: " + buf.toString("hex") + " decode " + decode.assembly, riscv_instr: true, is_branch: isBranch });
+  opcodes.push({ opcode: "JUMPDEST", name: "_riscv_" + hash, comment: "pc 0x" + (0x400 + pc).toString(16) + " buffer: " + buf.toString("hex") + " decode " + decode.assembly, riscv_instr: true, is_branch: isBranch });
   
   const instr = buf.readUInt32LE(0);
   emitRiscv(instr);
@@ -1025,9 +1065,16 @@ function printO(cycle: number, op: EVMOpCode) {
 const opcodesToConvert: EVMOpCode[] = [];
 opcodesToConvert.push({opcode: "JUMPDEST", name: "_rambegin"});
 for (let i = 0; i < text_area.length; i += 4) {
-  const name = convertRISCVtoFunction(i, text_area.slice(i, i + 4));
-  opcodesToConvert.push({opcode: "_32bitptr", find_name: name});
+  if (profile_data.hotness["" + (0x400 + i)] > 0 && profile_data.ranges["" + (0x400 + i)].length > 0) {
+    const range = profile_data.ranges["" + (0x400 + i)];
+    const name = convertMultipleRISCVtoFunction(i, text_area.slice(i, i+(range.length * 4)));
+    opcodesToConvert.push({opcode: "_32bitptr", find_name: name});  
+  } else {
+    const name = convertRISCVtoFunction(i, text_area.slice(i, i + 4));
+    opcodesToConvert.push({opcode: "_32bitptr", find_name: name});  
+  }
 }
+
 for (let i = 0; i < opcodesToConvert.length; i++) {
   opcodes.push(opcodesToConvert[i]);
 }
@@ -1050,13 +1097,12 @@ async function invokeRiscv() {
 
   vm.on('step', function (data: any) {
     // console.log(`pc: ${data.pc.toString(16).toUpperCase()} - Opcode: ${JSON.stringify(data.opcode.name)}- mem length: ${data.memory.length} - ${data.opcode.dynamicFee}`)
-    for (let l = 0; l < opcodes.length; l++) {
+    /* for (let l = 0; l < opcodes.length; l++) {
       if (opcodes[l].pc == data.pc) {
           printO(cycle, opcodes[l]);
       }
-    }
-    console.log(data.opcode.name);
-    if (data.opcode.name === "JUMPDEST") {
+    } */
+    if (data.opcode.name === "JUMPDEST" && !profile_use) {
       for (let l = 0; l < opcodes.length; l++) {
         if (opcodes[l].pc == data.pc) {
             if (opcodes[l].riscv_instr)  {
@@ -1064,7 +1110,6 @@ async function invokeRiscv() {
                 range.push(data.stack[data.stack.length - 1].toNumber()); // pc at jumpdest
               } else {
                 if (range.length > 2) {
-                  console.log("Non-branch section: " + JSON.stringify(range));
                   const hash = "" + range[0];
                   if (!ranges[hash]) {
                     ranges[hash] = range;
@@ -1075,27 +1120,15 @@ async function invokeRiscv() {
                     hotness[hash] = 1;
                   }
                 }
+                const branchPc = data.stack[data.stack.length - 1].toNumber();
+                if (range.length >= 1 && branchPc != range[range.length - 1] + 4) {
+                  throw new Error("wtf?");
+                }
                 range = [];
               }
             }
         }
       }
-      /*
-      for (let l = 0; l < opcodes.length; l++) {
-        console.log(opcodes[l]);
-        if (opcodes[l].pc == data.pc) {
-          console.log(JSON.stringify(opcodes[l]));
-          if (opcodes[l].riscv_instr) 
-            if (!opcodes[l].is_branch) {
-              range.push(data.stack[data.stack.length - 1]); // pc at jumpdest
-            } else {
-              console.log("Non-branch section: " + JSON.stringify(range));
-              range = [];
-            }
-          }
-          break;
-        }
-      }*/
     }
     if (data.opcode.name === "LOG0") {
       let ptr = Number(data.stack[data.stack.length - 1]);
@@ -1106,14 +1139,19 @@ async function invokeRiscv() {
       }
       console.log("*** PRINT: " + str);
     }
-    /* for (let l = 0; l < data.stack.length; l++) {
+    /*
+    for (let l = 0; l < data.stack.length; l++) {
        console.log("- stack " + (data.stack.length - 1 - l) + ": 0x" + data.stack[l].toString(16).toUpperCase());
-    }
+    } 
     const regs = Object.keys(reg2mem);
     for (let i = 0; i < regs.length; i++) {
       let loc = reg2mem[regs[i]];
       if (loc < data.memory.length + 32) {
-        console.log("reg " + regs[i] + "\t" + Buffer.from(data.memory).slice(loc, loc+32).toString("hex"));
+        const slice = Buffer.from(data.memory).slice(loc, loc+32).toString("hex");
+        const nul = "0000000000000000000000000000000000000000000000000000000000000000";
+        if (slice !== nul) {
+          console.log("reg " + regs[i] + "\t" + slice);
+        }
       }
     } */
     /* let mem = data.memory.toString("hex");
@@ -1153,7 +1191,16 @@ async function invokeRiscv() {
   }
   console.log(`Returned: ${results.returnValue.toString('hex')}`)
   console.log(`gasUsed : ${results.gasUsed.toString()}`);
-  console.log("hotness: " + JSON.stringify(hotness));
+  for (let i = 0; i < Object.keys(hotness).length; i++) {
+    const key = Object.keys(hotness)[i];
+    const el = hotness[key as string];
+    if (el > 0) {
+      console.log("** HOT: " + Number(key).toString(16) + " - range: " + ranges[key].map((x) => Number(x).toString(16)));
+    }
+  }
+  if (!profile_use) {
+    fs.writeFileSync(process.argv[2] + ".profile", JSON.stringify({hotness, ranges}), { flag: "w+"});
+  }
 }
 
 invokeRiscv().catch((err) => {
