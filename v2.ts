@@ -23,7 +23,7 @@ const full_ram = fs.readFileSync(process.argv[2] + ".ramimage");
 const elfinfo = new ELFParser(fs.readFileSync(process.argv[2]));
 
 const { header, sections, program, symbols } = elfinfo;
-console.log(JSON.stringify(sections));
+//console.log(JSON.stringify(sections));
 
 let firstAddr = 0;
 
@@ -191,9 +191,18 @@ function signExtendTo256(value: number) {
 }
 
 function emitAddi(rd: number, rs1: number, imm: number) {
-  readRegister(rs1);
-  signExtendTo256(imm);
-  opcodes.push({ opcode: "ADD", comment: "ADDI" });
+  if (rs1 !== 0) {
+    readRegister(rs1);
+  }
+  if (imm !== 0) {
+    signExtendTo256(imm);
+    if (rs1 !== 0) {
+      opcodes.push({ opcode: "ADD", comment: "ADDI" });
+    }
+  }
+  if (rs1 == 0 && imm == 0) {
+    opcodes.push({opcode: "PUSH1", parameter: "00"});
+  }
   writeRegister(rd, false);
 }
 
@@ -736,7 +745,7 @@ function emitEcall() {
   opcodes.push({ opcode: "JUMPI"});
   // if a0 == 0, return
   opcodes.push({ opcode: "PUSH1", parameter: "20"});
-  opcodes.push({ opcode: "PUSH2", parameter: reg2mem["a0"].toString(16).padStart(4, "0")});
+  opcodes.push({ opcode: "PUSH2", parameter: reg2mem["a1"].toString(16).padStart(4, "0")});
   opcodes.push({ opcode: "RETURN"});
 
   opcodes.push({ opcode: "JUMPDEST", name: "_ecall_" + rando});
@@ -781,7 +790,6 @@ function convertRISCVtoFunction(pc: number, buf: Buffer): string {
         break;
       }
       case "SRAI": {
-        console.log("SRAI: " + JSON.stringify(parsed));
         emitSrai(parsed.rd, parsed.rs1, parsed.imm & 0x1F);
         break;
       }
@@ -930,7 +938,6 @@ function addProgramCounters(): number {
       } else if (para) {
           pc += assemble([[e.opcode, para]]).length / 2;
       } else {
-          console.log(e);
           pc += assemble([[e.opcode]]).length / 2;
       }
       if (Math.round(pc) !== pc) {
@@ -977,14 +984,12 @@ function performAssembly(): string {
           preAssembly.push([result[i].opcode]);
         }
       } else {
-        console.log("32 bit ptr: " + JSON.stringify(result[i]));
         if (!para) {
           throw new Error("32bitptr without parameter");
         }
         ptrAssembly = ptrAssembly + "0000" + para;
       }
   }
-  console.log("assembly: " + assemble(preAssembly).length);
   return assemble(preAssembly) + ptrAssembly;
 }
 
@@ -1010,7 +1015,6 @@ function printO(op: EVMOpCode) {
 const opcodesToConvert: EVMOpCode[] = [];
 opcodesToConvert.push({opcode: "JUMPDEST", name: "_rambegin"});
 for (let i = 0; i < text_area.length; i += 4) {
-  console.log("Processing: " + text_area.slice(i, i + 4).toString("hex"))
   const name = convertRISCVtoFunction(i, text_area.slice(i, i + 4));
   opcodesToConvert.push({opcode: "_32bitptr", find_name: name});
 }
@@ -1021,31 +1025,27 @@ for (let i = 0; i < opcodesToConvert.length; i++) {
 addProgramCounters();
 resolveNamesAndOffsets();
 
-console.log(JSON.stringify(opcodes));
-console.log("Rest of RAM size: " + full_ram.slice(text_area.length, full_ram.length).length)
 const restOfRAM = full_ram.slice(text_area.length, full_ram.length);
 const assembled = performAssembly();
 const finalBytecode = Buffer.concat([Buffer.from(assembled, "hex"), restOfRAM]);
-console.log("Final bytecode: " + finalBytecode.toString("hex"))
 console.log("Final bytecode length; " + finalBytecode.length);
-console.log("Final bytecode length; " + assembled.length);
+
 async function invokeRiscv() {
   const common = new Common({ chain: Chain.Mainnet, hardfork: Hardfork.London })
   const vm = new VM({ common })
   vm.on('step', function (data: any) {
-    console.log(`pc: ${data.pc.toString(16).toUpperCase()} - Opcode: ${JSON.stringify(data.opcode.name)}- mem length: ${data.memory.length} - ${data.opcode.dynamicFee}`)
+    // console.log(`pc: ${data.pc.toString(16).toUpperCase()} - Opcode: ${JSON.stringify(data.opcode.name)}- mem length: ${data.memory.length} - ${data.opcode.dynamicFee}`)
     
     if (data.opcode.name === "LOG0") {
       let ptr = Number(data.stack[data.stack.length - 1]);
       let str = "";
       while (data.memory[ptr] !== 0) {
-        console.log(ptr);
         str += String.fromCharCode(data.memory[ptr]);
         ptr = ptr + 1;
       }
       console.log("*** PRINT: " + str);
     }
-    for (let l = 0; l < data.stack.length; l++) {
+    /* for (let l = 0; l < data.stack.length; l++) {
        console.log("- stack " + (data.stack.length - 1 - l) + ": 0x" + data.stack[l].toString(16).toUpperCase());
     }
     const regs = Object.keys(reg2mem);
@@ -1054,7 +1054,7 @@ async function invokeRiscv() {
       if (loc < data.memory.length + 32) {
         console.log("reg " + regs[i] + "\t" + Buffer.from(data.memory).slice(loc, loc+32).toString("hex"));
       }
-    }
+    } */
     /* let mem = data.memory.toString("hex");
     let l = 0;
     for (let l = 0; l < data.memory.length; l += 8) {   
@@ -1062,21 +1062,22 @@ async function invokeRiscv() {
             console.log("- mem " + (l/2).toString(16).toUpperCase().padStart(8, "0") + " - " + mem.substring(l, l+8));
         }
     } */
+    
     for (let l = 0; l < opcodes.length; l++) {
       if (opcodes[l].pc == data.pc) {
           printO(opcodes[l]);
       }
-    }  
+    }
     if (data.opcode.name == "MLOAD") {
       if (data.stack[data.stack.length - 1] >= 0x10000000) {
         throw new Error("Trying to access high memory");
       }
-      console.log("[MEM LOAD] from 0x" + data.stack[data.stack.length - 1].toString(16));
+      // console.log("[MEM LOAD] from 0x" + data.stack[data.stack.length - 1].toString(16));
     } else if (data.opcode.name == "MSTORE") {
       if (data.stack[data.stack.length - 1] >= 0x10000000) {
         throw new Error("Trying to access high memory");
       }
-      console.log("[MEM WRITE] " + data.stack[data.stack.length - 2].toString(16) + " to 0x" + data.stack[data.stack.length - 1].toString(16));
+      // console.log("[MEM WRITE] " + data.stack[data.stack.length - 2].toString(16) + " to 0x" + data.stack[data.stack.length - 1].toString(16));
       if (data.stack[data.stack.length - 1] < 32) {
           throw new Error("Trying to write to 0");
       }
