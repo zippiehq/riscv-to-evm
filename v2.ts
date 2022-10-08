@@ -16,7 +16,7 @@ interface EVMOpCode {
   parameter?: string;
   comment?: string;
   pc?: number;
-  riscv_pc?: number|null;
+  riscv_instr?: boolean|null;
   is_branch?: boolean|null;
 }
 
@@ -925,7 +925,7 @@ function convertRISCVtoFunction(pc: number, buf: Buffer): string {
   const decode = parseInstruction(buf.readUInt32LE(0));
   const branches = ["AUIPC", "JAL", "JALR", "BNE", "BEQ", "BLT", "BGE", "BLTU", "BGEU"];
   const isBranch = branches.indexOf(decode.instructionName) !== -1;
-  opcodes.push({ opcode: "JUMPDEST", name: "_riscv_" + hash, comment: "pc 0x" + pc.toString(16) + " buffer: " + buf.toString("hex") + " decode " + decode.assembly, riscv_pc: pc, is_branch: isBranch });
+  opcodes.push({ opcode: "JUMPDEST", name: "_riscv_" + hash, comment: "pc 0x" + pc.toString(16) + " buffer: " + buf.toString("hex") + " decode " + decode.assembly, riscv_instr: true, is_branch: isBranch });
   
   const instr = buf.readUInt32LE(0);
   emitRiscv(instr);
@@ -1045,6 +1045,8 @@ async function invokeRiscv() {
   const common = new Common({ chain: Chain.Mainnet, hardfork: Hardfork.London })
   const vm = new VM({ common })
   let range: number[] = [];
+  let hotness: Record<string, number> = {};
+  let ranges: Record<string, number[]> = {};
 
   vm.on('step', function (data: any) {
     // console.log(`pc: ${data.pc.toString(16).toUpperCase()} - Opcode: ${JSON.stringify(data.opcode.name)}- mem length: ${data.memory.length} - ${data.opcode.dynamicFee}`)
@@ -1052,6 +1054,48 @@ async function invokeRiscv() {
       if (opcodes[l].pc == data.pc) {
           printO(cycle, opcodes[l]);
       }
+    }
+    console.log(data.opcode.name);
+    if (data.opcode.name === "JUMPDEST") {
+      for (let l = 0; l < opcodes.length; l++) {
+        if (opcodes[l].pc == data.pc) {
+            if (opcodes[l].riscv_instr)  {
+              if (!opcodes[l].is_branch) {
+                range.push(data.stack[data.stack.length - 1].toNumber()); // pc at jumpdest
+              } else {
+                if (range.length > 2) {
+                  console.log("Non-branch section: " + JSON.stringify(range));
+                  const hash = "" + range[0];
+                  if (!ranges[hash]) {
+                    ranges[hash] = range;
+                  }
+                  if (hotness[hash]) {
+                    hotness[hash]++;
+                  } else {
+                    hotness[hash] = 1;
+                  }
+                }
+                range = [];
+              }
+            }
+        }
+      }
+      /*
+      for (let l = 0; l < opcodes.length; l++) {
+        console.log(opcodes[l]);
+        if (opcodes[l].pc == data.pc) {
+          console.log(JSON.stringify(opcodes[l]));
+          if (opcodes[l].riscv_instr) 
+            if (!opcodes[l].is_branch) {
+              range.push(data.stack[data.stack.length - 1]); // pc at jumpdest
+            } else {
+              console.log("Non-branch section: " + JSON.stringify(range));
+              range = [];
+            }
+          }
+          break;
+        }
+      }*/
     }
     if (data.opcode.name === "LOG0") {
       let ptr = Number(data.stack[data.stack.length - 1]);
@@ -1109,6 +1153,7 @@ async function invokeRiscv() {
   }
   console.log(`Returned: ${results.returnValue.toString('hex')}`)
   console.log(`gasUsed : ${results.gasUsed.toString()}`);
+  console.log("hotness: " + JSON.stringify(hotness));
 }
 
 invokeRiscv().catch((err) => {
