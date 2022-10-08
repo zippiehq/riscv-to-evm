@@ -1,3 +1,4 @@
+mkdir -p tests tests-logs
 for x in tests-base/*.S; do 
 	BASE=`basename -s .S $x`
 	clang-14 -target riscv32 -march=rv32im -mno-relax -Wl,--nmagic,--omagic,--section-start=.text=0x400 -o tests/$BASE tests-base/$BASE.S -nostdlib
