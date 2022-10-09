@@ -1134,7 +1134,7 @@ async function invokeRiscv() {
               if (!opcodes[l].is_branch) {
                 range.push(data.stack[data.stack.length - 1].toNumber()); // pc at jumpdest
               } else {
-                if (range.length > 2) {
+                if (range.length > 1) {
                   const hash = "" + range[0];
                   if (!ranges[hash]) {
                     ranges[hash] = range;
