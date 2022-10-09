@@ -150,14 +150,14 @@ Running in EVM:
 53	 7F	MLOAD		 	  ;; # read from x10
 - stack 1: 0x40C
 - stack 0: 0x140
-54	 80	PUSH2	008A	 ;; _ecall_c2bd59eceed685d80a9438f4a95c22d9d70cd4fe7e4873812576341da3c2cb95	 
+54	 80	PUSH2	008A	 ;; _ecall_1f15ec79e4265501a975880961884d6de6d6d9ad0cdf1d8a4348491c48612fa3	 
 - stack 1: 0x40C
 - stack 0: 0x42000
 55	 83	JUMPI		 	 
 - stack 2: 0x40C
 - stack 1: 0x42000
 - stack 0: 0x8A
-56	 8A	JUMPDEST		 ;; _ecall_c2bd59eceed685d80a9438f4a95c22d9d70cd4fe7e4873812576341da3c2cb95	 
+56	 8A	JUMPDEST		 ;; _ecall_1f15ec79e4265501a975880961884d6de6d6d9ad0cdf1d8a4348491c48612fa3	 
 - stack 0: 0x40C
 57	 8B	PUSH1	04	 	 
 - stack 0: 0x40C
@@ -396,14 +396,14 @@ Running in EVM:
 - stack 2: 0x424
 - stack 1: 0x16
 - stack 0: 0x2
-137	 184	PUSH2	018C	 ;; _neq_a4861c1bfcc5a1b6ec8c8747be00697b20798a1e704a6d3af1f0a9b1db3fe284	 
+137	 184	PUSH2	018C	 ;; _neq_579dafc5289c037526da6a6eac49db6242335ada7c6fb4d6303d05fe6c1af52e	 
 - stack 1: 0x424
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEC
 138	 187	JUMPI		 	 
 - stack 2: 0x424
 - stack 1: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEC
 - stack 0: 0x18C
-139	 18C	JUMPDEST		 ;; _neq_a4861c1bfcc5a1b6ec8c8747be00697b20798a1e704a6d3af1f0a9b1db3fe284	 
+139	 18C	JUMPDEST		 ;; _neq_579dafc5289c037526da6a6eac49db6242335ada7c6fb4d6303d05fe6c1af52e	 
 - stack 0: 0x424
 140	 18D	PUSH32	00000000000000000000000000000000000000000000000000000000000000C8	 	  ;; # signextended 200
 - stack 0: 0x424
@@ -540,14 +540,14 @@ Running in EVM:
 187	 7F	MLOAD		 	  ;; # read from x10
 - stack 1: 0x4F8
 - stack 0: 0x140
-188	 80	PUSH2	008A	 ;; _ecall_c2bd59eceed685d80a9438f4a95c22d9d70cd4fe7e4873812576341da3c2cb95	 
+188	 80	PUSH2	008A	 ;; _ecall_1f15ec79e4265501a975880961884d6de6d6d9ad0cdf1d8a4348491c48612fa3	 
 - stack 1: 0x4F8
 - stack 0: 0x42000
 189	 83	JUMPI		 	 
 - stack 2: 0x4F8
 - stack 1: 0x42000
 - stack 0: 0x8A
-190	 8A	JUMPDEST		 ;; _ecall_c2bd59eceed685d80a9438f4a95c22d9d70cd4fe7e4873812576341da3c2cb95	 
+190	 8A	JUMPDEST		 ;; _ecall_1f15ec79e4265501a975880961884d6de6d6d9ad0cdf1d8a4348491c48612fa3	 
 - stack 0: 0x4F8
 191	 8B	PUSH1	04	 	 
 - stack 0: 0x4F8
@@ -588,4 +588,4 @@ Running in EVM:
 203	 81E	INVALID		 	  ;; # EBREAK
 - stack 0: 0x4FC
 Error: {"error":"invalid opcode","errorType":"VmError"}
-    at invokeRiscv (/root/risc-to-evm/v2.ts:1217:11)
+    at invokeRiscv (/root/risc-to-evm/v2.ts:1221:11)

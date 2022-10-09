@@ -3,8 +3,8 @@
                                ^
 TypeError: Cannot read properties of undefined (reading 'rd')
     at parseInstruction (/root/risc-to-evm/instructionParser.ts:875:32)
-    at convertRISCVtoFunction (/root/risc-to-evm/v2.ts:981:34)
-    at Object.<anonymous> (/root/risc-to-evm/v2.ts:1089:18)
+    at convertRISCVtoFunction (/root/risc-to-evm/v2.ts:984:34)
+    at Object.<anonymous> (/root/risc-to-evm/v2.ts:1092:18)
     at Module._compile (node:internal/modules/cjs/loader:1120:14)
     at Module.m._compile (/root/risc-to-evm/node_modules/ts-node/src/index.ts:1618:23)
     at Module._extensions..js (node:internal/modules/cjs/loader:1174:10)

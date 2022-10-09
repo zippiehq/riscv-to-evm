@@ -150,14 +150,14 @@ Running in EVM:
 53	 7F	MLOAD		 	  ;; # read from x10
 - stack 1: 0x40C
 - stack 0: 0x140
-54	 80	PUSH2	008A	 ;; _ecall_78db3549397d51c0072ac2fc1b688e435c39e8d97c014049351f7d68758c25dd	 
+54	 80	PUSH2	008A	 ;; _ecall_4eb0afeebca7ea14fdbef0c93a3b1d20d39840d4c7532fc21126f5c1b5414b4c	 
 - stack 1: 0x40C
 - stack 0: 0x42000
 55	 83	JUMPI		 	 
 - stack 2: 0x40C
 - stack 1: 0x42000
 - stack 0: 0x8A
-56	 8A	JUMPDEST		 ;; _ecall_78db3549397d51c0072ac2fc1b688e435c39e8d97c014049351f7d68758c25dd	 
+56	 8A	JUMPDEST		 ;; _ecall_4eb0afeebca7ea14fdbef0c93a3b1d20d39840d4c7532fc21126f5c1b5414b4c	 
 - stack 0: 0x40C
 57	 8B	PUSH1	04	 	 
 - stack 0: 0x40C
@@ -412,19 +412,19 @@ Running in EVM:
 - stack 2: 0x424
 - stack 1: 0x0
 - stack 0: 0x0
-141	 12D	PUSH2	0135	 ;; _neq_e17b90bb6244c1634776b8c2aa69f1ec486d6af17a1b80e6151c384ba182ac83	 
+141	 12D	PUSH2	0135	 ;; _neq_d106ba9299c1080517a61234e54662c923d5f87690c8a12da6e322ad03e46c8d	 
 - stack 1: 0x424
 - stack 0: 0x0
 142	 130	JUMPI		 	 
 - stack 2: 0x424
 - stack 1: 0x0
 - stack 0: 0x135
-143	 131	PUSH2	0164	 ;; _neq_after_e17b90bb6244c1634776b8c2aa69f1ec486d6af17a1b80e6151c384ba182ac83	 
+143	 131	PUSH2	0164	 ;; _neq_after_d106ba9299c1080517a61234e54662c923d5f87690c8a12da6e322ad03e46c8d	 
 - stack 0: 0x424
 144	 134	JUMP		 	 
 - stack 1: 0x424
 - stack 0: 0x164
-145	 164	JUMPDEST		 ;; _neq_after_e17b90bb6244c1634776b8c2aa69f1ec486d6af17a1b80e6151c384ba182ac83	 
+145	 164	JUMPDEST		 ;; _neq_after_d106ba9299c1080517a61234e54662c923d5f87690c8a12da6e322ad03e46c8d	 
 - stack 0: 0x424
 146	 165	PUSH1	04	 	 
 - stack 0: 0x424
@@ -665,19 +665,19 @@ Running in EVM:
 - stack 2: 0x43C
 - stack 1: 0x0
 - stack 0: 0x0
-226	 211	PUSH2	0219	 ;; _neq_861580fd65f943e7c9ac7dff9bddf68d90f59c76486a500443717750c751e540	 
+226	 211	PUSH2	0219	 ;; _neq_6a661b2d54e24de8f92b3773f3793c34a6d6e282401138775d6c70b40d17ebdc	 
 - stack 1: 0x43C
 - stack 0: 0x0
 227	 214	JUMPI		 	 
 - stack 2: 0x43C
 - stack 1: 0x0
 - stack 0: 0x219
-228	 215	PUSH2	0248	 ;; _neq_after_861580fd65f943e7c9ac7dff9bddf68d90f59c76486a500443717750c751e540	 
+228	 215	PUSH2	0248	 ;; _neq_after_6a661b2d54e24de8f92b3773f3793c34a6d6e282401138775d6c70b40d17ebdc	 
 - stack 0: 0x43C
 229	 218	JUMP		 	 
 - stack 1: 0x43C
 - stack 0: 0x248
-230	 248	JUMPDEST		 ;; _neq_after_861580fd65f943e7c9ac7dff9bddf68d90f59c76486a500443717750c751e540	 
+230	 248	JUMPDEST		 ;; _neq_after_6a661b2d54e24de8f92b3773f3793c34a6d6e282401138775d6c70b40d17ebdc	 
 - stack 0: 0x43C
 231	 249	PUSH1	04	 	 
 - stack 0: 0x43C
@@ -918,14 +918,14 @@ Running in EVM:
 - stack 2: 0x454
 - stack 1: 0x1
 - stack 0: 0x0
-311	 2F5	PUSH2	02FD	 ;; _neq_b8677a2bbb0895dc72d1ba8919f09e308c8deafd463166ee8721e4db90650993	 
+311	 2F5	PUSH2	02FD	 ;; _neq_3fda50431fc364e393783df828365a823b914ee0950c01a38c59ccdce768759d	 
 - stack 1: 0x454
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 312	 2F8	JUMPI		 	 
 - stack 2: 0x454
 - stack 1: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 - stack 0: 0x2FD
-313	 2FD	JUMPDEST		 ;; _neq_b8677a2bbb0895dc72d1ba8919f09e308c8deafd463166ee8721e4db90650993	 
+313	 2FD	JUMPDEST		 ;; _neq_3fda50431fc364e393783df828365a823b914ee0950c01a38c59ccdce768759d	 
 - stack 0: 0x454
 314	 2FE	PUSH32	0000000000000000000000000000000000000000000000000000000000000484	 	  ;; # signextended 1156
 - stack 0: 0x454
@@ -1062,14 +1062,14 @@ Running in EVM:
 361	 7F	MLOAD		 	  ;; # read from x10
 - stack 1: 0x8E4
 - stack 0: 0x140
-362	 80	PUSH2	008A	 ;; _ecall_78db3549397d51c0072ac2fc1b688e435c39e8d97c014049351f7d68758c25dd	 
+362	 80	PUSH2	008A	 ;; _ecall_4eb0afeebca7ea14fdbef0c93a3b1d20d39840d4c7532fc21126f5c1b5414b4c	 
 - stack 1: 0x8E4
 - stack 0: 0x42000
 363	 83	JUMPI		 	 
 - stack 2: 0x8E4
 - stack 1: 0x42000
 - stack 0: 0x8A
-364	 8A	JUMPDEST		 ;; _ecall_78db3549397d51c0072ac2fc1b688e435c39e8d97c014049351f7d68758c25dd	 
+364	 8A	JUMPDEST		 ;; _ecall_4eb0afeebca7ea14fdbef0c93a3b1d20d39840d4c7532fc21126f5c1b5414b4c	 
 - stack 0: 0x8E4
 365	 8B	PUSH1	04	 	 
 - stack 0: 0x8E4
@@ -1110,4 +1110,4 @@ Running in EVM:
 377	 1A96	INVALID		 	  ;; # EBREAK
 - stack 0: 0x8E8
 Error: {"error":"invalid opcode","errorType":"VmError"}
-    at invokeRiscv (/root/risc-to-evm/v2.ts:1217:11)
+    at invokeRiscv (/root/risc-to-evm/v2.ts:1221:11)

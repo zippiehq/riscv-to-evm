@@ -958,15 +958,18 @@ function convertMultipleRISCVtoFunction(pc: number, buf: Buffer): string {
     throw new Error("No range?");
   }
   console.log("making opt for " + (0x400 + pc).toString(16) + " range " + range.map((x) => x.toString(16)));
-  const afterPc = range[range.length - 1] + 4;
-  for (let i = 0; i < buf.length; i += 4) {
+  const branchPc = range[range.length - 2] + 4;
+  const afterBranchPc = range[range.length - 1] + 4;
+  for (let i = 0; i < buf.length - 4; i += 4) {
     const instr = buf.readUInt32LE(i);
-    console.log(" *** " + parseInstruction(instr).instructionName);
-    opcodes.push(({opcode: "JUMPDEST", comment: "DEBUG: " + parseInstruction(instr).assembly}));
+    console.log("opt decode " + parseInstruction(instr).instructionName);
+    // opcodes.push(({opcode: "JUMPDEST", comment: "DEBUG: " + parseInstruction(instr).assembly}));
     emitRiscv(instr);
   }
-  console.log("after PC is " + afterPc.toString(16));
-  opcodes.push({opcode: "PUSH2", parameter: afterPc.toString(16).toUpperCase().padStart(4, "0")});
+  console.log("branch PC is " + branchPc.toString(16));
+  opcodes.push({opcode: "PUSH2", parameter: branchPc.toString(16).toUpperCase().padStart(4, "0")});
+  emitRiscv(buf.readUint32LE(buf.length - 4));
+  emitPcPlus4();
   emitExecute();
   return "_riscvopt_" + hash;
 
@@ -1149,6 +1152,7 @@ async function invokeRiscv() {
                 if (range.length >= 1 && branchPc != range[range.length - 1] + 4) {
                   throw new Error("wtf?");
                 }
+                range.push(branchPc);                
                 range = [];
               }
             }

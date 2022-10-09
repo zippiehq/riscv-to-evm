@@ -150,14 +150,14 @@ Running in EVM:
 53	 7F	MLOAD		 	  ;; # read from x10
 - stack 1: 0x40C
 - stack 0: 0x140
-54	 80	PUSH2	008A	 ;; _ecall_f90a61be3510326434d0a9ffe98c41dc257d8be2301fc23db69d01844b48df32	 
+54	 80	PUSH2	008A	 ;; _ecall_82dedf48195d59b83b71ac23c244f2c935e87f0b426d43235a0528de99472dbc	 
 - stack 1: 0x40C
 - stack 0: 0x42000
 55	 83	JUMPI		 	 
 - stack 2: 0x40C
 - stack 1: 0x42000
 - stack 0: 0x8A
-56	 8A	JUMPDEST		 ;; _ecall_f90a61be3510326434d0a9ffe98c41dc257d8be2301fc23db69d01844b48df32	 
+56	 8A	JUMPDEST		 ;; _ecall_82dedf48195d59b83b71ac23c244f2c935e87f0b426d43235a0528de99472dbc	 
 - stack 0: 0x40C
 57	 8B	PUSH1	04	 	 
 - stack 0: 0x40C
@@ -303,14 +303,14 @@ Running in EVM:
 106	 7F	MLOAD		 	  ;; # read from x10
 - stack 1: 0x41C
 - stack 0: 0x140
-107	 80	PUSH2	008A	 ;; _ecall_f90a61be3510326434d0a9ffe98c41dc257d8be2301fc23db69d01844b48df32	 
+107	 80	PUSH2	008A	 ;; _ecall_82dedf48195d59b83b71ac23c244f2c935e87f0b426d43235a0528de99472dbc	 
 - stack 1: 0x41C
 - stack 0: 0x42000
 108	 83	JUMPI		 	 
 - stack 2: 0x41C
 - stack 1: 0x42000
 - stack 0: 0x8A
-109	 8A	JUMPDEST		 ;; _ecall_f90a61be3510326434d0a9ffe98c41dc257d8be2301fc23db69d01844b48df32	 
+109	 8A	JUMPDEST		 ;; _ecall_82dedf48195d59b83b71ac23c244f2c935e87f0b426d43235a0528de99472dbc	 
 - stack 0: 0x41C
 110	 8B	PUSH1	04	 	 
 - stack 0: 0x41C
@@ -384,7 +384,7 @@ Running in EVM:
 134	 7F	MLOAD		 	  ;; # read from x10
 - stack 1: 0x424
 - stack 0: 0x140
-135	 80	PUSH2	008A	 ;; _ecall_f90a61be3510326434d0a9ffe98c41dc257d8be2301fc23db69d01844b48df32	 
+135	 80	PUSH2	008A	 ;; _ecall_82dedf48195d59b83b71ac23c244f2c935e87f0b426d43235a0528de99472dbc	 
 - stack 1: 0x424
 - stack 0: 0x0
 136	 83	JUMPI		 	 
