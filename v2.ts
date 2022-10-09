@@ -609,8 +609,13 @@ function emitLb(rd: number, rs1: number, imm: number) {
   opcodes.push({ opcode: "ADD"});
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // narrow down to 32-bit
   opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
+  // big endian fixup
+  opcodes.push({ opcode: "PUSH1", parameter: "03", comment: "big endian fixup"});
+  opcodes.push({ opcode: "XOR"});
+  // fixup end
+
   opcodes.push({ opcode: "MLOAD"});
-  opcodes.push({ opcode: "PUSH1", parameter: "F8" }); // to get the 32-bit value as it's all the way left
+  opcodes.push({ opcode: "PUSH1", parameter: "F8" }); // to get the 8-bit value as it's all the way left
   opcodes.push({ opcode: "SHR" });
 
   opcodes.push({opcode: "PUSH1", parameter: "00"});
@@ -628,7 +633,12 @@ function emitLbu(rd: number, rs1: number, imm: number) {
   opcodes.push({ opcode: "ADD"});
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // narrow down to 32-bit
   opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
+  // big endian fixup
+  opcodes.push({ opcode: "PUSH1", parameter: "03"});
+  opcodes.push({ opcode: "XOR"});
+  // fixup end
   opcodes.push({ opcode: "MLOAD"});
+  
   opcodes.push({ opcode: "PUSH1", parameter: "F8" }); // to get the 32-bit value as it's all the way left
   opcodes.push({ opcode: "SHR" });
  
@@ -644,11 +654,13 @@ function emitLh(rd: number, rs1: number, imm: number) {
   opcodes.push({ opcode: "ADD"});
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // narrow down to 32-bit
   opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
+  // big endian fixup
+  opcodes.push({ opcode: "PUSH1", parameter: "02"});
+  opcodes.push({ opcode: "XOR"});
+  // fixup end
   opcodes.push({ opcode: "MLOAD"});
   opcodes.push({ opcode: "PUSH1", parameter: "F0" }); // to get the 32-bit value as it's all the way left
   opcodes.push({ opcode: "SHR" });
-
-  bswap16(); // fucking big endian EVM XXX we might be able to avoid AND 0xFFFF as we have a signextend
 
   opcodes.push({opcode: "PUSH1", parameter: "01"});
   opcodes.push({opcode: "SIGNEXTEND"});
@@ -664,11 +676,14 @@ function emitLhu(rd: number, rs1: number, imm: number) {
   opcodes.push({ opcode: "ADD"});
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // narrow down to 32-bit
   opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
+  // big endian fixup
+  opcodes.push({ opcode: "PUSH1", parameter: "02"});
+  opcodes.push({ opcode: "XOR"});
+  // fixup end
+  
   opcodes.push({ opcode: "MLOAD"});
   opcodes.push({ opcode: "PUSH1", parameter: "F0" }); // to get the 32-bit value as it's all the way left
   opcodes.push({ opcode: "SHR" });
-
-  bswap16(); // fucking big endian EVM
 
   writeRegister(rd, false);
 }
@@ -686,8 +701,6 @@ function emitLw(rd: number, rs1: number, imm: number) {
   opcodes.push({ opcode: "PUSH1", parameter: "E0" }); // to get the 32-bit value as it's all the way left
   opcodes.push({ opcode: "SHR" });
 
-  bswap32(); // fucking big endian EVM
-
   writeRegister(rd, false);
 }
 
@@ -701,6 +714,9 @@ function emitSb(rs1: number, rs2: number, imm: number) {
   opcodes.push({ opcode: "ADD" });
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // narrow down to 32-bit
   opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
+  opcodes.push({ opcode: "PUSH1", parameter: "03"});
+  opcodes.push({ opcode: "XOR"});
+
   opcodes.push({ opcode: "MSTORE8" });
 }
 
@@ -712,6 +728,8 @@ function emitSh(rs1: number, rs2: number, imm: number) {
   opcodes.push({ opcode: "ADD" });
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // narrow down to 32-bit
   opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
+  opcodes.push({ opcode: "PUSH1", parameter: "02"});
+  opcodes.push({ opcode: "XOR"});
 
   opcodes.push({ opcode: "DUP1" });
   opcodes.push({ opcode: "MLOAD", comment: "fetch" });
@@ -720,7 +738,6 @@ function emitSh(rs1: number, rs2: number, imm: number) {
 
   // grab value from rs2 (value)
   readRegister(rs2);
-  bswap16(); // fucking big endian EVM
 
   opcodes.push({opcode: "PUSH1", parameter: "F0"});
   opcodes.push({opcode: "SHL"});
@@ -747,7 +764,6 @@ function emitSw(rs1: number, rs2: number, imm: number) {
 
   // grab 32 bit value from rs2 (value)
   readRegister(rs2);
-  bswap32(); // fucking big endian EVM
 
   opcodes.push({opcode: "PUSH1", parameter: "E0"});
   opcodes.push({opcode: "SHL"});
@@ -1082,7 +1098,16 @@ for (let i = 0; i < opcodesToConvert.length; i++) {
 addProgramCounters();
 resolveNamesAndOffsets();
 
-const restOfRAM = full_ram.slice(text_area.length, full_ram.length);
+const restOfRAMpreBswap = Buffer.concat([full_ram.slice(text_area.length, full_ram.length), Buffer.alloc(full_ram.length % 4, 0)]);
+const restOfRAM = Buffer.alloc(restOfRAMpreBswap.length);
+
+// pre-byteswap the entire precompiled ram
+for (let i = 0; i < restOfRAMpreBswap.length; i += 4) {
+
+  restOfRAM.writeUInt32BE(restOfRAMpreBswap.readUint32LE(i), i);
+}
+
+
 const assembled = performAssembly();
 const finalBytecode = Buffer.concat([Buffer.from(assembled, "hex"), restOfRAM]);
 console.log("Final bytecode length; " + finalBytecode.length);
@@ -1097,11 +1122,11 @@ async function invokeRiscv() {
 
   vm.on('step', function (data: any) {
     // console.log(`pc: ${data.pc.toString(16).toUpperCase()} - Opcode: ${JSON.stringify(data.opcode.name)}- mem length: ${data.memory.length} - ${data.opcode.dynamicFee}`)
-    /* for (let l = 0; l < opcodes.length; l++) {
+    for (let l = 0; l < opcodes.length; l++) {
       if (opcodes[l].pc == data.pc) {
           printO(cycle, opcodes[l]);
       }
-    } */
+    }
     if (data.opcode.name === "JUMPDEST" && !profile_use) {
       for (let l = 0; l < opcodes.length; l++) {
         if (opcodes[l].pc == data.pc) {
@@ -1133,16 +1158,18 @@ async function invokeRiscv() {
     if (data.opcode.name === "LOG0") {
       let ptr = Number(data.stack[data.stack.length - 1]);
       let str = "";
-      while (data.memory[ptr] !== 0) {
-        str += String.fromCharCode(data.memory[ptr]);
+      while (data.memory[ptr ^ 3] !== 0) {
+        str += String.fromCharCode(data.memory[ptr ^ 3]);
         ptr = ptr + 1;
       }
       console.log("*** PRINT: " + str);
     }
-    /*
+    
     for (let l = 0; l < data.stack.length; l++) {
        console.log("- stack " + (data.stack.length - 1 - l) + ": 0x" + data.stack[l].toString(16).toUpperCase());
-    } 
+    }  
+
+    /*
     const regs = Object.keys(reg2mem);
     for (let i = 0; i < regs.length; i++) {
       let loc = reg2mem[regs[i]];
@@ -1153,15 +1180,15 @@ async function invokeRiscv() {
           console.log("reg " + regs[i] + "\t" + slice);
         }
       }
-    } */
-    /* let mem = data.memory.toString("hex");
+    }
+    let mem = data.memory.toString("hex");
     let l = 0;
-    for (let l = 0; l < data.memory.length; l += 8) {   
-        if (mem.substring(l, l+8) != "00000000") {
-            console.log("- mem " + (l/2).toString(16).toUpperCase().padStart(8, "0") + " - " + mem.substring(l, l+8));
+    for (let l = 0; l < mem.length; l += 4) {   
+        if (mem.substring(l, l+2) != "00") {
+            console.log("- mem " + (l/2).toString(16).toUpperCase().padStart(2, "0") + " - " + mem.substring(l, l+2));
         }
-    } */
-    
+    }
+    */
 
     if (data.opcode.name == "MLOAD") {
       if (data.stack[data.stack.length - 1] >= 0x10000000) {
