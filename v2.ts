@@ -139,7 +139,7 @@ function writeRegister(regId: number, doMask: boolean) {
 
 opcodes.push({
   opcode: "PUSH4",
-  parameter: full_ram.length.toString(16).toUpperCase().padStart(4, "0"),
+  parameter: (full_ram.length + (full_ram.length % 4)).toString(16).toUpperCase().padStart(4, "0"),
 });
 
 opcodes.push({ opcode: "PUSH2", find_name: "_rambegin" });
@@ -157,21 +157,30 @@ opcodes.push({ opcode: "PUSH2", parameter: (entryPoint).toString(16).toUpperCase
 opcodes.push({ opcode: "PUSH2", find_name: "_execute" });
 opcodes.push({ opcode: "JUMP" });
 
+
+function emitPcPlus4() {
+  opcodes.push({ opcode: "PUSH1", parameter: "04" });
+  opcodes.push({ opcode: "ADD" });  
+}
+
 opcodes.push({ opcode: "JUMPDEST", name: "_pcplus4" });
-opcodes.push({ opcode: "PUSH1", parameter: "04" });
-opcodes.push({ opcode: "ADD" });
+emitPcPlus4();
 
 // main loop
+
+function emitExecute() {
+  opcodes.push({ opcode: "DUP1", comment: "executing pc" });
+  opcodes.push({ opcode: "MLOAD" });
+  opcodes.push({ opcode: "PUSH1", parameter: "E0" }); // to get the 32-bit value as it's all the way left
+  opcodes.push({ opcode: "SHR" });
+  opcodes.push({ opcode: "JUMP" });  
+}
 opcodes.push({ opcode: "JUMPDEST", name: "_execute" });
-opcodes.push({ opcode: "DUP1" });
-opcodes.push({ opcode: "MLOAD" });
-opcodes.push({ opcode: "PUSH1", parameter: "E0" }); // to get the 32-bit value as it's all the way left
-opcodes.push({ opcode: "SHR" });
-opcodes.push({ opcode: "JUMP" });
+emitExecute();
 
 function goNextInst() {
-  opcodes.push({ opcode: "PUSH2", find_name: "_pcplus4" });
-  opcodes.push({ opcode: "JUMP" });
+  emitPcPlus4();
+  emitExecute();
 }
 
 function emitAdd(rd: number, rs1: number, rs2: number) {
@@ -367,7 +376,7 @@ function emitAuipc(rd: number, imm: number) {
   opcodes.push({ opcode: "DUP1" });
   if (imm !== 0) {
     signExtendTo256(imm << 12 >> 0);
-    opcodes.push({ opcode: "ADD" });  
+    opcodes.push({ opcode: "ADD" });
   }
   writeRegister(rd, false);
 }
@@ -384,8 +393,7 @@ function emitJal(rd: number, imm: number) {
   opcodes.push({ opcode: "ADD" }); // pc+4 pc+imm-signextended
   writeRegister(rd, false);
   // pc+mm-signextended
-  opcodes.push({ opcode: "PUSH4", find_name: "_execute" });
-  opcodes.push({ opcode: "JUMP" });
+  emitExecute();
 }
 
 function emitJalr(rd: number, rs1: number, imm: number) {
@@ -403,8 +411,7 @@ function emitJalr(rd: number, rs1: number, imm: number) {
     opcodes.push({ opcode: "ADD" }); // pc+4 pc+imm-signextended
     writeRegister(rd, false);  
   }
-  opcodes.push({ opcode: "PUSH4", find_name: "_execute" });
-  opcodes.push({ opcode: "JUMP" });
+  emitExecute();
 }
 
 function bswap16() {
@@ -469,8 +476,7 @@ function emitBne(rs1: number, rs2: number, imm: number) {
   opcodes.push({opcode: "ADD"});
   opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
   opcodes.push({opcode: "AND", comment: "mask to 32 bits" });
-  opcodes.push({opcode: "PUSH2", find_name: "_execute"});
-  opcodes.push({opcode: "JUMP"});
+  emitExecute();
   opcodes.push({opcode: "JUMPDEST", name: "_neq_after_" + rando});
 }
 
@@ -494,8 +500,7 @@ function emitBeq(rs1: number, rs2: number, imm: number) {
   opcodes.push({opcode: "ADD"});
   opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
   opcodes.push({opcode: "AND", comment: "mask to 32 bits" });
-  opcodes.push({opcode: "PUSH2", find_name: "_execute"});
-  opcodes.push({opcode: "JUMP"});
+  emitExecute();
   opcodes.push({opcode: "JUMPDEST", name: "_beq_after_" + rando});
 }
 
@@ -518,8 +523,7 @@ function emitBlt(rs1: number, rs2: number, imm: number) {
   opcodes.push({opcode: "ADD"});
   opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
   opcodes.push({opcode: "AND", comment: "mask to 32 bits" });
-  opcodes.push({opcode: "PUSH2", find_name: "_execute"});
-  opcodes.push({opcode: "JUMP"});
+  emitExecute();
   opcodes.push({opcode: "JUMPDEST", name: "_blt_after_" + rando});
 }
 
@@ -544,8 +548,7 @@ function emitBge(rs1: number, rs2: number, imm: number) {
   opcodes.push({opcode: "ADD"});
   opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
   opcodes.push({opcode: "AND", comment: "mask to 32 bits" });
-  opcodes.push({opcode: "PUSH2", find_name: "_execute"});
-  opcodes.push({opcode: "JUMP"});
+  emitExecute();
   opcodes.push({opcode: "JUMPDEST", name: "_bge_after_" + rando});
 }
 
@@ -570,8 +573,7 @@ function emitBgeu(rs1: number, rs2: number, imm: number) {
   opcodes.push({opcode: "ADD"});
   opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
   opcodes.push({opcode: "AND", comment: "mask to 32 bits" });
-  opcodes.push({opcode: "PUSH2", find_name: "_execute"});
-  opcodes.push({opcode: "JUMP"});
+  emitExecute();
   opcodes.push({opcode: "JUMPDEST", name: "_bgeu_after_" + rando});
 }
 
@@ -596,8 +598,7 @@ function emitBltu(rs1: number, rs2: number, imm: number) {
   opcodes.push({opcode: "ADD"});
   opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
   opcodes.push({opcode: "AND", comment: "mask to 32 bits" });
-  opcodes.push({opcode: "PUSH2", find_name: "_execute"});
-  opcodes.push({opcode: "JUMP"});
+  emitExecute();
   opcodes.push({opcode: "JUMPDEST", name: "_bltu_after_" + rando});
 }
 
@@ -966,8 +967,7 @@ function convertMultipleRISCVtoFunction(pc: number, buf: Buffer): string {
   }
   console.log("after PC is " + afterPc.toString(16));
   opcodes.push({opcode: "PUSH2", parameter: afterPc.toString(16).toUpperCase().padStart(4, "0")});
-  opcodes.push({opcode: "PUSH2", find_name: "_execute", comment: "upgrade PC to past optimized"});
-  opcodes.push({opcode: "JUMP"});
+  emitExecute();
   return "_riscvopt_" + hash;
 
 }

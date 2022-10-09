@@ -249,24 +249,24 @@ making opt for 6ac range 6ac,6b0,6b4,6b8
  *** ADDI
  *** ADDI
 after PC is 6bc
-Final bytecode length; 9875
+Final bytecode length; 10485
 Running in EVM:
 0	 0	PUSH4	0300	 	 
-1	 5	PUSH2	2392	 ;; _rambegin	 
+1	 5	PUSH2	25F4	 ;; _rambegin	 
 - stack 0: 0x300
 2	 8	PUSH1	01	 	 
 - stack 1: 0x300
-- stack 0: 0x2392
+- stack 0: 0x25F4
 3	 A	ADD		 	 
 - stack 2: 0x300
-- stack 1: 0x2392
+- stack 1: 0x25F4
 - stack 0: 0x1
 4	 B	PUSH2	0400	 	 
 - stack 1: 0x300
-- stack 0: 0x2393
+- stack 0: 0x25F5
 5	 E	CODECOPY		 	 
 - stack 2: 0x300
-- stack 1: 0x2393
+- stack 1: 0x25F5
 - stack 0: 0x400
 6	 F	PUSH2	0400	 	 
 7	 12	PUSH2	001A	 ;; _execute	 
@@ -276,17 +276,17 @@ Running in EVM:
 - stack 0: 0x1A
 9	 1A	JUMPDEST		 ;; _execute	 
 - stack 0: 0x400
-10	 1B	DUP1		 	 
+10	 1B	DUP1		 	  ;; # executing pc
 - stack 0: 0x400
 11	 1C	MLOAD		 	 
 - stack 1: 0x400
 - stack 0: 0x400
 12	 1D	PUSH1	E0	 	 
 - stack 1: 0x400
-- stack 0: 0x21000000CC000000FB0000010900000124000001320000014800000156
+- stack 0: 0x21000000CE000001020000011500000135000001480000016300000176
 13	 1F	SHR		 	 
 - stack 2: 0x400
-- stack 1: 0x21000000CC000000FB0000010900000124000001320000014800000156
+- stack 1: 0x21000000CE000001020000011500000135000001480000016300000176
 - stack 0: 0xE0
 14	 20	JUMP		 	 
 - stack 1: 0x400
@@ -327,12 +327,12 @@ Running in EVM:
 33	 63	PUSH2	0140	 	 
 34	 66	MLOAD		 	  ;; # read from x10
 - stack 0: 0x140
-35	 67	PUSH2	0071	 ;; _ecall_0e248e47c845bd6af0a98c974c51b5235e3bf4edc924cbe8a83bd8aedfa1bd17	 
+35	 67	PUSH2	0071	 ;; _ecall_3919f2c5fc3c6eefa3893617d4f58285825b6a76797ddf60302d1f3664fac8a1	 
 - stack 0: 0x42000
 36	 6A	JUMPI		 	 
 - stack 1: 0x42000
 - stack 0: 0x71
-37	 71	JUMPDEST		 ;; _ecall_0e248e47c845bd6af0a98c974c51b5235e3bf4edc924cbe8a83bd8aedfa1bd17	 
+37	 71	JUMPDEST		 ;; _ecall_3919f2c5fc3c6eefa3893617d4f58285825b6a76797ddf60302d1f3664fac8a1	 
 38	 72	PUSH1	04	 	 
 39	 74	PUSH2	0160	 	 
 - stack 0: 0x4
@@ -384,5793 +384,5177 @@ Running in EVM:
 - stack 1: 0x2
 - stack 0: 0x380
 63	 C5	PUSH2	0420	 	 
-64	 C8	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+64	 C8	DUP1		 	  ;; # executing pc
 - stack 0: 0x420
-65	 CB	JUMP		 	 
-- stack 1: 0x420
-- stack 0: 0x1A
-66	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x420
-67	 1B	DUP1		 	 
-- stack 0: 0x420
-68	 1C	MLOAD		 	 
+65	 C9	MLOAD		 	 
 - stack 1: 0x420
 - stack 0: 0x420
-69	 1D	PUSH1	E0	 	 
+66	 CA	PUSH1	E0	 	 
 - stack 1: 0x420
-- stack 0: 0x180000001D0000002250000023B0000024900000273000002C300000343
-70	 1F	SHR		 	 
+- stack 0: 0x1A5000001FC000002530000026E00000281000002B00000030700000389
+67	 CC	SHR		 	 
 - stack 2: 0x420
-- stack 1: 0x180000001D0000002250000023B0000024900000273000002C300000343
+- stack 1: 0x1A5000001FC000002530000026E00000281000002B00000030700000389
 - stack 0: 0xE0
-71	 20	JUMP		 	 
+68	 CD	JUMP		 	 
 - stack 1: 0x420
-- stack 0: 0x180
-72	 180	JUMPDEST		 ;; _riscv_b7e14efe1ea605de93aebc410e233062a77ac3456ad981491802d76f45333dfa	  ;; # pc 0x420 buffer: 6392d12b decode bne gp,t4,2a4
+- stack 0: 0x1A5
+69	 1A5	JUMPDEST		 ;; _riscv_b7e14efe1ea605de93aebc410e233062a77ac3456ad981491802d76f45333dfa	  ;; # pc 0x420 buffer: 6392d12b decode bne gp,t4,2a4
 - stack 0: 0x420
-73	 181	PUSH2	0060	 	 
+70	 1A6	PUSH2	0060	 	 
 - stack 0: 0x420
-74	 184	MLOAD		 	  ;; # read from x3
+71	 1A9	MLOAD		 	  ;; # read from x3
 - stack 1: 0x420
 - stack 0: 0x60
-75	 185	PUSH4	FFFFFFFF	 	 
+72	 1AA	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x420
 - stack 0: 0xFFFF8000
-76	 18A	AND		 	  ;; # mask to 32 bits
+73	 1AF	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x420
 - stack 1: 0xFFFF8000
 - stack 0: 0xFFFFFFFF
-77	 18B	PUSH2	03A0	 	 
+74	 1B0	PUSH2	03A0	 	 
 - stack 1: 0x420
 - stack 0: 0xFFFF8000
-78	 18E	MLOAD		 	  ;; # read from x29
+75	 1B3	MLOAD		 	  ;; # read from x29
 - stack 2: 0x420
 - stack 1: 0xFFFF8000
 - stack 0: 0x3A0
-79	 18F	PUSH4	FFFFFFFF	 	 
+76	 1B4	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x420
 - stack 1: 0xFFFF8000
 - stack 0: 0xFFFF8000
-80	 194	AND		 	  ;; # mask to 32 bits
+77	 1B9	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x420
 - stack 2: 0xFFFF8000
 - stack 1: 0xFFFF8000
 - stack 0: 0xFFFFFFFF
-81	 195	SUB		 	 
+78	 1BA	SUB		 	 
 - stack 2: 0x420
 - stack 1: 0xFFFF8000
 - stack 0: 0xFFFF8000
-82	 196	PUSH2	019E	 ;; _neq_bc8d9fec56312f6bcc3df21a713041014413560846c19dd38ad862d0405de2dc	 
+79	 1BB	PUSH2	01C3	 ;; _neq_a3ca24961491ceea2ebc0bbc7b9170baa105b0ca7365bdfb05f805393cb0eea1	 
 - stack 1: 0x420
 - stack 0: 0x0
-83	 199	JUMPI		 	 
+80	 1BE	JUMPI		 	 
 - stack 2: 0x420
 - stack 1: 0x0
-- stack 0: 0x19E
-84	 19A	PUSH2	01CB	 ;; _neq_after_bc8d9fec56312f6bcc3df21a713041014413560846c19dd38ad862d0405de2dc	 
+- stack 0: 0x1C3
+81	 1BF	PUSH2	01F2	 ;; _neq_after_a3ca24961491ceea2ebc0bbc7b9170baa105b0ca7365bdfb05f805393cb0eea1	 
 - stack 0: 0x420
-85	 19D	JUMP		 	 
+82	 1C2	JUMP		 	 
 - stack 1: 0x420
-- stack 0: 0x1CB
-86	 1CB	JUMPDEST		 ;; _neq_after_bc8d9fec56312f6bcc3df21a713041014413560846c19dd38ad862d0405de2dc	 
+- stack 0: 0x1F2
+83	 1F2	JUMPDEST		 ;; _neq_after_a3ca24961491ceea2ebc0bbc7b9170baa105b0ca7365bdfb05f805393cb0eea1	 
 - stack 0: 0x420
-87	 1CC	PUSH2	0016	 ;; _pcplus4	 
+84	 1F3	PUSH1	04	 	 
 - stack 0: 0x420
-88	 1CF	JUMP		 	 
-- stack 1: 0x420
-- stack 0: 0x16
-89	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x420
-90	 17	PUSH1	04	 	 
-- stack 0: 0x420
-91	 19	ADD		 	 
+85	 1F5	ADD		 	 
 - stack 1: 0x420
 - stack 0: 0x4
-92	 1A	JUMPDEST		 ;; _execute	 
+86	 1F6	DUP1		 	  ;; # executing pc
 - stack 0: 0x424
-93	 1B	DUP1		 	 
-- stack 0: 0x424
-94	 1C	MLOAD		 	 
+87	 1F7	MLOAD		 	 
 - stack 1: 0x424
 - stack 0: 0x424
-95	 1D	PUSH1	E0	 	 
+88	 1F8	PUSH1	E0	 	 
 - stack 1: 0x424
-- stack 0: 0x1D0000002250000023B0000024900000273000002C30000034300000359
-96	 1F	SHR		 	 
+- stack 0: 0x1FC000002530000026E00000281000002B00000030700000389000003A4
+89	 1FA	SHR		 	 
 - stack 2: 0x424
-- stack 1: 0x1D0000002250000023B0000024900000273000002C30000034300000359
+- stack 1: 0x1FC000002530000026E00000281000002B00000030700000389000003A4
 - stack 0: 0xE0
-97	 20	JUMP		 	 
+90	 1FB	JUMP		 	 
 - stack 1: 0x424
-- stack 0: 0x1D0
-98	 1D0	JUMPDEST		 ;; _riscvopt_7a6272c1cc014a57bcea0d5bdf94de16415d11d01404f2fcadc40e258e16a77e	  ;; # pc 0x424 buffer: b780ffff93d11000b7ceff7f130e3000
+- stack 0: 0x1FC
+91	 1FC	JUMPDEST		 ;; _riscvopt_7a6272c1cc014a57bcea0d5bdf94de16415d11d01404f2fcadc40e258e16a77e	  ;; # pc 0x424 buffer: b780ffff93d11000b7ceff7f130e3000
 - stack 0: 0x424
-99	 1D1	POP		 	 
+92	 1FD	POP		 	 
 - stack 0: 0x424
-100	 1D2	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
-101	 1D3	PUSH4	ffff8000	 	 
-102	 1D8	PUSH2	0020	 	 
+93	 1FE	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
+94	 1FF	PUSH4	ffff8000	 	 
+95	 204	PUSH2	0020	 	 
 - stack 0: 0xFFFF8000
-103	 1DB	MSTORE		 	  ;; # store to x1
+96	 207	MSTORE		 	  ;; # store to x1
 - stack 1: 0xFFFF8000
 - stack 0: 0x20
-104	 1DC	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,1
-105	 1DD	PUSH2	0020	 	 
-106	 1E0	MLOAD		 	  ;; # read from x1
+97	 208	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,1
+98	 209	PUSH2	0020	 	 
+99	 20C	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-107	 1E1	PUSH4	FFFFFFFF	 	 
+100	 20D	PUSH4	FFFFFFFF	 	 
 - stack 0: 0xFFFF8000
-108	 1E6	AND		 	  ;; # mask to 32 bits
+101	 212	AND		 	  ;; # mask to 32 bits
 - stack 1: 0xFFFF8000
 - stack 0: 0xFFFFFFFF
-109	 1E7	PUSH1	01	 	 
+102	 213	PUSH1	01	 	 
 - stack 0: 0xFFFF8000
-110	 1E9	SHR		 	  ;; # SRLI
+103	 215	SHR		 	  ;; # SRLI
 - stack 1: 0xFFFF8000
 - stack 0: 0x1
-111	 1EA	PUSH2	0060	 	 
+104	 216	PUSH2	0060	 	 
 - stack 0: 0x7FFFC000
-112	 1ED	MSTORE		 	  ;; # store to x3
+105	 219	MSTORE		 	  ;; # store to x3
 - stack 1: 0x7FFFC000
 - stack 0: 0x60
-113	 1EE	JUMPDEST		 	  ;; # DEBUG: lui t4,0x7fffc
-114	 1EF	PUSH4	7fffc000	 	 
-115	 1F4	PUSH2	03A0	 	 
+106	 21A	JUMPDEST		 	  ;; # DEBUG: lui t4,0x7fffc
+107	 21B	PUSH4	7fffc000	 	 
+108	 220	PUSH2	03A0	 	 
 - stack 0: 0x7FFFC000
-116	 1F7	MSTORE		 	  ;; # store to x29
+109	 223	MSTORE		 	  ;; # store to x29
 - stack 1: 0x7FFFC000
 - stack 0: 0x3A0
-117	 1F8	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,3
-118	 1F9	PUSH32	0000000000000000000000000000000000000000000000000000000000000003	 	  ;; # signextended 3
-119	 21A	PUSH2	0380	 	 
+110	 224	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,3
+111	 225	PUSH32	0000000000000000000000000000000000000000000000000000000000000003	 	  ;; # signextended 3
+112	 246	PUSH2	0380	 	 
 - stack 0: 0x3
-120	 21D	MSTORE		 	  ;; # store to x28
+113	 249	MSTORE		 	  ;; # store to x28
 - stack 1: 0x3
 - stack 0: 0x380
-121	 21E	PUSH2	0434	 	 
-122	 221	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+114	 24A	PUSH2	0434	 	 
+115	 24D	DUP1		 	  ;; # executing pc
 - stack 0: 0x434
-123	 224	JUMP		 	 
-- stack 1: 0x434
-- stack 0: 0x1A
-124	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x434
-125	 1B	DUP1		 	 
-- stack 0: 0x434
-126	 1C	MLOAD		 	 
+116	 24E	MLOAD		 	 
 - stack 1: 0x434
 - stack 0: 0x434
-127	 1D	PUSH1	E0	 	 
+117	 24F	PUSH1	E0	 	 
 - stack 1: 0x434
-- stack 0: 0x273000002C300000343000003590000036700000396000003C000000410
-128	 1F	SHR		 	 
+- stack 0: 0x2B00000030700000389000003A4000003B7000003EB0000041A00000471
+118	 251	SHR		 	 
 - stack 2: 0x434
-- stack 1: 0x273000002C300000343000003590000036700000396000003C000000410
+- stack 1: 0x2B00000030700000389000003A4000003B7000003EB0000041A00000471
 - stack 0: 0xE0
-129	 20	JUMP		 	 
+119	 252	JUMP		 	 
 - stack 1: 0x434
-- stack 0: 0x273
-130	 273	JUMPDEST		 ;; _riscv_e7d18442569f6efd4b9f80581edf1b57b03fda1396b57cc608276d8358effe37	  ;; # pc 0x434 buffer: 6398d129 decode bne gp,t4,290
+- stack 0: 0x2B0
+120	 2B0	JUMPDEST		 ;; _riscv_e7d18442569f6efd4b9f80581edf1b57b03fda1396b57cc608276d8358effe37	  ;; # pc 0x434 buffer: 6398d129 decode bne gp,t4,290
 - stack 0: 0x434
-131	 274	PUSH2	0060	 	 
+121	 2B1	PUSH2	0060	 	 
 - stack 0: 0x434
-132	 277	MLOAD		 	  ;; # read from x3
+122	 2B4	MLOAD		 	  ;; # read from x3
 - stack 1: 0x434
 - stack 0: 0x60
-133	 278	PUSH4	FFFFFFFF	 	 
+123	 2B5	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x434
 - stack 0: 0x7FFFC000
-134	 27D	AND		 	  ;; # mask to 32 bits
+124	 2BA	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x434
 - stack 1: 0x7FFFC000
 - stack 0: 0xFFFFFFFF
-135	 27E	PUSH2	03A0	 	 
+125	 2BB	PUSH2	03A0	 	 
 - stack 1: 0x434
 - stack 0: 0x7FFFC000
-136	 281	MLOAD		 	  ;; # read from x29
+126	 2BE	MLOAD		 	  ;; # read from x29
 - stack 2: 0x434
 - stack 1: 0x7FFFC000
 - stack 0: 0x3A0
-137	 282	PUSH4	FFFFFFFF	 	 
+127	 2BF	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x434
 - stack 1: 0x7FFFC000
 - stack 0: 0x7FFFC000
-138	 287	AND		 	  ;; # mask to 32 bits
+128	 2C4	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x434
 - stack 2: 0x7FFFC000
 - stack 1: 0x7FFFC000
 - stack 0: 0xFFFFFFFF
-139	 288	SUB		 	 
+129	 2C5	SUB		 	 
 - stack 2: 0x434
 - stack 1: 0x7FFFC000
 - stack 0: 0x7FFFC000
-140	 289	PUSH2	0291	 ;; _neq_11b701b0ede47e6ebeef0d1847f214b345a8e805ca883f866fbe3e537fcf956c	 
+130	 2C6	PUSH2	02CE	 ;; _neq_f8e526ba061a33a815a777474695694a10808ee73811adf72e5280d66919db75	 
 - stack 1: 0x434
 - stack 0: 0x0
-141	 28C	JUMPI		 	 
+131	 2C9	JUMPI		 	 
 - stack 2: 0x434
 - stack 1: 0x0
-- stack 0: 0x291
-142	 28D	PUSH2	02BE	 ;; _neq_after_11b701b0ede47e6ebeef0d1847f214b345a8e805ca883f866fbe3e537fcf956c	 
+- stack 0: 0x2CE
+132	 2CA	PUSH2	02FD	 ;; _neq_after_f8e526ba061a33a815a777474695694a10808ee73811adf72e5280d66919db75	 
 - stack 0: 0x434
-143	 290	JUMP		 	 
+133	 2CD	JUMP		 	 
 - stack 1: 0x434
-- stack 0: 0x2BE
-144	 2BE	JUMPDEST		 ;; _neq_after_11b701b0ede47e6ebeef0d1847f214b345a8e805ca883f866fbe3e537fcf956c	 
+- stack 0: 0x2FD
+134	 2FD	JUMPDEST		 ;; _neq_after_f8e526ba061a33a815a777474695694a10808ee73811adf72e5280d66919db75	 
 - stack 0: 0x434
-145	 2BF	PUSH2	0016	 ;; _pcplus4	 
+135	 2FE	PUSH1	04	 	 
 - stack 0: 0x434
-146	 2C2	JUMP		 	 
-- stack 1: 0x434
-- stack 0: 0x16
-147	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x434
-148	 17	PUSH1	04	 	 
-- stack 0: 0x434
-149	 19	ADD		 	 
+136	 300	ADD		 	 
 - stack 1: 0x434
 - stack 0: 0x4
-150	 1A	JUMPDEST		 ;; _execute	 
+137	 301	DUP1		 	  ;; # executing pc
 - stack 0: 0x438
-151	 1B	DUP1		 	 
-- stack 0: 0x438
-152	 1C	MLOAD		 	 
+138	 302	MLOAD		 	 
 - stack 1: 0x438
 - stack 0: 0x438
-153	 1D	PUSH1	E0	 	 
+139	 303	PUSH1	E0	 	 
 - stack 1: 0x438
-- stack 0: 0x2C300000343000003590000036700000396000003C00000041000000490
-154	 1F	SHR		 	 
+- stack 0: 0x30700000389000003A4000003B7000003EB0000041A00000471000004F3
+140	 305	SHR		 	 
 - stack 2: 0x438
-- stack 1: 0x2C300000343000003590000036700000396000003C00000041000000490
+- stack 1: 0x30700000389000003A4000003B7000003EB0000041A00000471000004F3
 - stack 0: 0xE0
-155	 20	JUMP		 	 
+141	 306	JUMP		 	 
 - stack 1: 0x438
-- stack 0: 0x2C3
-156	 2C3	JUMPDEST		 ;; _riscvopt_ad8c32b56e3ca3143c02e86235f7ecd49aa0b6cb05132bd0a80bf8aa81cf51e7	  ;; # pc 0x438 buffer: b780ffff93d17000b70e0002938e0ef0130e4000
+- stack 0: 0x307
+142	 307	JUMPDEST		 ;; _riscvopt_ad8c32b56e3ca3143c02e86235f7ecd49aa0b6cb05132bd0a80bf8aa81cf51e7	  ;; # pc 0x438 buffer: b780ffff93d17000b70e0002938e0ef0130e4000
 - stack 0: 0x438
-157	 2C4	POP		 	 
+143	 308	POP		 	 
 - stack 0: 0x438
-158	 2C5	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
-159	 2C6	PUSH4	ffff8000	 	 
-160	 2CB	PUSH2	0020	 	 
+144	 309	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
+145	 30A	PUSH4	ffff8000	 	 
+146	 30F	PUSH2	0020	 	 
 - stack 0: 0xFFFF8000
-161	 2CE	MSTORE		 	  ;; # store to x1
+147	 312	MSTORE		 	  ;; # store to x1
 - stack 1: 0xFFFF8000
 - stack 0: 0x20
-162	 2CF	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,7
-163	 2D0	PUSH2	0020	 	 
-164	 2D3	MLOAD		 	  ;; # read from x1
+148	 313	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,7
+149	 314	PUSH2	0020	 	 
+150	 317	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-165	 2D4	PUSH4	FFFFFFFF	 	 
+151	 318	PUSH4	FFFFFFFF	 	 
 - stack 0: 0xFFFF8000
-166	 2D9	AND		 	  ;; # mask to 32 bits
+152	 31D	AND		 	  ;; # mask to 32 bits
 - stack 1: 0xFFFF8000
 - stack 0: 0xFFFFFFFF
-167	 2DA	PUSH1	07	 	 
+153	 31E	PUSH1	07	 	 
 - stack 0: 0xFFFF8000
-168	 2DC	SHR		 	  ;; # SRLI
+154	 320	SHR		 	  ;; # SRLI
 - stack 1: 0xFFFF8000
 - stack 0: 0x7
-169	 2DD	PUSH2	0060	 	 
+155	 321	PUSH2	0060	 	 
 - stack 0: 0x1FFFF00
-170	 2E0	MSTORE		 	  ;; # store to x3
+156	 324	MSTORE		 	  ;; # store to x3
 - stack 1: 0x1FFFF00
 - stack 0: 0x60
-171	 2E1	JUMPDEST		 	  ;; # DEBUG: lui t4,0x2000
-172	 2E2	PUSH4	02000000	 	 
-173	 2E7	PUSH2	03A0	 	 
+157	 325	JUMPDEST		 	  ;; # DEBUG: lui t4,0x2000
+158	 326	PUSH4	02000000	 	 
+159	 32B	PUSH2	03A0	 	 
 - stack 0: 0x2000000
-174	 2EA	MSTORE		 	  ;; # store to x29
+160	 32E	MSTORE		 	  ;; # store to x29
 - stack 1: 0x2000000
 - stack 0: 0x3A0
-175	 2EB	JUMPDEST		 	  ;; # DEBUG: addi t4,t4,-256
-176	 2EC	PUSH2	03A0	 	 
-177	 2EF	MLOAD		 	  ;; # read from x29
+161	 32F	JUMPDEST		 	  ;; # DEBUG: addi t4,t4,-256
+162	 330	PUSH2	03A0	 	 
+163	 333	MLOAD		 	  ;; # read from x29
 - stack 0: 0x3A0
-178	 2F0	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00	 	  ;; # signextended -256
+164	 334	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00	 	  ;; # signextended -256
 - stack 0: 0x2000000
-179	 311	ADD		 	  ;; # ADDI
+165	 355	ADD		 	  ;; # ADDI
 - stack 1: 0x2000000
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00
-180	 312	PUSH2	03A0	 	 
+166	 356	PUSH2	03A0	 	 
 - stack 0: 0x1FFFF00
-181	 315	MSTORE		 	  ;; # store to x29
+167	 359	MSTORE		 	  ;; # store to x29
 - stack 1: 0x1FFFF00
 - stack 0: 0x3A0
-182	 316	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,4
-183	 317	PUSH32	0000000000000000000000000000000000000000000000000000000000000004	 	  ;; # signextended 4
-184	 338	PUSH2	0380	 	 
+168	 35A	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,4
+169	 35B	PUSH32	0000000000000000000000000000000000000000000000000000000000000004	 	  ;; # signextended 4
+170	 37C	PUSH2	0380	 	 
 - stack 0: 0x4
-185	 33B	MSTORE		 	  ;; # store to x28
+171	 37F	MSTORE		 	  ;; # store to x28
 - stack 1: 0x4
 - stack 0: 0x380
-186	 33C	PUSH2	044C	 	 
-187	 33F	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+172	 380	PUSH2	044C	 	 
+173	 383	DUP1		 	  ;; # executing pc
 - stack 0: 0x44C
-188	 342	JUMP		 	 
-- stack 1: 0x44C
-- stack 0: 0x1A
-189	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x44C
-190	 1B	DUP1		 	 
-- stack 0: 0x44C
-191	 1C	MLOAD		 	 
+174	 384	MLOAD		 	 
 - stack 1: 0x44C
 - stack 0: 0x44C
-192	 1D	PUSH1	E0	 	 
+175	 385	PUSH1	E0	 	 
 - stack 1: 0x44C
-- stack 0: 0x3C00000041000000490000004A6000004B4000004E30000050D0000055D
-193	 1F	SHR		 	 
+- stack 0: 0x41A00000471000004F30000050E000005210000055500000584000005DB
+176	 387	SHR		 	 
 - stack 2: 0x44C
-- stack 1: 0x3C00000041000000490000004A6000004B4000004E30000050D0000055D
+- stack 1: 0x41A00000471000004F30000050E000005210000055500000584000005DB
 - stack 0: 0xE0
-194	 20	JUMP		 	 
+177	 388	JUMP		 	 
 - stack 1: 0x44C
-- stack 0: 0x3C0
-195	 3C0	JUMPDEST		 ;; _riscv_d8bf53df2f13ba490b648e7dc4e6f6b6db8260579e6367b92b8b95b8a6dc811d	  ;; # pc 0x44c buffer: 639cd127 decode bne gp,t4,278
+- stack 0: 0x41A
+178	 41A	JUMPDEST		 ;; _riscv_d8bf53df2f13ba490b648e7dc4e6f6b6db8260579e6367b92b8b95b8a6dc811d	  ;; # pc 0x44c buffer: 639cd127 decode bne gp,t4,278
 - stack 0: 0x44C
-196	 3C1	PUSH2	0060	 	 
+179	 41B	PUSH2	0060	 	 
 - stack 0: 0x44C
-197	 3C4	MLOAD		 	  ;; # read from x3
+180	 41E	MLOAD		 	  ;; # read from x3
 - stack 1: 0x44C
 - stack 0: 0x60
-198	 3C5	PUSH4	FFFFFFFF	 	 
+181	 41F	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x44C
 - stack 0: 0x1FFFF00
-199	 3CA	AND		 	  ;; # mask to 32 bits
+182	 424	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x44C
 - stack 1: 0x1FFFF00
 - stack 0: 0xFFFFFFFF
-200	 3CB	PUSH2	03A0	 	 
+183	 425	PUSH2	03A0	 	 
 - stack 1: 0x44C
 - stack 0: 0x1FFFF00
-201	 3CE	MLOAD		 	  ;; # read from x29
+184	 428	MLOAD		 	  ;; # read from x29
 - stack 2: 0x44C
 - stack 1: 0x1FFFF00
 - stack 0: 0x3A0
-202	 3CF	PUSH4	FFFFFFFF	 	 
+185	 429	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x44C
 - stack 1: 0x1FFFF00
 - stack 0: 0x1FFFF00
-203	 3D4	AND		 	  ;; # mask to 32 bits
+186	 42E	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x44C
 - stack 2: 0x1FFFF00
 - stack 1: 0x1FFFF00
 - stack 0: 0xFFFFFFFF
-204	 3D5	SUB		 	 
+187	 42F	SUB		 	 
 - stack 2: 0x44C
 - stack 1: 0x1FFFF00
 - stack 0: 0x1FFFF00
-205	 3D6	PUSH2	03DE	 ;; _neq_9ae202bd08d97b4916e785aad8c725a8a923bbe76ea7ae86bdd127af7b9d80bf	 
+188	 430	PUSH2	0438	 ;; _neq_53cc413d5d8e567769c18222c2d4059a791fcc87712673e862492254dd8d7eaa	 
 - stack 1: 0x44C
 - stack 0: 0x0
-206	 3D9	JUMPI		 	 
+189	 433	JUMPI		 	 
 - stack 2: 0x44C
 - stack 1: 0x0
-- stack 0: 0x3DE
-207	 3DA	PUSH2	040B	 ;; _neq_after_9ae202bd08d97b4916e785aad8c725a8a923bbe76ea7ae86bdd127af7b9d80bf	 
+- stack 0: 0x438
+190	 434	PUSH2	0467	 ;; _neq_after_53cc413d5d8e567769c18222c2d4059a791fcc87712673e862492254dd8d7eaa	 
 - stack 0: 0x44C
-208	 3DD	JUMP		 	 
+191	 437	JUMP		 	 
 - stack 1: 0x44C
-- stack 0: 0x40B
-209	 40B	JUMPDEST		 ;; _neq_after_9ae202bd08d97b4916e785aad8c725a8a923bbe76ea7ae86bdd127af7b9d80bf	 
+- stack 0: 0x467
+192	 467	JUMPDEST		 ;; _neq_after_53cc413d5d8e567769c18222c2d4059a791fcc87712673e862492254dd8d7eaa	 
 - stack 0: 0x44C
-210	 40C	PUSH2	0016	 ;; _pcplus4	 
+193	 468	PUSH1	04	 	 
 - stack 0: 0x44C
-211	 40F	JUMP		 	 
-- stack 1: 0x44C
-- stack 0: 0x16
-212	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x44C
-213	 17	PUSH1	04	 	 
-- stack 0: 0x44C
-214	 19	ADD		 	 
+194	 46A	ADD		 	 
 - stack 1: 0x44C
 - stack 0: 0x4
-215	 1A	JUMPDEST		 ;; _execute	 
+195	 46B	DUP1		 	  ;; # executing pc
 - stack 0: 0x450
-216	 1B	DUP1		 	 
-- stack 0: 0x450
-217	 1C	MLOAD		 	 
+196	 46C	MLOAD		 	 
 - stack 1: 0x450
 - stack 0: 0x450
-218	 1D	PUSH1	E0	 	 
+197	 46D	PUSH1	E0	 	 
 - stack 1: 0x450
-- stack 0: 0x41000000490000004A6000004B4000004E30000050D0000055D00000608
-219	 1F	SHR		 	 
+- stack 0: 0x471000004F30000050E000005210000055500000584000005DB00000688
+198	 46F	SHR		 	 
 - stack 2: 0x450
-- stack 1: 0x41000000490000004A6000004B4000004E30000050D0000055D00000608
+- stack 1: 0x471000004F30000050E000005210000055500000584000005DB00000688
 - stack 0: 0xE0
-220	 20	JUMP		 	 
+199	 470	JUMP		 	 
 - stack 1: 0x450
-- stack 0: 0x410
-221	 410	JUMPDEST		 ;; _riscvopt_cd0da09de238ce72ea601f0b55e14e8c3096e5887d67f3fc3def98a55dd0af20	  ;; # pc 0x450 buffer: b780ffff93d1e000b70e0400938eeeff130e5000
+- stack 0: 0x471
+200	 471	JUMPDEST		 ;; _riscvopt_cd0da09de238ce72ea601f0b55e14e8c3096e5887d67f3fc3def98a55dd0af20	  ;; # pc 0x450 buffer: b780ffff93d1e000b70e0400938eeeff130e5000
 - stack 0: 0x450
-222	 411	POP		 	 
+201	 472	POP		 	 
 - stack 0: 0x450
-223	 412	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
-224	 413	PUSH4	ffff8000	 	 
-225	 418	PUSH2	0020	 	 
+202	 473	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
+203	 474	PUSH4	ffff8000	 	 
+204	 479	PUSH2	0020	 	 
 - stack 0: 0xFFFF8000
-226	 41B	MSTORE		 	  ;; # store to x1
+205	 47C	MSTORE		 	  ;; # store to x1
 - stack 1: 0xFFFF8000
 - stack 0: 0x20
-227	 41C	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,14
-228	 41D	PUSH2	0020	 	 
-229	 420	MLOAD		 	  ;; # read from x1
+206	 47D	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,14
+207	 47E	PUSH2	0020	 	 
+208	 481	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-230	 421	PUSH4	FFFFFFFF	 	 
+209	 482	PUSH4	FFFFFFFF	 	 
 - stack 0: 0xFFFF8000
-231	 426	AND		 	  ;; # mask to 32 bits
+210	 487	AND		 	  ;; # mask to 32 bits
 - stack 1: 0xFFFF8000
 - stack 0: 0xFFFFFFFF
-232	 427	PUSH1	0E	 	 
+211	 488	PUSH1	0E	 	 
 - stack 0: 0xFFFF8000
-233	 429	SHR		 	  ;; # SRLI
+212	 48A	SHR		 	  ;; # SRLI
 - stack 1: 0xFFFF8000
 - stack 0: 0xE
-234	 42A	PUSH2	0060	 	 
+213	 48B	PUSH2	0060	 	 
 - stack 0: 0x3FFFE
-235	 42D	MSTORE		 	  ;; # store to x3
+214	 48E	MSTORE		 	  ;; # store to x3
 - stack 1: 0x3FFFE
 - stack 0: 0x60
-236	 42E	JUMPDEST		 	  ;; # DEBUG: lui t4,0x40
-237	 42F	PUSH4	00040000	 	 
-238	 434	PUSH2	03A0	 	 
+215	 48F	JUMPDEST		 	  ;; # DEBUG: lui t4,0x40
+216	 490	PUSH4	00040000	 	 
+217	 495	PUSH2	03A0	 	 
 - stack 0: 0x40000
-239	 437	MSTORE		 	  ;; # store to x29
+218	 498	MSTORE		 	  ;; # store to x29
 - stack 1: 0x40000
 - stack 0: 0x3A0
-240	 438	JUMPDEST		 	  ;; # DEBUG: addi t4,t4,-2
-241	 439	PUSH2	03A0	 	 
-242	 43C	MLOAD		 	  ;; # read from x29
+219	 499	JUMPDEST		 	  ;; # DEBUG: addi t4,t4,-2
+220	 49A	PUSH2	03A0	 	 
+221	 49D	MLOAD		 	  ;; # read from x29
 - stack 0: 0x3A0
-243	 43D	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE	 	  ;; # signextended -2
+222	 49E	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE	 	  ;; # signextended -2
 - stack 0: 0x40000
-244	 45E	ADD		 	  ;; # ADDI
+223	 4BF	ADD		 	  ;; # ADDI
 - stack 1: 0x40000
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE
-245	 45F	PUSH2	03A0	 	 
+224	 4C0	PUSH2	03A0	 	 
 - stack 0: 0x3FFFE
-246	 462	MSTORE		 	  ;; # store to x29
+225	 4C3	MSTORE		 	  ;; # store to x29
 - stack 1: 0x3FFFE
 - stack 0: 0x3A0
-247	 463	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,5
-248	 464	PUSH32	0000000000000000000000000000000000000000000000000000000000000005	 	  ;; # signextended 5
-249	 485	PUSH2	0380	 	 
+226	 4C4	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,5
+227	 4C5	PUSH32	0000000000000000000000000000000000000000000000000000000000000005	 	  ;; # signextended 5
+228	 4E6	PUSH2	0380	 	 
 - stack 0: 0x5
-250	 488	MSTORE		 	  ;; # store to x28
+229	 4E9	MSTORE		 	  ;; # store to x28
 - stack 1: 0x5
 - stack 0: 0x380
-251	 489	PUSH2	0464	 	 
-252	 48C	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+230	 4EA	PUSH2	0464	 	 
+231	 4ED	DUP1		 	  ;; # executing pc
 - stack 0: 0x464
-253	 48F	JUMP		 	 
-- stack 1: 0x464
-- stack 0: 0x1A
-254	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x464
-255	 1B	DUP1		 	 
-- stack 0: 0x464
-256	 1C	MLOAD		 	 
+232	 4EE	MLOAD		 	 
 - stack 1: 0x464
 - stack 0: 0x464
-257	 1D	PUSH1	E0	 	 
+233	 4EF	PUSH1	E0	 	 
 - stack 1: 0x464
-- stack 0: 0x50D0000055D00000608000006370000064D0000065B0000068A000006B4
-258	 1F	SHR		 	 
+- stack 0: 0x584000005DB00000688000006BC000006D7000006EA0000071E0000074D
+234	 4F1	SHR		 	 
 - stack 2: 0x464
-- stack 1: 0x50D0000055D00000608000006370000064D0000065B0000068A000006B4
+- stack 1: 0x584000005DB00000688000006BC000006D7000006EA0000071E0000074D
 - stack 0: 0xE0
-259	 20	JUMP		 	 
+235	 4F2	JUMP		 	 
 - stack 1: 0x464
-- stack 0: 0x50D
-260	 50D	JUMPDEST		 ;; _riscv_f3ac81d6a778b469feae489c0830e5550fcd927ac383be21a34d0883ed8f332e	  ;; # pc 0x464 buffer: 6390d127 decode bne gp,t4,260
+- stack 0: 0x584
+236	 584	JUMPDEST		 ;; _riscv_f3ac81d6a778b469feae489c0830e5550fcd927ac383be21a34d0883ed8f332e	  ;; # pc 0x464 buffer: 6390d127 decode bne gp,t4,260
 - stack 0: 0x464
-261	 50E	PUSH2	0060	 	 
+237	 585	PUSH2	0060	 	 
 - stack 0: 0x464
-262	 511	MLOAD		 	  ;; # read from x3
+238	 588	MLOAD		 	  ;; # read from x3
 - stack 1: 0x464
 - stack 0: 0x60
-263	 512	PUSH4	FFFFFFFF	 	 
+239	 589	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x464
 - stack 0: 0x3FFFE
-264	 517	AND		 	  ;; # mask to 32 bits
+240	 58E	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x464
 - stack 1: 0x3FFFE
 - stack 0: 0xFFFFFFFF
-265	 518	PUSH2	03A0	 	 
+241	 58F	PUSH2	03A0	 	 
 - stack 1: 0x464
 - stack 0: 0x3FFFE
-266	 51B	MLOAD		 	  ;; # read from x29
+242	 592	MLOAD		 	  ;; # read from x29
 - stack 2: 0x464
 - stack 1: 0x3FFFE
 - stack 0: 0x3A0
-267	 51C	PUSH4	FFFFFFFF	 	 
+243	 593	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x464
 - stack 1: 0x3FFFE
 - stack 0: 0x3FFFE
-268	 521	AND		 	  ;; # mask to 32 bits
+244	 598	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x464
 - stack 2: 0x3FFFE
 - stack 1: 0x3FFFE
 - stack 0: 0xFFFFFFFF
-269	 522	SUB		 	 
+245	 599	SUB		 	 
 - stack 2: 0x464
 - stack 1: 0x3FFFE
 - stack 0: 0x3FFFE
-270	 523	PUSH2	052B	 ;; _neq_1740beb6dc818a12193bbd34e6541c1545e2fb1355b23059b4f6cc0b13ff3566	 
+246	 59A	PUSH2	05A2	 ;; _neq_400aca140c2d3e9c87dc9d60b6580ba51644607a8f2572b79b102dea2c5d4fa8	 
 - stack 1: 0x464
 - stack 0: 0x0
-271	 526	JUMPI		 	 
+247	 59D	JUMPI		 	 
 - stack 2: 0x464
 - stack 1: 0x0
-- stack 0: 0x52B
-272	 527	PUSH2	0558	 ;; _neq_after_1740beb6dc818a12193bbd34e6541c1545e2fb1355b23059b4f6cc0b13ff3566	 
+- stack 0: 0x5A2
+248	 59E	PUSH2	05D1	 ;; _neq_after_400aca140c2d3e9c87dc9d60b6580ba51644607a8f2572b79b102dea2c5d4fa8	 
 - stack 0: 0x464
-273	 52A	JUMP		 	 
+249	 5A1	JUMP		 	 
 - stack 1: 0x464
-- stack 0: 0x558
-274	 558	JUMPDEST		 ;; _neq_after_1740beb6dc818a12193bbd34e6541c1545e2fb1355b23059b4f6cc0b13ff3566	 
+- stack 0: 0x5D1
+250	 5D1	JUMPDEST		 ;; _neq_after_400aca140c2d3e9c87dc9d60b6580ba51644607a8f2572b79b102dea2c5d4fa8	 
 - stack 0: 0x464
-275	 559	PUSH2	0016	 ;; _pcplus4	 
+251	 5D2	PUSH1	04	 	 
 - stack 0: 0x464
-276	 55C	JUMP		 	 
-- stack 1: 0x464
-- stack 0: 0x16
-277	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x464
-278	 17	PUSH1	04	 	 
-- stack 0: 0x464
-279	 19	ADD		 	 
+252	 5D4	ADD		 	 
 - stack 1: 0x464
 - stack 0: 0x4
-280	 1A	JUMPDEST		 ;; _execute	 
+253	 5D5	DUP1		 	  ;; # executing pc
 - stack 0: 0x468
-281	 1B	DUP1		 	 
-- stack 0: 0x468
-282	 1C	MLOAD		 	 
+254	 5D6	MLOAD		 	 
 - stack 1: 0x468
 - stack 0: 0x468
-283	 1D	PUSH1	E0	 	 
+255	 5D7	PUSH1	E0	 	 
 - stack 1: 0x468
-- stack 0: 0x55D00000608000006370000064D0000065B0000068A000006B400000704
-284	 1F	SHR		 	 
+- stack 0: 0x5DB00000688000006BC000006D7000006EA0000071E0000074D000007A4
+256	 5D9	SHR		 	 
 - stack 2: 0x468
-- stack 1: 0x55D00000608000006370000064D0000065B0000068A000006B400000704
+- stack 1: 0x5DB00000688000006BC000006D7000006EA0000071E0000074D000007A4
 - stack 0: 0xE0
-285	 20	JUMP		 	 
+257	 5DA	JUMP		 	 
 - stack 1: 0x468
-- stack 0: 0x55D
-286	 55D	JUMPDEST		 ;; _riscvopt_503cf6117d56e5a07b9b317299b0a4eb3317554e13b5aad216d60bfb0698d7be	  ;; # pc 0x468 buffer: b780ffff9380100093d1f000b70e0200938efeff130e6000
+- stack 0: 0x5DB
+258	 5DB	JUMPDEST		 ;; _riscvopt_503cf6117d56e5a07b9b317299b0a4eb3317554e13b5aad216d60bfb0698d7be	  ;; # pc 0x468 buffer: b780ffff9380100093d1f000b70e0200938efeff130e6000
 - stack 0: 0x468
-287	 55E	POP		 	 
+259	 5DC	POP		 	 
 - stack 0: 0x468
-288	 55F	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
-289	 560	PUSH4	ffff8000	 	 
-290	 565	PUSH2	0020	 	 
+260	 5DD	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
+261	 5DE	PUSH4	ffff8000	 	 
+262	 5E3	PUSH2	0020	 	 
 - stack 0: 0xFFFF8000
-291	 568	MSTORE		 	  ;; # store to x1
+263	 5E6	MSTORE		 	  ;; # store to x1
 - stack 1: 0xFFFF8000
 - stack 0: 0x20
-292	 569	JUMPDEST		 	  ;; # DEBUG: addi ra,ra,1
-293	 56A	PUSH2	0020	 	 
-294	 56D	MLOAD		 	  ;; # read from x1
+264	 5E7	JUMPDEST		 	  ;; # DEBUG: addi ra,ra,1
+265	 5E8	PUSH2	0020	 	 
+266	 5EB	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-295	 56E	PUSH32	0000000000000000000000000000000000000000000000000000000000000001	 	  ;; # signextended 1
+267	 5EC	PUSH32	0000000000000000000000000000000000000000000000000000000000000001	 	  ;; # signextended 1
 - stack 0: 0xFFFF8000
-296	 58F	ADD		 	  ;; # ADDI
+268	 60D	ADD		 	  ;; # ADDI
 - stack 1: 0xFFFF8000
 - stack 0: 0x1
-297	 590	PUSH2	0020	 	 
+269	 60E	PUSH2	0020	 	 
 - stack 0: 0xFFFF8001
-298	 593	MSTORE		 	  ;; # store to x1
+270	 611	MSTORE		 	  ;; # store to x1
 - stack 1: 0xFFFF8001
 - stack 0: 0x20
-299	 594	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,15
-300	 595	PUSH2	0020	 	 
-301	 598	MLOAD		 	  ;; # read from x1
+271	 612	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,15
+272	 613	PUSH2	0020	 	 
+273	 616	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-302	 599	PUSH4	FFFFFFFF	 	 
+274	 617	PUSH4	FFFFFFFF	 	 
 - stack 0: 0xFFFF8001
-303	 59E	AND		 	  ;; # mask to 32 bits
+275	 61C	AND		 	  ;; # mask to 32 bits
 - stack 1: 0xFFFF8001
 - stack 0: 0xFFFFFFFF
-304	 59F	PUSH1	0F	 	 
+276	 61D	PUSH1	0F	 	 
 - stack 0: 0xFFFF8001
-305	 5A1	SHR		 	  ;; # SRLI
+277	 61F	SHR		 	  ;; # SRLI
 - stack 1: 0xFFFF8001
 - stack 0: 0xF
-306	 5A2	PUSH2	0060	 	 
+278	 620	PUSH2	0060	 	 
 - stack 0: 0x1FFFF
-307	 5A5	MSTORE		 	  ;; # store to x3
+279	 623	MSTORE		 	  ;; # store to x3
 - stack 1: 0x1FFFF
 - stack 0: 0x60
-308	 5A6	JUMPDEST		 	  ;; # DEBUG: lui t4,0x20
-309	 5A7	PUSH4	00020000	 	 
-310	 5AC	PUSH2	03A0	 	 
+280	 624	JUMPDEST		 	  ;; # DEBUG: lui t4,0x20
+281	 625	PUSH4	00020000	 	 
+282	 62A	PUSH2	03A0	 	 
 - stack 0: 0x20000
-311	 5AF	MSTORE		 	  ;; # store to x29
+283	 62D	MSTORE		 	  ;; # store to x29
 - stack 1: 0x20000
 - stack 0: 0x3A0
-312	 5B0	JUMPDEST		 	  ;; # DEBUG: addi t4,t4,-1
-313	 5B1	PUSH2	03A0	 	 
-314	 5B4	MLOAD		 	  ;; # read from x29
+284	 62E	JUMPDEST		 	  ;; # DEBUG: addi t4,t4,-1
+285	 62F	PUSH2	03A0	 	 
+286	 632	MLOAD		 	  ;; # read from x29
 - stack 0: 0x3A0
-315	 5B5	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	  ;; # signextended -1
+287	 633	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	  ;; # signextended -1
 - stack 0: 0x20000
-316	 5D6	ADD		 	  ;; # ADDI
+288	 654	ADD		 	  ;; # ADDI
 - stack 1: 0x20000
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-317	 5D7	PUSH2	03A0	 	 
+289	 655	PUSH2	03A0	 	 
 - stack 0: 0x1FFFF
-318	 5DA	MSTORE		 	  ;; # store to x29
+290	 658	MSTORE		 	  ;; # store to x29
 - stack 1: 0x1FFFF
 - stack 0: 0x3A0
-319	 5DB	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,6
-320	 5DC	PUSH32	0000000000000000000000000000000000000000000000000000000000000006	 	  ;; # signextended 6
-321	 5FD	PUSH2	0380	 	 
+291	 659	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,6
+292	 65A	PUSH32	0000000000000000000000000000000000000000000000000000000000000006	 	  ;; # signextended 6
+293	 67B	PUSH2	0380	 	 
 - stack 0: 0x6
-322	 600	MSTORE		 	  ;; # store to x28
+294	 67E	MSTORE		 	  ;; # store to x28
 - stack 1: 0x6
 - stack 0: 0x380
-323	 601	PUSH2	0480	 	 
-324	 604	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+295	 67F	PUSH2	0480	 	 
+296	 682	DUP1		 	  ;; # executing pc
 - stack 0: 0x480
-325	 607	JUMP		 	 
-- stack 1: 0x480
-- stack 0: 0x1A
-326	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x480
-327	 1B	DUP1		 	 
-- stack 0: 0x480
-328	 1C	MLOAD		 	 
+297	 683	MLOAD		 	 
 - stack 1: 0x480
 - stack 0: 0x480
-329	 1D	PUSH1	E0	 	 
+298	 684	PUSH1	E0	 	 
 - stack 1: 0x480
-- stack 0: 0x6B4000007040000013200000791000007BB000007E50000083500000225
-330	 1F	SHR		 	 
+- stack 0: 0x74D000007A400000148000008330000086200000891000008E800000253
+299	 686	SHR		 	 
 - stack 2: 0x480
-- stack 1: 0x6B4000007040000013200000791000007BB000007E50000083500000225
+- stack 1: 0x74D000007A400000148000008330000086200000891000008E800000253
 - stack 0: 0xE0
-331	 20	JUMP		 	 
+300	 687	JUMP		 	 
 - stack 1: 0x480
-- stack 0: 0x6B4
-332	 6B4	JUMPDEST		 ;; _riscv_32a5a75f3b268413c4ffced20bdabd6d143cb88c72a78dd5aebe6e345eb676d0	  ;; # pc 0x480 buffer: 6392d125 decode bne gp,t4,244
+- stack 0: 0x74D
+301	 74D	JUMPDEST		 ;; _riscv_32a5a75f3b268413c4ffced20bdabd6d143cb88c72a78dd5aebe6e345eb676d0	  ;; # pc 0x480 buffer: 6392d125 decode bne gp,t4,244
 - stack 0: 0x480
-333	 6B5	PUSH2	0060	 	 
+302	 74E	PUSH2	0060	 	 
 - stack 0: 0x480
-334	 6B8	MLOAD		 	  ;; # read from x3
+303	 751	MLOAD		 	  ;; # read from x3
 - stack 1: 0x480
 - stack 0: 0x60
-335	 6B9	PUSH4	FFFFFFFF	 	 
+304	 752	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x480
 - stack 0: 0x1FFFF
-336	 6BE	AND		 	  ;; # mask to 32 bits
+305	 757	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x480
 - stack 1: 0x1FFFF
 - stack 0: 0xFFFFFFFF
-337	 6BF	PUSH2	03A0	 	 
+306	 758	PUSH2	03A0	 	 
 - stack 1: 0x480
 - stack 0: 0x1FFFF
-338	 6C2	MLOAD		 	  ;; # read from x29
+307	 75B	MLOAD		 	  ;; # read from x29
 - stack 2: 0x480
 - stack 1: 0x1FFFF
 - stack 0: 0x3A0
-339	 6C3	PUSH4	FFFFFFFF	 	 
+308	 75C	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x480
 - stack 1: 0x1FFFF
 - stack 0: 0x1FFFF
-340	 6C8	AND		 	  ;; # mask to 32 bits
+309	 761	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x480
 - stack 2: 0x1FFFF
 - stack 1: 0x1FFFF
 - stack 0: 0xFFFFFFFF
-341	 6C9	SUB		 	 
+310	 762	SUB		 	 
 - stack 2: 0x480
 - stack 1: 0x1FFFF
 - stack 0: 0x1FFFF
-342	 6CA	PUSH2	06D2	 ;; _neq_3cd2ad21066501c0a8b7b11607fea7cdf7dab221522e8d3d1c272f9d214767d9	 
+311	 763	PUSH2	076B	 ;; _neq_6a56b19687298feb981d2acfc6f84ef68c9a4fbebd2897718f48cdf1277b9b2a	 
 - stack 1: 0x480
 - stack 0: 0x0
-343	 6CD	JUMPI		 	 
+312	 766	JUMPI		 	 
 - stack 2: 0x480
 - stack 1: 0x0
-- stack 0: 0x6D2
-344	 6CE	PUSH2	06FF	 ;; _neq_after_3cd2ad21066501c0a8b7b11607fea7cdf7dab221522e8d3d1c272f9d214767d9	 
+- stack 0: 0x76B
+313	 767	PUSH2	079A	 ;; _neq_after_6a56b19687298feb981d2acfc6f84ef68c9a4fbebd2897718f48cdf1277b9b2a	 
 - stack 0: 0x480
-345	 6D1	JUMP		 	 
+314	 76A	JUMP		 	 
 - stack 1: 0x480
-- stack 0: 0x6FF
-346	 6FF	JUMPDEST		 ;; _neq_after_3cd2ad21066501c0a8b7b11607fea7cdf7dab221522e8d3d1c272f9d214767d9	 
+- stack 0: 0x79A
+315	 79A	JUMPDEST		 ;; _neq_after_6a56b19687298feb981d2acfc6f84ef68c9a4fbebd2897718f48cdf1277b9b2a	 
 - stack 0: 0x480
-347	 700	PUSH2	0016	 ;; _pcplus4	 
+316	 79B	PUSH1	04	 	 
 - stack 0: 0x480
-348	 703	JUMP		 	 
-- stack 1: 0x480
-- stack 0: 0x16
-349	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x480
-350	 17	PUSH1	04	 	 
-- stack 0: 0x480
-351	 19	ADD		 	 
+317	 79D	ADD		 	 
 - stack 1: 0x480
 - stack 0: 0x4
-352	 1A	JUMPDEST		 ;; _execute	 
+318	 79E	DUP1		 	  ;; # executing pc
 - stack 0: 0x484
-353	 1B	DUP1		 	 
-- stack 0: 0x484
-354	 1C	MLOAD		 	 
+319	 79F	MLOAD		 	 
 - stack 1: 0x484
 - stack 0: 0x484
-355	 1D	PUSH1	E0	 	 
+320	 7A0	PUSH1	E0	 	 
 - stack 1: 0x484
-- stack 0: 0x7040000013200000791000007BB000007E50000083500000225000008D1
-356	 1F	SHR		 	 
+- stack 0: 0x7A400000148000008330000086200000891000008E80000025300000986
+321	 7A2	SHR		 	 
 - stack 2: 0x484
-- stack 1: 0x7040000013200000791000007BB000007E50000083500000225000008D1
+- stack 1: 0x7A400000148000008330000086200000891000008E80000025300000986
 - stack 0: 0xE0
-357	 20	JUMP		 	 
+322	 7A3	JUMP		 	 
 - stack 1: 0x484
-- stack 0: 0x704
-358	 704	JUMPDEST		 ;; _riscvopt_6e4ef8a44b9f1252d08b57eb58ea1a3161dc4a8522961eb2c3f0774bb7066934	  ;; # pc 0x484 buffer: 9300f0ff93d10000930ef0ff130e7000
+- stack 0: 0x7A4
+323	 7A4	JUMPDEST		 ;; _riscvopt_6e4ef8a44b9f1252d08b57eb58ea1a3161dc4a8522961eb2c3f0774bb7066934	  ;; # pc 0x484 buffer: 9300f0ff93d10000930ef0ff130e7000
 - stack 0: 0x484
-359	 705	POP		 	 
+324	 7A5	POP		 	 
 - stack 0: 0x484
-360	 706	JUMPDEST		 	  ;; # DEBUG: addi ra,zero,-1
-361	 707	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	  ;; # signextended -1
-362	 728	PUSH2	0020	 	 
+325	 7A6	JUMPDEST		 	  ;; # DEBUG: addi ra,zero,-1
+326	 7A7	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	  ;; # signextended -1
+327	 7C8	PUSH2	0020	 	 
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-363	 72B	MSTORE		 	  ;; # store to x1
+328	 7CB	MSTORE		 	  ;; # store to x1
 - stack 1: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 - stack 0: 0x20
-364	 72C	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,0
-365	 72D	PUSH2	0020	 	 
-366	 730	MLOAD		 	  ;; # read from x1
+329	 7CC	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,0
+330	 7CD	PUSH2	0020	 	 
+331	 7D0	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-367	 731	PUSH4	FFFFFFFF	 	 
+332	 7D1	PUSH4	FFFFFFFF	 	 
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-368	 736	AND		 	  ;; # mask to 32 bits
+333	 7D6	AND		 	  ;; # mask to 32 bits
 - stack 1: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 - stack 0: 0xFFFFFFFF
-369	 737	PUSH1	00	 	 
+334	 7D7	PUSH1	00	 	 
 - stack 0: 0xFFFFFFFF
-370	 739	SHR		 	  ;; # SRLI
+335	 7D9	SHR		 	  ;; # SRLI
 - stack 1: 0xFFFFFFFF
 - stack 0: 0x0
-371	 73A	PUSH2	0060	 	 
+336	 7DA	PUSH2	0060	 	 
 - stack 0: 0xFFFFFFFF
-372	 73D	MSTORE		 	  ;; # store to x3
+337	 7DD	MSTORE		 	  ;; # store to x3
 - stack 1: 0xFFFFFFFF
 - stack 0: 0x60
-373	 73E	JUMPDEST		 	  ;; # DEBUG: addi t4,zero,-1
-374	 73F	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	  ;; # signextended -1
-375	 760	PUSH2	03A0	 	 
+338	 7DE	JUMPDEST		 	  ;; # DEBUG: addi t4,zero,-1
+339	 7DF	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	  ;; # signextended -1
+340	 800	PUSH2	03A0	 	 
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-376	 763	MSTORE		 	  ;; # store to x29
+341	 803	MSTORE		 	  ;; # store to x29
 - stack 1: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 - stack 0: 0x3A0
-377	 764	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,7
-378	 765	PUSH32	0000000000000000000000000000000000000000000000000000000000000007	 	  ;; # signextended 7
-379	 786	PUSH2	0380	 	 
+342	 804	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,7
+343	 805	PUSH32	0000000000000000000000000000000000000000000000000000000000000007	 	  ;; # signextended 7
+344	 826	PUSH2	0380	 	 
 - stack 0: 0x7
-380	 789	MSTORE		 	  ;; # store to x28
+345	 829	MSTORE		 	  ;; # store to x28
 - stack 1: 0x7
 - stack 0: 0x380
-381	 78A	PUSH2	0494	 	 
-382	 78D	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+346	 82A	PUSH2	0494	 	 
+347	 82D	DUP1		 	  ;; # executing pc
 - stack 0: 0x494
-383	 790	JUMP		 	 
-- stack 1: 0x494
-- stack 0: 0x1A
-384	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x494
-385	 1B	DUP1		 	 
-- stack 0: 0x494
-386	 1C	MLOAD		 	 
+348	 82E	MLOAD		 	 
 - stack 1: 0x494
 - stack 0: 0x494
-387	 1D	PUSH1	E0	 	 
+349	 82F	PUSH1	E0	 	 
 - stack 1: 0x494
-- stack 0: 0x7E50000083500000225000008D10000065B000008DF0000090900000959
-388	 1F	SHR		 	 
+- stack 0: 0x891000008E80000025300000986000006EA00000999000009C800000A1F
+350	 831	SHR		 	 
 - stack 2: 0x494
-- stack 1: 0x7E50000083500000225000008D10000065B000008DF0000090900000959
+- stack 1: 0x891000008E80000025300000986000006EA00000999000009C800000A1F
 - stack 0: 0xE0
-389	 20	JUMP		 	 
+351	 832	JUMP		 	 
 - stack 1: 0x494
-- stack 0: 0x7E5
-390	 7E5	JUMPDEST		 ;; _riscv_a4c05da44cee00db7786cff3d4db41c47e2d6ff43bf3a8164125fb6abdb2b228	  ;; # pc 0x494 buffer: 6398d123 decode bne gp,t4,230
+- stack 0: 0x891
+352	 891	JUMPDEST		 ;; _riscv_a4c05da44cee00db7786cff3d4db41c47e2d6ff43bf3a8164125fb6abdb2b228	  ;; # pc 0x494 buffer: 6398d123 decode bne gp,t4,230
 - stack 0: 0x494
-391	 7E6	PUSH2	0060	 	 
+353	 892	PUSH2	0060	 	 
 - stack 0: 0x494
-392	 7E9	MLOAD		 	  ;; # read from x3
+354	 895	MLOAD		 	  ;; # read from x3
 - stack 1: 0x494
 - stack 0: 0x60
-393	 7EA	PUSH4	FFFFFFFF	 	 
+355	 896	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x494
 - stack 0: 0xFFFFFFFF
-394	 7EF	AND		 	  ;; # mask to 32 bits
+356	 89B	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x494
 - stack 1: 0xFFFFFFFF
 - stack 0: 0xFFFFFFFF
-395	 7F0	PUSH2	03A0	 	 
+357	 89C	PUSH2	03A0	 	 
 - stack 1: 0x494
 - stack 0: 0xFFFFFFFF
-396	 7F3	MLOAD		 	  ;; # read from x29
+358	 89F	MLOAD		 	  ;; # read from x29
 - stack 2: 0x494
 - stack 1: 0xFFFFFFFF
 - stack 0: 0x3A0
-397	 7F4	PUSH4	FFFFFFFF	 	 
+359	 8A0	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x494
 - stack 1: 0xFFFFFFFF
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-398	 7F9	AND		 	  ;; # mask to 32 bits
+360	 8A5	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x494
 - stack 2: 0xFFFFFFFF
 - stack 1: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 - stack 0: 0xFFFFFFFF
-399	 7FA	SUB		 	 
+361	 8A6	SUB		 	 
 - stack 2: 0x494
 - stack 1: 0xFFFFFFFF
 - stack 0: 0xFFFFFFFF
-400	 7FB	PUSH2	0803	 ;; _neq_f9a30f45f7b004521819e544f38973016a24ad3995b09d64ef43d0f49a06d422	 
+362	 8A7	PUSH2	08AF	 ;; _neq_cd1492a75276ae721fe4aa43d77ec89890d25284a2a55ee6b609d44095afa5a1	 
 - stack 1: 0x494
 - stack 0: 0x0
-401	 7FE	JUMPI		 	 
+363	 8AA	JUMPI		 	 
 - stack 2: 0x494
 - stack 1: 0x0
-- stack 0: 0x803
-402	 7FF	PUSH2	0830	 ;; _neq_after_f9a30f45f7b004521819e544f38973016a24ad3995b09d64ef43d0f49a06d422	 
+- stack 0: 0x8AF
+364	 8AB	PUSH2	08DE	 ;; _neq_after_cd1492a75276ae721fe4aa43d77ec89890d25284a2a55ee6b609d44095afa5a1	 
 - stack 0: 0x494
-403	 802	JUMP		 	 
+365	 8AE	JUMP		 	 
 - stack 1: 0x494
-- stack 0: 0x830
-404	 830	JUMPDEST		 ;; _neq_after_f9a30f45f7b004521819e544f38973016a24ad3995b09d64ef43d0f49a06d422	 
+- stack 0: 0x8DE
+366	 8DE	JUMPDEST		 ;; _neq_after_cd1492a75276ae721fe4aa43d77ec89890d25284a2a55ee6b609d44095afa5a1	 
 - stack 0: 0x494
-405	 831	PUSH2	0016	 ;; _pcplus4	 
+367	 8DF	PUSH1	04	 	 
 - stack 0: 0x494
-406	 834	JUMP		 	 
-- stack 1: 0x494
-- stack 0: 0x16
-407	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x494
-408	 17	PUSH1	04	 	 
-- stack 0: 0x494
-409	 19	ADD		 	 
+368	 8E1	ADD		 	 
 - stack 1: 0x494
 - stack 0: 0x4
-410	 1A	JUMPDEST		 ;; _execute	 
+369	 8E2	DUP1		 	  ;; # executing pc
 - stack 0: 0x498
-411	 1B	DUP1		 	 
-- stack 0: 0x498
-412	 1C	MLOAD		 	 
+370	 8E3	MLOAD		 	 
 - stack 1: 0x498
 - stack 0: 0x498
-413	 1D	PUSH1	E0	 	 
+371	 8E4	PUSH1	E0	 	 
 - stack 1: 0x498
-- stack 0: 0x83500000225000008D10000065B000008DF000009090000095900000343
-414	 1F	SHR		 	 
+- stack 0: 0x8E80000025300000986000006EA00000999000009C800000A1F00000389
+372	 8E6	SHR		 	 
 - stack 2: 0x498
-- stack 1: 0x83500000225000008D10000065B000008DF000009090000095900000343
+- stack 1: 0x8E80000025300000986000006EA00000999000009C800000A1F00000389
 - stack 0: 0xE0
-415	 20	JUMP		 	 
+373	 8E7	JUMP		 	 
 - stack 1: 0x498
-- stack 0: 0x835
-416	 835	JUMPDEST		 ;; _riscvopt_5ab8ccded1187beaa9dd8c0f445db8630fcc469dd2f8e5f0220e8a44d79c6441	  ;; # pc 0x498 buffer: 9300f0ff93d11000b70e0080938efeff130e8000
+- stack 0: 0x8E8
+374	 8E8	JUMPDEST		 ;; _riscvopt_5ab8ccded1187beaa9dd8c0f445db8630fcc469dd2f8e5f0220e8a44d79c6441	  ;; # pc 0x498 buffer: 9300f0ff93d11000b70e0080938efeff130e8000
 - stack 0: 0x498
-417	 836	POP		 	 
+375	 8E9	POP		 	 
 - stack 0: 0x498
-418	 837	JUMPDEST		 	  ;; # DEBUG: addi ra,zero,-1
-419	 838	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	  ;; # signextended -1
-420	 859	PUSH2	0020	 	 
+376	 8EA	JUMPDEST		 	  ;; # DEBUG: addi ra,zero,-1
+377	 8EB	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	  ;; # signextended -1
+378	 90C	PUSH2	0020	 	 
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-421	 85C	MSTORE		 	  ;; # store to x1
+379	 90F	MSTORE		 	  ;; # store to x1
 - stack 1: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 - stack 0: 0x20
-422	 85D	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,1
-423	 85E	PUSH2	0020	 	 
-424	 861	MLOAD		 	  ;; # read from x1
+380	 910	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,1
+381	 911	PUSH2	0020	 	 
+382	 914	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-425	 862	PUSH4	FFFFFFFF	 	 
+383	 915	PUSH4	FFFFFFFF	 	 
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-426	 867	AND		 	  ;; # mask to 32 bits
+384	 91A	AND		 	  ;; # mask to 32 bits
 - stack 1: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 - stack 0: 0xFFFFFFFF
-427	 868	PUSH1	01	 	 
+385	 91B	PUSH1	01	 	 
 - stack 0: 0xFFFFFFFF
-428	 86A	SHR		 	  ;; # SRLI
+386	 91D	SHR		 	  ;; # SRLI
 - stack 1: 0xFFFFFFFF
 - stack 0: 0x1
-429	 86B	PUSH2	0060	 	 
+387	 91E	PUSH2	0060	 	 
 - stack 0: 0x7FFFFFFF
-430	 86E	MSTORE		 	  ;; # store to x3
+388	 921	MSTORE		 	  ;; # store to x3
 - stack 1: 0x7FFFFFFF
 - stack 0: 0x60
-431	 86F	JUMPDEST		 	  ;; # DEBUG: lui t4,0x80000
-432	 870	PUSH4	80000000	 	 
-433	 875	PUSH2	03A0	 	 
+389	 922	JUMPDEST		 	  ;; # DEBUG: lui t4,0x80000
+390	 923	PUSH4	80000000	 	 
+391	 928	PUSH2	03A0	 	 
 - stack 0: 0x80000000
-434	 878	MSTORE		 	  ;; # store to x29
+392	 92B	MSTORE		 	  ;; # store to x29
 - stack 1: 0x80000000
 - stack 0: 0x3A0
-435	 879	JUMPDEST		 	  ;; # DEBUG: addi t4,t4,-1
-436	 87A	PUSH2	03A0	 	 
-437	 87D	MLOAD		 	  ;; # read from x29
+393	 92C	JUMPDEST		 	  ;; # DEBUG: addi t4,t4,-1
+394	 92D	PUSH2	03A0	 	 
+395	 930	MLOAD		 	  ;; # read from x29
 - stack 0: 0x3A0
-438	 87E	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	  ;; # signextended -1
+396	 931	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	  ;; # signextended -1
 - stack 0: 0x80000000
-439	 89F	ADD		 	  ;; # ADDI
+397	 952	ADD		 	  ;; # ADDI
 - stack 1: 0x80000000
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-440	 8A0	PUSH2	03A0	 	 
+398	 953	PUSH2	03A0	 	 
 - stack 0: 0x7FFFFFFF
-441	 8A3	MSTORE		 	  ;; # store to x29
+399	 956	MSTORE		 	  ;; # store to x29
 - stack 1: 0x7FFFFFFF
 - stack 0: 0x3A0
-442	 8A4	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,8
-443	 8A5	PUSH32	0000000000000000000000000000000000000000000000000000000000000008	 	  ;; # signextended 8
-444	 8C6	PUSH2	0380	 	 
+400	 957	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,8
+401	 958	PUSH32	0000000000000000000000000000000000000000000000000000000000000008	 	  ;; # signextended 8
+402	 979	PUSH2	0380	 	 
 - stack 0: 0x8
-445	 8C9	MSTORE		 	  ;; # store to x28
+403	 97C	MSTORE		 	  ;; # store to x28
 - stack 1: 0x8
 - stack 0: 0x380
-446	 8CA	PUSH2	04AC	 	 
-447	 8CD	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+404	 97D	PUSH2	04AC	 	 
+405	 980	DUP1		 	  ;; # executing pc
 - stack 0: 0x4AC
-448	 8D0	JUMP		 	 
-- stack 1: 0x4AC
-- stack 0: 0x1A
-449	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x4AC
-450	 1B	DUP1		 	 
-- stack 0: 0x4AC
-451	 1C	MLOAD		 	 
+406	 981	MLOAD		 	 
 - stack 1: 0x4AC
 - stack 0: 0x4AC
-452	 1D	PUSH1	E0	 	 
+407	 982	PUSH1	E0	 	 
 - stack 1: 0x4AC
-- stack 0: 0x9090000095900000343000003590000065B000009F500000A1F00000A6F
-453	 1F	SHR		 	 
+- stack 0: 0x9C800000A1F00000389000003A4000006EA00000ABD00000AEC00000B43
+408	 984	SHR		 	 
 - stack 2: 0x4AC
-- stack 1: 0x9090000095900000343000003590000065B000009F500000A1F00000A6F
+- stack 1: 0x9C800000A1F00000389000003A4000006EA00000ABD00000AEC00000B43
 - stack 0: 0xE0
-454	 20	JUMP		 	 
+409	 985	JUMP		 	 
 - stack 1: 0x4AC
-- stack 0: 0x909
-455	 909	JUMPDEST		 ;; _riscv_1e55e9acf790de9d0a153eaa2ccbc99fc4ef15f926d1988f0d0638cc73fee608	  ;; # pc 0x4ac buffer: 639cd121 decode bne gp,t4,218
+- stack 0: 0x9C8
+410	 9C8	JUMPDEST		 ;; _riscv_1e55e9acf790de9d0a153eaa2ccbc99fc4ef15f926d1988f0d0638cc73fee608	  ;; # pc 0x4ac buffer: 639cd121 decode bne gp,t4,218
 - stack 0: 0x4AC
-456	 90A	PUSH2	0060	 	 
+411	 9C9	PUSH2	0060	 	 
 - stack 0: 0x4AC
-457	 90D	MLOAD		 	  ;; # read from x3
+412	 9CC	MLOAD		 	  ;; # read from x3
 - stack 1: 0x4AC
 - stack 0: 0x60
-458	 90E	PUSH4	FFFFFFFF	 	 
+413	 9CD	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x4AC
 - stack 0: 0x7FFFFFFF
-459	 913	AND		 	  ;; # mask to 32 bits
+414	 9D2	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x4AC
 - stack 1: 0x7FFFFFFF
 - stack 0: 0xFFFFFFFF
-460	 914	PUSH2	03A0	 	 
+415	 9D3	PUSH2	03A0	 	 
 - stack 1: 0x4AC
 - stack 0: 0x7FFFFFFF
-461	 917	MLOAD		 	  ;; # read from x29
+416	 9D6	MLOAD		 	  ;; # read from x29
 - stack 2: 0x4AC
 - stack 1: 0x7FFFFFFF
 - stack 0: 0x3A0
-462	 918	PUSH4	FFFFFFFF	 	 
+417	 9D7	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x4AC
 - stack 1: 0x7FFFFFFF
 - stack 0: 0x7FFFFFFF
-463	 91D	AND		 	  ;; # mask to 32 bits
+418	 9DC	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x4AC
 - stack 2: 0x7FFFFFFF
 - stack 1: 0x7FFFFFFF
 - stack 0: 0xFFFFFFFF
-464	 91E	SUB		 	 
+419	 9DD	SUB		 	 
 - stack 2: 0x4AC
 - stack 1: 0x7FFFFFFF
 - stack 0: 0x7FFFFFFF
-465	 91F	PUSH2	0927	 ;; _neq_cd55515a74a122a58fa54c12ec1a1f66fe2613815e02cbaf37d10d4809113317	 
+420	 9DE	PUSH2	09E6	 ;; _neq_59453d9d1d5d4d361bcc80951641d6d6e9443d6455d1fd737b5c6a3cdb22aa58	 
 - stack 1: 0x4AC
 - stack 0: 0x0
-466	 922	JUMPI		 	 
+421	 9E1	JUMPI		 	 
 - stack 2: 0x4AC
 - stack 1: 0x0
-- stack 0: 0x927
-467	 923	PUSH2	0954	 ;; _neq_after_cd55515a74a122a58fa54c12ec1a1f66fe2613815e02cbaf37d10d4809113317	 
+- stack 0: 0x9E6
+422	 9E2	PUSH2	0A15	 ;; _neq_after_59453d9d1d5d4d361bcc80951641d6d6e9443d6455d1fd737b5c6a3cdb22aa58	 
 - stack 0: 0x4AC
-468	 926	JUMP		 	 
+423	 9E5	JUMP		 	 
 - stack 1: 0x4AC
-- stack 0: 0x954
-469	 954	JUMPDEST		 ;; _neq_after_cd55515a74a122a58fa54c12ec1a1f66fe2613815e02cbaf37d10d4809113317	 
+- stack 0: 0xA15
+424	 A15	JUMPDEST		 ;; _neq_after_59453d9d1d5d4d361bcc80951641d6d6e9443d6455d1fd737b5c6a3cdb22aa58	 
 - stack 0: 0x4AC
-470	 955	PUSH2	0016	 ;; _pcplus4	 
+425	 A16	PUSH1	04	 	 
 - stack 0: 0x4AC
-471	 958	JUMP		 	 
-- stack 1: 0x4AC
-- stack 0: 0x16
-472	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x4AC
-473	 17	PUSH1	04	 	 
-- stack 0: 0x4AC
-474	 19	ADD		 	 
+426	 A18	ADD		 	 
 - stack 1: 0x4AC
 - stack 0: 0x4
-475	 1A	JUMPDEST		 ;; _execute	 
+427	 A19	DUP1		 	  ;; # executing pc
 - stack 0: 0x4B0
-476	 1B	DUP1		 	 
-- stack 0: 0x4B0
-477	 1C	MLOAD		 	 
+428	 A1A	MLOAD		 	 
 - stack 1: 0x4B0
 - stack 0: 0x4B0
-478	 1D	PUSH1	E0	 	 
+429	 A1B	PUSH1	E0	 	 
 - stack 1: 0x4B0
-- stack 0: 0x95900000343000003590000065B000009F500000A1F00000A6F00000490
-479	 1F	SHR		 	 
+- stack 0: 0xA1F00000389000003A4000006EA00000ABD00000AEC00000B43000004F3
+430	 A1D	SHR		 	 
 - stack 2: 0x4B0
-- stack 1: 0x95900000343000003590000065B000009F500000A1F00000A6F00000490
+- stack 1: 0xA1F00000389000003A4000006EA00000ABD00000AEC00000B43000004F3
 - stack 0: 0xE0
-480	 20	JUMP		 	 
+431	 A1E	JUMP		 	 
 - stack 1: 0x4B0
-- stack 0: 0x959
-481	 959	JUMPDEST		 ;; _riscvopt_cc699111eeebd013247c8e08579155c5b0c380db942d3e3d69b53a5acab28b3c	  ;; # pc 0x4b0 buffer: 9300f0ff93d17000b70e0002938efeff130e9000
+- stack 0: 0xA1F
+432	 A1F	JUMPDEST		 ;; _riscvopt_cc699111eeebd013247c8e08579155c5b0c380db942d3e3d69b53a5acab28b3c	  ;; # pc 0x4b0 buffer: 9300f0ff93d17000b70e0002938efeff130e9000
 - stack 0: 0x4B0
-482	 95A	POP		 	 
+433	 A20	POP		 	 
 - stack 0: 0x4B0
-483	 95B	JUMPDEST		 	  ;; # DEBUG: addi ra,zero,-1
-484	 95C	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	  ;; # signextended -1
-485	 97D	PUSH2	0020	 	 
+434	 A21	JUMPDEST		 	  ;; # DEBUG: addi ra,zero,-1
+435	 A22	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	  ;; # signextended -1
+436	 A43	PUSH2	0020	 	 
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-486	 980	MSTORE		 	  ;; # store to x1
+437	 A46	MSTORE		 	  ;; # store to x1
 - stack 1: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 - stack 0: 0x20
-487	 981	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,7
-488	 982	PUSH2	0020	 	 
-489	 985	MLOAD		 	  ;; # read from x1
+438	 A47	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,7
+439	 A48	PUSH2	0020	 	 
+440	 A4B	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-490	 986	PUSH4	FFFFFFFF	 	 
+441	 A4C	PUSH4	FFFFFFFF	 	 
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-491	 98B	AND		 	  ;; # mask to 32 bits
+442	 A51	AND		 	  ;; # mask to 32 bits
 - stack 1: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 - stack 0: 0xFFFFFFFF
-492	 98C	PUSH1	07	 	 
+443	 A52	PUSH1	07	 	 
 - stack 0: 0xFFFFFFFF
-493	 98E	SHR		 	  ;; # SRLI
+444	 A54	SHR		 	  ;; # SRLI
 - stack 1: 0xFFFFFFFF
 - stack 0: 0x7
-494	 98F	PUSH2	0060	 	 
+445	 A55	PUSH2	0060	 	 
 - stack 0: 0x1FFFFFF
-495	 992	MSTORE		 	  ;; # store to x3
+446	 A58	MSTORE		 	  ;; # store to x3
 - stack 1: 0x1FFFFFF
 - stack 0: 0x60
-496	 993	JUMPDEST		 	  ;; # DEBUG: lui t4,0x2000
-497	 994	PUSH4	02000000	 	 
-498	 999	PUSH2	03A0	 	 
+447	 A59	JUMPDEST		 	  ;; # DEBUG: lui t4,0x2000
+448	 A5A	PUSH4	02000000	 	 
+449	 A5F	PUSH2	03A0	 	 
 - stack 0: 0x2000000
-499	 99C	MSTORE		 	  ;; # store to x29
+450	 A62	MSTORE		 	  ;; # store to x29
 - stack 1: 0x2000000
 - stack 0: 0x3A0
-500	 99D	JUMPDEST		 	  ;; # DEBUG: addi t4,t4,-1
-501	 99E	PUSH2	03A0	 	 
-502	 9A1	MLOAD		 	  ;; # read from x29
+451	 A63	JUMPDEST		 	  ;; # DEBUG: addi t4,t4,-1
+452	 A64	PUSH2	03A0	 	 
+453	 A67	MLOAD		 	  ;; # read from x29
 - stack 0: 0x3A0
-503	 9A2	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	  ;; # signextended -1
+454	 A68	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	  ;; # signextended -1
 - stack 0: 0x2000000
-504	 9C3	ADD		 	  ;; # ADDI
+455	 A89	ADD		 	  ;; # ADDI
 - stack 1: 0x2000000
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-505	 9C4	PUSH2	03A0	 	 
+456	 A8A	PUSH2	03A0	 	 
 - stack 0: 0x1FFFFFF
-506	 9C7	MSTORE		 	  ;; # store to x29
+457	 A8D	MSTORE		 	  ;; # store to x29
 - stack 1: 0x1FFFFFF
 - stack 0: 0x3A0
-507	 9C8	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,9
-508	 9C9	PUSH32	0000000000000000000000000000000000000000000000000000000000000009	 	  ;; # signextended 9
-509	 9EA	PUSH2	0380	 	 
+458	 A8E	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,9
+459	 A8F	PUSH32	0000000000000000000000000000000000000000000000000000000000000009	 	  ;; # signextended 9
+460	 AB0	PUSH2	0380	 	 
 - stack 0: 0x9
-510	 9ED	MSTORE		 	  ;; # store to x28
+461	 AB3	MSTORE		 	  ;; # store to x28
 - stack 1: 0x9
 - stack 0: 0x380
-511	 9EE	PUSH2	04C4	 	 
-512	 9F1	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+462	 AB4	PUSH2	04C4	 	 
+463	 AB7	DUP1		 	  ;; # executing pc
 - stack 0: 0x4C4
-513	 9F4	JUMP		 	 
-- stack 1: 0x4C4
-- stack 0: 0x1A
-514	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x4C4
-515	 1B	DUP1		 	 
-- stack 0: 0x4C4
-516	 1C	MLOAD		 	 
+464	 AB8	MLOAD		 	 
 - stack 1: 0x4C4
 - stack 0: 0x4C4
-517	 1D	PUSH1	E0	 	 
+465	 AB9	PUSH1	E0	 	 
 - stack 1: 0x4C4
-- stack 0: 0xA1F00000A6F00000490000004A60000065B00000B0B00000B3500000B85
-518	 1F	SHR		 	 
+- stack 0: 0xAEC00000B43000004F30000050E000006EA00000BE100000C1000000C67
+466	 ABB	SHR		 	 
 - stack 2: 0x4C4
-- stack 1: 0xA1F00000A6F00000490000004A60000065B00000B0B00000B3500000B85
+- stack 1: 0xAEC00000B43000004F30000050E000006EA00000BE100000C1000000C67
 - stack 0: 0xE0
-519	 20	JUMP		 	 
+467	 ABC	JUMP		 	 
 - stack 1: 0x4C4
-- stack 0: 0xA1F
-520	 A1F	JUMPDEST		 ;; _riscv_7dc73f9349d8bd871d44de6f09a61e045b2e3a12eca617985a617190336e83a9	  ;; # pc 0x4c4 buffer: 6390d121 decode bne gp,t4,200
+- stack 0: 0xAEC
+468	 AEC	JUMPDEST		 ;; _riscv_7dc73f9349d8bd871d44de6f09a61e045b2e3a12eca617985a617190336e83a9	  ;; # pc 0x4c4 buffer: 6390d121 decode bne gp,t4,200
 - stack 0: 0x4C4
-521	 A20	PUSH2	0060	 	 
+469	 AED	PUSH2	0060	 	 
 - stack 0: 0x4C4
-522	 A23	MLOAD		 	  ;; # read from x3
+470	 AF0	MLOAD		 	  ;; # read from x3
 - stack 1: 0x4C4
 - stack 0: 0x60
-523	 A24	PUSH4	FFFFFFFF	 	 
+471	 AF1	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x4C4
 - stack 0: 0x1FFFFFF
-524	 A29	AND		 	  ;; # mask to 32 bits
+472	 AF6	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x4C4
 - stack 1: 0x1FFFFFF
 - stack 0: 0xFFFFFFFF
-525	 A2A	PUSH2	03A0	 	 
+473	 AF7	PUSH2	03A0	 	 
 - stack 1: 0x4C4
 - stack 0: 0x1FFFFFF
-526	 A2D	MLOAD		 	  ;; # read from x29
+474	 AFA	MLOAD		 	  ;; # read from x29
 - stack 2: 0x4C4
 - stack 1: 0x1FFFFFF
 - stack 0: 0x3A0
-527	 A2E	PUSH4	FFFFFFFF	 	 
+475	 AFB	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x4C4
 - stack 1: 0x1FFFFFF
 - stack 0: 0x1FFFFFF
-528	 A33	AND		 	  ;; # mask to 32 bits
+476	 B00	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x4C4
 - stack 2: 0x1FFFFFF
 - stack 1: 0x1FFFFFF
 - stack 0: 0xFFFFFFFF
-529	 A34	SUB		 	 
+477	 B01	SUB		 	 
 - stack 2: 0x4C4
 - stack 1: 0x1FFFFFF
 - stack 0: 0x1FFFFFF
-530	 A35	PUSH2	0A3D	 ;; _neq_df46c45b78e1997ff685e3cff0fcc3160920a222adc266efce9869f044343257	 
+478	 B02	PUSH2	0B0A	 ;; _neq_7f4643c5ce258797dd98061becbaf0f1dde8a3043095f2d8e3e8811a9b092b14	 
 - stack 1: 0x4C4
 - stack 0: 0x0
-531	 A38	JUMPI		 	 
+479	 B05	JUMPI		 	 
 - stack 2: 0x4C4
 - stack 1: 0x0
-- stack 0: 0xA3D
-532	 A39	PUSH2	0A6A	 ;; _neq_after_df46c45b78e1997ff685e3cff0fcc3160920a222adc266efce9869f044343257	 
+- stack 0: 0xB0A
+480	 B06	PUSH2	0B39	 ;; _neq_after_7f4643c5ce258797dd98061becbaf0f1dde8a3043095f2d8e3e8811a9b092b14	 
 - stack 0: 0x4C4
-533	 A3C	JUMP		 	 
+481	 B09	JUMP		 	 
 - stack 1: 0x4C4
-- stack 0: 0xA6A
-534	 A6A	JUMPDEST		 ;; _neq_after_df46c45b78e1997ff685e3cff0fcc3160920a222adc266efce9869f044343257	 
+- stack 0: 0xB39
+482	 B39	JUMPDEST		 ;; _neq_after_7f4643c5ce258797dd98061becbaf0f1dde8a3043095f2d8e3e8811a9b092b14	 
 - stack 0: 0x4C4
-535	 A6B	PUSH2	0016	 ;; _pcplus4	 
+483	 B3A	PUSH1	04	 	 
 - stack 0: 0x4C4
-536	 A6E	JUMP		 	 
-- stack 1: 0x4C4
-- stack 0: 0x16
-537	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x4C4
-538	 17	PUSH1	04	 	 
-- stack 0: 0x4C4
-539	 19	ADD		 	 
+484	 B3C	ADD		 	 
 - stack 1: 0x4C4
 - stack 0: 0x4
-540	 1A	JUMPDEST		 ;; _execute	 
+485	 B3D	DUP1		 	  ;; # executing pc
 - stack 0: 0x4C8
-541	 1B	DUP1		 	 
-- stack 0: 0x4C8
-542	 1C	MLOAD		 	 
+486	 B3E	MLOAD		 	 
 - stack 1: 0x4C8
 - stack 0: 0x4C8
-543	 1D	PUSH1	E0	 	 
+487	 B3F	PUSH1	E0	 	 
 - stack 1: 0x4C8
-- stack 0: 0xA6F00000490000004A60000065B00000B0B00000B3500000B8500000C12
-544	 1F	SHR		 	 
+- stack 0: 0xB43000004F30000050E000006EA00000BE100000C1000000C6700000CF6
+488	 B41	SHR		 	 
 - stack 2: 0x4C8
-- stack 1: 0xA6F00000490000004A60000065B00000B0B00000B3500000B8500000C12
+- stack 1: 0xB43000004F30000050E000006EA00000BE100000C1000000C6700000CF6
 - stack 0: 0xE0
-545	 20	JUMP		 	 
+489	 B42	JUMP		 	 
 - stack 1: 0x4C8
-- stack 0: 0xA6F
-546	 A6F	JUMPDEST		 ;; _riscvopt_80e611caaaa48ff4758c4bcb4ae6c3655bb6e9dc094b1e23149a088f7a983ec0	  ;; # pc 0x4c8 buffer: 9300f0ff93d1e000b70e0400938efeff130ea000
+- stack 0: 0xB43
+490	 B43	JUMPDEST		 ;; _riscvopt_80e611caaaa48ff4758c4bcb4ae6c3655bb6e9dc094b1e23149a088f7a983ec0	  ;; # pc 0x4c8 buffer: 9300f0ff93d1e000b70e0400938efeff130ea000
 - stack 0: 0x4C8
-547	 A70	POP		 	 
+491	 B44	POP		 	 
 - stack 0: 0x4C8
-548	 A71	JUMPDEST		 	  ;; # DEBUG: addi ra,zero,-1
-549	 A72	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	  ;; # signextended -1
-550	 A93	PUSH2	0020	 	 
+492	 B45	JUMPDEST		 	  ;; # DEBUG: addi ra,zero,-1
+493	 B46	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	  ;; # signextended -1
+494	 B67	PUSH2	0020	 	 
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-551	 A96	MSTORE		 	  ;; # store to x1
+495	 B6A	MSTORE		 	  ;; # store to x1
 - stack 1: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 - stack 0: 0x20
-552	 A97	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,14
-553	 A98	PUSH2	0020	 	 
-554	 A9B	MLOAD		 	  ;; # read from x1
+496	 B6B	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,14
+497	 B6C	PUSH2	0020	 	 
+498	 B6F	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-555	 A9C	PUSH4	FFFFFFFF	 	 
+499	 B70	PUSH4	FFFFFFFF	 	 
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-556	 AA1	AND		 	  ;; # mask to 32 bits
+500	 B75	AND		 	  ;; # mask to 32 bits
 - stack 1: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 - stack 0: 0xFFFFFFFF
-557	 AA2	PUSH1	0E	 	 
+501	 B76	PUSH1	0E	 	 
 - stack 0: 0xFFFFFFFF
-558	 AA4	SHR		 	  ;; # SRLI
+502	 B78	SHR		 	  ;; # SRLI
 - stack 1: 0xFFFFFFFF
 - stack 0: 0xE
-559	 AA5	PUSH2	0060	 	 
+503	 B79	PUSH2	0060	 	 
 - stack 0: 0x3FFFF
-560	 AA8	MSTORE		 	  ;; # store to x3
+504	 B7C	MSTORE		 	  ;; # store to x3
 - stack 1: 0x3FFFF
 - stack 0: 0x60
-561	 AA9	JUMPDEST		 	  ;; # DEBUG: lui t4,0x40
-562	 AAA	PUSH4	00040000	 	 
-563	 AAF	PUSH2	03A0	 	 
+505	 B7D	JUMPDEST		 	  ;; # DEBUG: lui t4,0x40
+506	 B7E	PUSH4	00040000	 	 
+507	 B83	PUSH2	03A0	 	 
 - stack 0: 0x40000
-564	 AB2	MSTORE		 	  ;; # store to x29
+508	 B86	MSTORE		 	  ;; # store to x29
 - stack 1: 0x40000
 - stack 0: 0x3A0
-565	 AB3	JUMPDEST		 	  ;; # DEBUG: addi t4,t4,-1
-566	 AB4	PUSH2	03A0	 	 
-567	 AB7	MLOAD		 	  ;; # read from x29
+509	 B87	JUMPDEST		 	  ;; # DEBUG: addi t4,t4,-1
+510	 B88	PUSH2	03A0	 	 
+511	 B8B	MLOAD		 	  ;; # read from x29
 - stack 0: 0x3A0
-568	 AB8	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	  ;; # signextended -1
+512	 B8C	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	  ;; # signextended -1
 - stack 0: 0x40000
-569	 AD9	ADD		 	  ;; # ADDI
+513	 BAD	ADD		 	  ;; # ADDI
 - stack 1: 0x40000
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-570	 ADA	PUSH2	03A0	 	 
+514	 BAE	PUSH2	03A0	 	 
 - stack 0: 0x3FFFF
-571	 ADD	MSTORE		 	  ;; # store to x29
+515	 BB1	MSTORE		 	  ;; # store to x29
 - stack 1: 0x3FFFF
 - stack 0: 0x3A0
-572	 ADE	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,10
-573	 ADF	PUSH32	000000000000000000000000000000000000000000000000000000000000000A	 	  ;; # signextended 10
-574	 B00	PUSH2	0380	 	 
+516	 BB2	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,10
+517	 BB3	PUSH32	000000000000000000000000000000000000000000000000000000000000000A	 	  ;; # signextended 10
+518	 BD4	PUSH2	0380	 	 
 - stack 0: 0xA
-575	 B03	MSTORE		 	  ;; # store to x28
+519	 BD7	MSTORE		 	  ;; # store to x28
 - stack 1: 0xA
 - stack 0: 0x380
-576	 B04	PUSH2	04DC	 	 
-577	 B07	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+520	 BD8	PUSH2	04DC	 	 
+521	 BDB	DUP1		 	  ;; # executing pc
 - stack 0: 0x4DC
-578	 B0A	JUMP		 	 
-- stack 1: 0x4DC
-- stack 0: 0x1A
-579	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x4DC
-580	 1B	DUP1		 	 
-- stack 0: 0x4DC
-581	 1C	MLOAD		 	 
+522	 BDC	MLOAD		 	 
 - stack 1: 0x4DC
 - stack 0: 0x4DC
-582	 1D	PUSH1	E0	 	 
+523	 BDD	PUSH1	E0	 	 
 - stack 1: 0x4DC
-- stack 0: 0xB3500000B8500000C1200000C2800000C5200000C7C00000CCC00000D77
-583	 1F	SHR		 	 
+- stack 0: 0xC1000000C6700000CF600000D1100000D4000000D6F00000DC600000E73
+524	 BDF	SHR		 	 
 - stack 2: 0x4DC
-- stack 1: 0xB3500000B8500000C1200000C2800000C5200000C7C00000CCC00000D77
+- stack 1: 0xC1000000C6700000CF600000D1100000D4000000D6F00000DC600000E73
 - stack 0: 0xE0
-584	 20	JUMP		 	 
+525	 BE0	JUMP		 	 
 - stack 1: 0x4DC
-- stack 0: 0xB35
-585	 B35	JUMPDEST		 ;; _riscv_51b1c5f2c0298c7cd7606cbd27ca1e2df1f0851be98544e2e76fb3f8a912a05a	  ;; # pc 0x4dc buffer: 6394d11f decode bne gp,t4,1e8
+- stack 0: 0xC10
+526	 C10	JUMPDEST		 ;; _riscv_51b1c5f2c0298c7cd7606cbd27ca1e2df1f0851be98544e2e76fb3f8a912a05a	  ;; # pc 0x4dc buffer: 6394d11f decode bne gp,t4,1e8
 - stack 0: 0x4DC
-586	 B36	PUSH2	0060	 	 
+527	 C11	PUSH2	0060	 	 
 - stack 0: 0x4DC
-587	 B39	MLOAD		 	  ;; # read from x3
+528	 C14	MLOAD		 	  ;; # read from x3
 - stack 1: 0x4DC
 - stack 0: 0x60
-588	 B3A	PUSH4	FFFFFFFF	 	 
+529	 C15	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x4DC
 - stack 0: 0x3FFFF
-589	 B3F	AND		 	  ;; # mask to 32 bits
+530	 C1A	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x4DC
 - stack 1: 0x3FFFF
 - stack 0: 0xFFFFFFFF
-590	 B40	PUSH2	03A0	 	 
+531	 C1B	PUSH2	03A0	 	 
 - stack 1: 0x4DC
 - stack 0: 0x3FFFF
-591	 B43	MLOAD		 	  ;; # read from x29
+532	 C1E	MLOAD		 	  ;; # read from x29
 - stack 2: 0x4DC
 - stack 1: 0x3FFFF
 - stack 0: 0x3A0
-592	 B44	PUSH4	FFFFFFFF	 	 
+533	 C1F	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x4DC
 - stack 1: 0x3FFFF
 - stack 0: 0x3FFFF
-593	 B49	AND		 	  ;; # mask to 32 bits
+534	 C24	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x4DC
 - stack 2: 0x3FFFF
 - stack 1: 0x3FFFF
 - stack 0: 0xFFFFFFFF
-594	 B4A	SUB		 	 
+535	 C25	SUB		 	 
 - stack 2: 0x4DC
 - stack 1: 0x3FFFF
 - stack 0: 0x3FFFF
-595	 B4B	PUSH2	0B53	 ;; _neq_6e2e62cfd19505600e56247ef32f5dcd288dfee8953ceb0f34428c2856a9c011	 
+536	 C26	PUSH2	0C2E	 ;; _neq_43f1858c14d9aafddef51cb2726a043299cf5f1f2c9da24c3223c1e6fb5c8fcb	 
 - stack 1: 0x4DC
 - stack 0: 0x0
-596	 B4E	JUMPI		 	 
+537	 C29	JUMPI		 	 
 - stack 2: 0x4DC
 - stack 1: 0x0
-- stack 0: 0xB53
-597	 B4F	PUSH2	0B80	 ;; _neq_after_6e2e62cfd19505600e56247ef32f5dcd288dfee8953ceb0f34428c2856a9c011	 
+- stack 0: 0xC2E
+538	 C2A	PUSH2	0C5D	 ;; _neq_after_43f1858c14d9aafddef51cb2726a043299cf5f1f2c9da24c3223c1e6fb5c8fcb	 
 - stack 0: 0x4DC
-598	 B52	JUMP		 	 
+539	 C2D	JUMP		 	 
 - stack 1: 0x4DC
-- stack 0: 0xB80
-599	 B80	JUMPDEST		 ;; _neq_after_6e2e62cfd19505600e56247ef32f5dcd288dfee8953ceb0f34428c2856a9c011	 
+- stack 0: 0xC5D
+540	 C5D	JUMPDEST		 ;; _neq_after_43f1858c14d9aafddef51cb2726a043299cf5f1f2c9da24c3223c1e6fb5c8fcb	 
 - stack 0: 0x4DC
-600	 B81	PUSH2	0016	 ;; _pcplus4	 
+541	 C5E	PUSH1	04	 	 
 - stack 0: 0x4DC
-601	 B84	JUMP		 	 
-- stack 1: 0x4DC
-- stack 0: 0x16
-602	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x4DC
-603	 17	PUSH1	04	 	 
-- stack 0: 0x4DC
-604	 19	ADD		 	 
+542	 C60	ADD		 	 
 - stack 1: 0x4DC
 - stack 0: 0x4
-605	 1A	JUMPDEST		 ;; _execute	 
+543	 C61	DUP1		 	  ;; # executing pc
 - stack 0: 0x4E0
-606	 1B	DUP1		 	 
-- stack 0: 0x4E0
-607	 1C	MLOAD		 	 
+544	 C62	MLOAD		 	 
 - stack 1: 0x4E0
 - stack 0: 0x4E0
-608	 1D	PUSH1	E0	 	 
+545	 C63	PUSH1	E0	 	 
 - stack 1: 0x4E0
-- stack 0: 0xB8500000C1200000C2800000C5200000C7C00000CCC00000D7700000132
-609	 1F	SHR		 	 
+- stack 0: 0xC6700000CF600000D1100000D4000000D6F00000DC600000E7300000148
+546	 C65	SHR		 	 
 - stack 2: 0x4E0
-- stack 1: 0xB8500000C1200000C2800000C5200000C7C00000CCC00000D7700000132
+- stack 1: 0xC6700000CF600000D1100000D4000000D6F00000DC600000E7300000148
 - stack 0: 0xE0
-610	 20	JUMP		 	 
+547	 C66	JUMP		 	 
 - stack 1: 0x4E0
-- stack 0: 0xB85
-611	 B85	JUMPDEST		 ;; _riscvopt_e9ed6ebeb94ee0774a3d79c5d5e9521ab4f8f89a1d77a9e2f38a8a8f61d9cba3	  ;; # pc 0x4e0 buffer: 9300f0ff93d1f001930e1000130eb000
+- stack 0: 0xC67
+548	 C67	JUMPDEST		 ;; _riscvopt_e9ed6ebeb94ee0774a3d79c5d5e9521ab4f8f89a1d77a9e2f38a8a8f61d9cba3	  ;; # pc 0x4e0 buffer: 9300f0ff93d1f001930e1000130eb000
 - stack 0: 0x4E0
-612	 B86	POP		 	 
+549	 C68	POP		 	 
 - stack 0: 0x4E0
-613	 B87	JUMPDEST		 	  ;; # DEBUG: addi ra,zero,-1
-614	 B88	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	  ;; # signextended -1
-615	 BA9	PUSH2	0020	 	 
+550	 C69	JUMPDEST		 	  ;; # DEBUG: addi ra,zero,-1
+551	 C6A	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	  ;; # signextended -1
+552	 C8B	PUSH2	0020	 	 
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-616	 BAC	MSTORE		 	  ;; # store to x1
+553	 C8E	MSTORE		 	  ;; # store to x1
 - stack 1: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 - stack 0: 0x20
-617	 BAD	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,31
-618	 BAE	PUSH2	0020	 	 
-619	 BB1	MLOAD		 	  ;; # read from x1
+554	 C8F	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,31
+555	 C90	PUSH2	0020	 	 
+556	 C93	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-620	 BB2	PUSH4	FFFFFFFF	 	 
+557	 C94	PUSH4	FFFFFFFF	 	 
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-621	 BB7	AND		 	  ;; # mask to 32 bits
+558	 C99	AND		 	  ;; # mask to 32 bits
 - stack 1: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 - stack 0: 0xFFFFFFFF
-622	 BB8	PUSH1	1F	 	 
+559	 C9A	PUSH1	1F	 	 
 - stack 0: 0xFFFFFFFF
-623	 BBA	SHR		 	  ;; # SRLI
+560	 C9C	SHR		 	  ;; # SRLI
 - stack 1: 0xFFFFFFFF
 - stack 0: 0x1F
-624	 BBB	PUSH2	0060	 	 
+561	 C9D	PUSH2	0060	 	 
 - stack 0: 0x1
-625	 BBE	MSTORE		 	  ;; # store to x3
+562	 CA0	MSTORE		 	  ;; # store to x3
 - stack 1: 0x1
 - stack 0: 0x60
-626	 BBF	JUMPDEST		 	  ;; # DEBUG: addi t4,zero,1
-627	 BC0	PUSH32	0000000000000000000000000000000000000000000000000000000000000001	 	  ;; # signextended 1
-628	 BE1	PUSH2	03A0	 	 
+563	 CA1	JUMPDEST		 	  ;; # DEBUG: addi t4,zero,1
+564	 CA2	PUSH32	0000000000000000000000000000000000000000000000000000000000000001	 	  ;; # signextended 1
+565	 CC3	PUSH2	03A0	 	 
 - stack 0: 0x1
-629	 BE4	MSTORE		 	  ;; # store to x29
+566	 CC6	MSTORE		 	  ;; # store to x29
 - stack 1: 0x1
 - stack 0: 0x3A0
-630	 BE5	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,11
-631	 BE6	PUSH32	000000000000000000000000000000000000000000000000000000000000000B	 	  ;; # signextended 11
-632	 C07	PUSH2	0380	 	 
+567	 CC7	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,11
+568	 CC8	PUSH32	000000000000000000000000000000000000000000000000000000000000000B	 	  ;; # signextended 11
+569	 CE9	PUSH2	0380	 	 
 - stack 0: 0xB
-633	 C0A	MSTORE		 	  ;; # store to x28
+570	 CEC	MSTORE		 	  ;; # store to x28
 - stack 1: 0xB
 - stack 0: 0x380
-634	 C0B	PUSH2	04F0	 	 
-635	 C0E	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+571	 CED	PUSH2	04F0	 	 
+572	 CF0	DUP1		 	  ;; # executing pc
 - stack 0: 0x4F0
-636	 C11	JUMP		 	 
-- stack 1: 0x4F0
-- stack 0: 0x1A
-637	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x4F0
-638	 1B	DUP1		 	 
-- stack 0: 0x4F0
-639	 1C	MLOAD		 	 
+573	 CF1	MLOAD		 	 
 - stack 1: 0x4F0
 - stack 0: 0x4F0
-640	 1D	PUSH1	E0	 	 
+574	 CF2	PUSH1	E0	 	 
 - stack 1: 0x4F0
-- stack 0: 0xC7C00000CCC00000D770000013200000DA600000DB400000DE300000E0D
-641	 1F	SHR		 	 
+- stack 0: 0xD6F00000DC600000E730000014800000EA700000EBA00000EEE00000F1D
+575	 CF4	SHR		 	 
 - stack 2: 0x4F0
-- stack 1: 0xC7C00000CCC00000D770000013200000DA600000DB400000DE300000E0D
+- stack 1: 0xD6F00000DC600000E730000014800000EA700000EBA00000EEE00000F1D
 - stack 0: 0xE0
-642	 20	JUMP		 	 
+576	 CF5	JUMP		 	 
 - stack 1: 0x4F0
-- stack 0: 0xC7C
-643	 C7C	JUMPDEST		 ;; _riscv_b5cea0540fd931ee96a4622f50f561b32cb2bede387a4c86faf6cc51ad00b554	  ;; # pc 0x4f0 buffer: 639ad11d decode bne gp,t4,1d4
+- stack 0: 0xD6F
+577	 D6F	JUMPDEST		 ;; _riscv_b5cea0540fd931ee96a4622f50f561b32cb2bede387a4c86faf6cc51ad00b554	  ;; # pc 0x4f0 buffer: 639ad11d decode bne gp,t4,1d4
 - stack 0: 0x4F0
-644	 C7D	PUSH2	0060	 	 
+578	 D70	PUSH2	0060	 	 
 - stack 0: 0x4F0
-645	 C80	MLOAD		 	  ;; # read from x3
+579	 D73	MLOAD		 	  ;; # read from x3
 - stack 1: 0x4F0
 - stack 0: 0x60
-646	 C81	PUSH4	FFFFFFFF	 	 
+580	 D74	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x4F0
 - stack 0: 0x1
-647	 C86	AND		 	  ;; # mask to 32 bits
+581	 D79	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x4F0
 - stack 1: 0x1
 - stack 0: 0xFFFFFFFF
-648	 C87	PUSH2	03A0	 	 
+582	 D7A	PUSH2	03A0	 	 
 - stack 1: 0x4F0
 - stack 0: 0x1
-649	 C8A	MLOAD		 	  ;; # read from x29
+583	 D7D	MLOAD		 	  ;; # read from x29
 - stack 2: 0x4F0
 - stack 1: 0x1
 - stack 0: 0x3A0
-650	 C8B	PUSH4	FFFFFFFF	 	 
+584	 D7E	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x4F0
 - stack 1: 0x1
 - stack 0: 0x1
-651	 C90	AND		 	  ;; # mask to 32 bits
+585	 D83	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x4F0
 - stack 2: 0x1
 - stack 1: 0x1
 - stack 0: 0xFFFFFFFF
-652	 C91	SUB		 	 
+586	 D84	SUB		 	 
 - stack 2: 0x4F0
 - stack 1: 0x1
 - stack 0: 0x1
-653	 C92	PUSH2	0C9A	 ;; _neq_999a2cf9264b2b249a4d602718dd519ca22494bb95fe9a1775bd54031c18d4c4	 
+587	 D85	PUSH2	0D8D	 ;; _neq_ab72fc08499fbb6b69b3070070de386061cb14d87d9fd424b00293165e782bb1	 
 - stack 1: 0x4F0
 - stack 0: 0x0
-654	 C95	JUMPI		 	 
+588	 D88	JUMPI		 	 
 - stack 2: 0x4F0
 - stack 1: 0x0
-- stack 0: 0xC9A
-655	 C96	PUSH2	0CC7	 ;; _neq_after_999a2cf9264b2b249a4d602718dd519ca22494bb95fe9a1775bd54031c18d4c4	 
+- stack 0: 0xD8D
+589	 D89	PUSH2	0DBC	 ;; _neq_after_ab72fc08499fbb6b69b3070070de386061cb14d87d9fd424b00293165e782bb1	 
 - stack 0: 0x4F0
-656	 C99	JUMP		 	 
+590	 D8C	JUMP		 	 
 - stack 1: 0x4F0
-- stack 0: 0xCC7
-657	 CC7	JUMPDEST		 ;; _neq_after_999a2cf9264b2b249a4d602718dd519ca22494bb95fe9a1775bd54031c18d4c4	 
+- stack 0: 0xDBC
+591	 DBC	JUMPDEST		 ;; _neq_after_ab72fc08499fbb6b69b3070070de386061cb14d87d9fd424b00293165e782bb1	 
 - stack 0: 0x4F0
-658	 CC8	PUSH2	0016	 ;; _pcplus4	 
+592	 DBD	PUSH1	04	 	 
 - stack 0: 0x4F0
-659	 CCB	JUMP		 	 
-- stack 1: 0x4F0
-- stack 0: 0x16
-660	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x4F0
-661	 17	PUSH1	04	 	 
-- stack 0: 0x4F0
-662	 19	ADD		 	 
+593	 DBF	ADD		 	 
 - stack 1: 0x4F0
 - stack 0: 0x4
-663	 1A	JUMPDEST		 ;; _execute	 
+594	 DC0	DUP1		 	  ;; # executing pc
 - stack 0: 0x4F4
-664	 1B	DUP1		 	 
-- stack 0: 0x4F4
-665	 1C	MLOAD		 	 
+595	 DC1	MLOAD		 	 
 - stack 1: 0x4F4
 - stack 0: 0x4F4
-666	 1D	PUSH1	E0	 	 
+596	 DC2	PUSH1	E0	 	 
 - stack 1: 0x4F4
-- stack 0: 0xCCC00000D770000013200000DA600000DB400000DE300000E0D00000E5D
-667	 1F	SHR		 	 
+- stack 0: 0xDC600000E730000014800000EA700000EBA00000EEE00000F1D00000F74
+597	 DC4	SHR		 	 
 - stack 2: 0x4F4
-- stack 1: 0xCCC00000D770000013200000DA600000DB400000DE300000E0D00000E5D
+- stack 1: 0xDC600000E730000014800000EA700000EBA00000EEE00000F1D00000F74
 - stack 0: 0xE0
-668	 20	JUMP		 	 
+598	 DC5	JUMP		 	 
 - stack 1: 0x4F4
-- stack 0: 0xCCC
-669	 CCC	JUMPDEST		 ;; _riscvopt_cae1fb4766de156a019f2e33121dd67cd5e60afd0547a3e950408325ced07d4e	  ;; # pc 0x4f4 buffer: b72021219380101293d10000b72e2121938e1e12130ec000
+- stack 0: 0xDC6
+599	 DC6	JUMPDEST		 ;; _riscvopt_cae1fb4766de156a019f2e33121dd67cd5e60afd0547a3e950408325ced07d4e	  ;; # pc 0x4f4 buffer: b72021219380101293d10000b72e2121938e1e12130ec000
 - stack 0: 0x4F4
-670	 CCD	POP		 	 
+600	 DC7	POP		 	 
 - stack 0: 0x4F4
-671	 CCE	JUMPDEST		 	  ;; # DEBUG: lui ra,0x21212
-672	 CCF	PUSH4	21212000	 	 
-673	 CD4	PUSH2	0020	 	 
+601	 DC8	JUMPDEST		 	  ;; # DEBUG: lui ra,0x21212
+602	 DC9	PUSH4	21212000	 	 
+603	 DCE	PUSH2	0020	 	 
 - stack 0: 0x21212000
-674	 CD7	MSTORE		 	  ;; # store to x1
+604	 DD1	MSTORE		 	  ;; # store to x1
 - stack 1: 0x21212000
 - stack 0: 0x20
-675	 CD8	JUMPDEST		 	  ;; # DEBUG: addi ra,ra,289
-676	 CD9	PUSH2	0020	 	 
-677	 CDC	MLOAD		 	  ;; # read from x1
+605	 DD2	JUMPDEST		 	  ;; # DEBUG: addi ra,ra,289
+606	 DD3	PUSH2	0020	 	 
+607	 DD6	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-678	 CDD	PUSH32	0000000000000000000000000000000000000000000000000000000000000121	 	  ;; # signextended 289
+608	 DD7	PUSH32	0000000000000000000000000000000000000000000000000000000000000121	 	  ;; # signextended 289
 - stack 0: 0x21212000
-679	 CFE	ADD		 	  ;; # ADDI
+609	 DF8	ADD		 	  ;; # ADDI
 - stack 1: 0x21212000
 - stack 0: 0x121
-680	 CFF	PUSH2	0020	 	 
+610	 DF9	PUSH2	0020	 	 
 - stack 0: 0x21212121
-681	 D02	MSTORE		 	  ;; # store to x1
+611	 DFC	MSTORE		 	  ;; # store to x1
 - stack 1: 0x21212121
 - stack 0: 0x20
-682	 D03	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,0
-683	 D04	PUSH2	0020	 	 
-684	 D07	MLOAD		 	  ;; # read from x1
+612	 DFD	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,0
+613	 DFE	PUSH2	0020	 	 
+614	 E01	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-685	 D08	PUSH4	FFFFFFFF	 	 
+615	 E02	PUSH4	FFFFFFFF	 	 
 - stack 0: 0x21212121
-686	 D0D	AND		 	  ;; # mask to 32 bits
+616	 E07	AND		 	  ;; # mask to 32 bits
 - stack 1: 0x21212121
 - stack 0: 0xFFFFFFFF
-687	 D0E	PUSH1	00	 	 
+617	 E08	PUSH1	00	 	 
 - stack 0: 0x21212121
-688	 D10	SHR		 	  ;; # SRLI
+618	 E0A	SHR		 	  ;; # SRLI
 - stack 1: 0x21212121
 - stack 0: 0x0
-689	 D11	PUSH2	0060	 	 
+619	 E0B	PUSH2	0060	 	 
 - stack 0: 0x21212121
-690	 D14	MSTORE		 	  ;; # store to x3
+620	 E0E	MSTORE		 	  ;; # store to x3
 - stack 1: 0x21212121
 - stack 0: 0x60
-691	 D15	JUMPDEST		 	  ;; # DEBUG: lui t4,0x21212
-692	 D16	PUSH4	21212000	 	 
-693	 D1B	PUSH2	03A0	 	 
+621	 E0F	JUMPDEST		 	  ;; # DEBUG: lui t4,0x21212
+622	 E10	PUSH4	21212000	 	 
+623	 E15	PUSH2	03A0	 	 
 - stack 0: 0x21212000
-694	 D1E	MSTORE		 	  ;; # store to x29
+624	 E18	MSTORE		 	  ;; # store to x29
 - stack 1: 0x21212000
 - stack 0: 0x3A0
-695	 D1F	JUMPDEST		 	  ;; # DEBUG: addi t4,t4,289
-696	 D20	PUSH2	03A0	 	 
-697	 D23	MLOAD		 	  ;; # read from x29
+625	 E19	JUMPDEST		 	  ;; # DEBUG: addi t4,t4,289
+626	 E1A	PUSH2	03A0	 	 
+627	 E1D	MLOAD		 	  ;; # read from x29
 - stack 0: 0x3A0
-698	 D24	PUSH32	0000000000000000000000000000000000000000000000000000000000000121	 	  ;; # signextended 289
+628	 E1E	PUSH32	0000000000000000000000000000000000000000000000000000000000000121	 	  ;; # signextended 289
 - stack 0: 0x21212000
-699	 D45	ADD		 	  ;; # ADDI
+629	 E3F	ADD		 	  ;; # ADDI
 - stack 1: 0x21212000
 - stack 0: 0x121
-700	 D46	PUSH2	03A0	 	 
+630	 E40	PUSH2	03A0	 	 
 - stack 0: 0x21212121
-701	 D49	MSTORE		 	  ;; # store to x29
+631	 E43	MSTORE		 	  ;; # store to x29
 - stack 1: 0x21212121
 - stack 0: 0x3A0
-702	 D4A	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,12
-703	 D4B	PUSH32	000000000000000000000000000000000000000000000000000000000000000C	 	  ;; # signextended 12
-704	 D6C	PUSH2	0380	 	 
+632	 E44	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,12
+633	 E45	PUSH32	000000000000000000000000000000000000000000000000000000000000000C	 	  ;; # signextended 12
+634	 E66	PUSH2	0380	 	 
 - stack 0: 0xC
-705	 D6F	MSTORE		 	  ;; # store to x28
+635	 E69	MSTORE		 	  ;; # store to x28
 - stack 1: 0xC
 - stack 0: 0x380
-706	 D70	PUSH2	050C	 	 
-707	 D73	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+636	 E6A	PUSH2	050C	 	 
+637	 E6D	DUP1		 	  ;; # executing pc
 - stack 0: 0x50C
-708	 D76	JUMP		 	 
-- stack 1: 0x50C
-- stack 0: 0x1A
-709	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x50C
-710	 1B	DUP1		 	 
-- stack 0: 0x50C
-711	 1C	MLOAD		 	 
+638	 E6E	MLOAD		 	 
 - stack 1: 0x50C
 - stack 0: 0x50C
-712	 1D	PUSH1	E0	 	 
+639	 E6F	PUSH1	E0	 	 
 - stack 1: 0x50C
-- stack 0: 0xE0D00000E5D00000D770000022500000F0800000F1600000F4500000F6F
-713	 1F	SHR		 	 
+- stack 0: 0xF1D00000F7400000E730000025300001021000010340000106800001097
+640	 E71	SHR		 	 
 - stack 2: 0x50C
-- stack 1: 0xE0D00000E5D00000D770000022500000F0800000F1600000F4500000F6F
+- stack 1: 0xF1D00000F7400000E730000025300001021000010340000106800001097
 - stack 0: 0xE0
-714	 20	JUMP		 	 
+641	 E72	JUMP		 	 
 - stack 1: 0x50C
-- stack 0: 0xE0D
-715	 E0D	JUMPDEST		 ;; _riscv_3c8cb6b3172776063e95ab271c7f01d041d682d11d949ddbfa2ac61ad53ac156	  ;; # pc 0x50c buffer: 639cd11b decode bne gp,t4,1b8
+- stack 0: 0xF1D
+642	 F1D	JUMPDEST		 ;; _riscv_3c8cb6b3172776063e95ab271c7f01d041d682d11d949ddbfa2ac61ad53ac156	  ;; # pc 0x50c buffer: 639cd11b decode bne gp,t4,1b8
 - stack 0: 0x50C
-716	 E0E	PUSH2	0060	 	 
+643	 F1E	PUSH2	0060	 	 
 - stack 0: 0x50C
-717	 E11	MLOAD		 	  ;; # read from x3
+644	 F21	MLOAD		 	  ;; # read from x3
 - stack 1: 0x50C
 - stack 0: 0x60
-718	 E12	PUSH4	FFFFFFFF	 	 
+645	 F22	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x50C
 - stack 0: 0x21212121
-719	 E17	AND		 	  ;; # mask to 32 bits
+646	 F27	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x50C
 - stack 1: 0x21212121
 - stack 0: 0xFFFFFFFF
-720	 E18	PUSH2	03A0	 	 
+647	 F28	PUSH2	03A0	 	 
 - stack 1: 0x50C
 - stack 0: 0x21212121
-721	 E1B	MLOAD		 	  ;; # read from x29
+648	 F2B	MLOAD		 	  ;; # read from x29
 - stack 2: 0x50C
 - stack 1: 0x21212121
 - stack 0: 0x3A0
-722	 E1C	PUSH4	FFFFFFFF	 	 
+649	 F2C	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x50C
 - stack 1: 0x21212121
 - stack 0: 0x21212121
-723	 E21	AND		 	  ;; # mask to 32 bits
+650	 F31	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x50C
 - stack 2: 0x21212121
 - stack 1: 0x21212121
 - stack 0: 0xFFFFFFFF
-724	 E22	SUB		 	 
+651	 F32	SUB		 	 
 - stack 2: 0x50C
 - stack 1: 0x21212121
 - stack 0: 0x21212121
-725	 E23	PUSH2	0E2B	 ;; _neq_43b2026e39cb2941cd52d66685e4581c6b6c59332986d5c822cc9d1f977b0016	 
+652	 F33	PUSH2	0F3B	 ;; _neq_c68bf00d9e86fe919d3f0f7bfb03c5e21210cd4422eff2e5056ea87af305b40e	 
 - stack 1: 0x50C
 - stack 0: 0x0
-726	 E26	JUMPI		 	 
+653	 F36	JUMPI		 	 
 - stack 2: 0x50C
 - stack 1: 0x0
-- stack 0: 0xE2B
-727	 E27	PUSH2	0E58	 ;; _neq_after_43b2026e39cb2941cd52d66685e4581c6b6c59332986d5c822cc9d1f977b0016	 
+- stack 0: 0xF3B
+654	 F37	PUSH2	0F6A	 ;; _neq_after_c68bf00d9e86fe919d3f0f7bfb03c5e21210cd4422eff2e5056ea87af305b40e	 
 - stack 0: 0x50C
-728	 E2A	JUMP		 	 
+655	 F3A	JUMP		 	 
 - stack 1: 0x50C
-- stack 0: 0xE58
-729	 E58	JUMPDEST		 ;; _neq_after_43b2026e39cb2941cd52d66685e4581c6b6c59332986d5c822cc9d1f977b0016	 
+- stack 0: 0xF6A
+656	 F6A	JUMPDEST		 ;; _neq_after_c68bf00d9e86fe919d3f0f7bfb03c5e21210cd4422eff2e5056ea87af305b40e	 
 - stack 0: 0x50C
-730	 E59	PUSH2	0016	 ;; _pcplus4	 
+657	 F6B	PUSH1	04	 	 
 - stack 0: 0x50C
-731	 E5C	JUMP		 	 
-- stack 1: 0x50C
-- stack 0: 0x16
-732	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x50C
-733	 17	PUSH1	04	 	 
-- stack 0: 0x50C
-734	 19	ADD		 	 
+658	 F6D	ADD		 	 
 - stack 1: 0x50C
 - stack 0: 0x4
-735	 1A	JUMPDEST		 ;; _execute	 
+659	 F6E	DUP1		 	  ;; # executing pc
 - stack 0: 0x510
-736	 1B	DUP1		 	 
-- stack 0: 0x510
-737	 1C	MLOAD		 	 
+660	 F6F	MLOAD		 	 
 - stack 1: 0x510
 - stack 0: 0x510
-738	 1D	PUSH1	E0	 	 
+661	 F70	PUSH1	E0	 	 
 - stack 1: 0x510
-- stack 0: 0xE5D00000D770000022500000F0800000F1600000F4500000F6F00000FBF
-739	 1F	SHR		 	 
+- stack 0: 0xF7400000E730000025300001021000010340000106800001097000010EE
+662	 F72	SHR		 	 
 - stack 2: 0x510
-- stack 1: 0xE5D00000D770000022500000F0800000F1600000F4500000F6F00000FBF
+- stack 1: 0xF7400000E730000025300001021000010340000106800001097000010EE
 - stack 0: 0xE0
-740	 20	JUMP		 	 
+663	 F73	JUMP		 	 
 - stack 1: 0x510
-- stack 0: 0xE5D
-741	 E5D	JUMPDEST		 ;; _riscvopt_4a0bbc1afc5304d0cd48154f09811e7ed4f1d37c4c9be084bdc3117cc7c64dc0	  ;; # pc 0x510 buffer: b72021219380101293d11000b79e9010938e0e09130ed000
+- stack 0: 0xF74
+664	 F74	JUMPDEST		 ;; _riscvopt_4a0bbc1afc5304d0cd48154f09811e7ed4f1d37c4c9be084bdc3117cc7c64dc0	  ;; # pc 0x510 buffer: b72021219380101293d11000b79e9010938e0e09130ed000
 - stack 0: 0x510
-742	 E5E	POP		 	 
+665	 F75	POP		 	 
 - stack 0: 0x510
-743	 E5F	JUMPDEST		 	  ;; # DEBUG: lui ra,0x21212
-744	 E60	PUSH4	21212000	 	 
-745	 E65	PUSH2	0020	 	 
+666	 F76	JUMPDEST		 	  ;; # DEBUG: lui ra,0x21212
+667	 F77	PUSH4	21212000	 	 
+668	 F7C	PUSH2	0020	 	 
 - stack 0: 0x21212000
-746	 E68	MSTORE		 	  ;; # store to x1
+669	 F7F	MSTORE		 	  ;; # store to x1
 - stack 1: 0x21212000
 - stack 0: 0x20
-747	 E69	JUMPDEST		 	  ;; # DEBUG: addi ra,ra,289
-748	 E6A	PUSH2	0020	 	 
-749	 E6D	MLOAD		 	  ;; # read from x1
+670	 F80	JUMPDEST		 	  ;; # DEBUG: addi ra,ra,289
+671	 F81	PUSH2	0020	 	 
+672	 F84	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-750	 E6E	PUSH32	0000000000000000000000000000000000000000000000000000000000000121	 	  ;; # signextended 289
+673	 F85	PUSH32	0000000000000000000000000000000000000000000000000000000000000121	 	  ;; # signextended 289
 - stack 0: 0x21212000
-751	 E8F	ADD		 	  ;; # ADDI
+674	 FA6	ADD		 	  ;; # ADDI
 - stack 1: 0x21212000
 - stack 0: 0x121
-752	 E90	PUSH2	0020	 	 
+675	 FA7	PUSH2	0020	 	 
 - stack 0: 0x21212121
-753	 E93	MSTORE		 	  ;; # store to x1
+676	 FAA	MSTORE		 	  ;; # store to x1
 - stack 1: 0x21212121
 - stack 0: 0x20
-754	 E94	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,1
-755	 E95	PUSH2	0020	 	 
-756	 E98	MLOAD		 	  ;; # read from x1
+677	 FAB	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,1
+678	 FAC	PUSH2	0020	 	 
+679	 FAF	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-757	 E99	PUSH4	FFFFFFFF	 	 
+680	 FB0	PUSH4	FFFFFFFF	 	 
 - stack 0: 0x21212121
-758	 E9E	AND		 	  ;; # mask to 32 bits
+681	 FB5	AND		 	  ;; # mask to 32 bits
 - stack 1: 0x21212121
 - stack 0: 0xFFFFFFFF
-759	 E9F	PUSH1	01	 	 
+682	 FB6	PUSH1	01	 	 
 - stack 0: 0x21212121
-760	 EA1	SHR		 	  ;; # SRLI
+683	 FB8	SHR		 	  ;; # SRLI
 - stack 1: 0x21212121
 - stack 0: 0x1
-761	 EA2	PUSH2	0060	 	 
+684	 FB9	PUSH2	0060	 	 
 - stack 0: 0x10909090
-762	 EA5	MSTORE		 	  ;; # store to x3
+685	 FBC	MSTORE		 	  ;; # store to x3
 - stack 1: 0x10909090
 - stack 0: 0x60
-763	 EA6	JUMPDEST		 	  ;; # DEBUG: lui t4,0x10909
-764	 EA7	PUSH4	10909000	 	 
-765	 EAC	PUSH2	03A0	 	 
+686	 FBD	JUMPDEST		 	  ;; # DEBUG: lui t4,0x10909
+687	 FBE	PUSH4	10909000	 	 
+688	 FC3	PUSH2	03A0	 	 
 - stack 0: 0x10909000
-766	 EAF	MSTORE		 	  ;; # store to x29
+689	 FC6	MSTORE		 	  ;; # store to x29
 - stack 1: 0x10909000
 - stack 0: 0x3A0
-767	 EB0	JUMPDEST		 	  ;; # DEBUG: addi t4,t4,144
-768	 EB1	PUSH2	03A0	 	 
-769	 EB4	MLOAD		 	  ;; # read from x29
+690	 FC7	JUMPDEST		 	  ;; # DEBUG: addi t4,t4,144
+691	 FC8	PUSH2	03A0	 	 
+692	 FCB	MLOAD		 	  ;; # read from x29
 - stack 0: 0x3A0
-770	 EB5	PUSH32	0000000000000000000000000000000000000000000000000000000000000090	 	  ;; # signextended 144
+693	 FCC	PUSH32	0000000000000000000000000000000000000000000000000000000000000090	 	  ;; # signextended 144
 - stack 0: 0x10909000
-771	 ED6	ADD		 	  ;; # ADDI
+694	 FED	ADD		 	  ;; # ADDI
 - stack 1: 0x10909000
 - stack 0: 0x90
-772	 ED7	PUSH2	03A0	 	 
+695	 FEE	PUSH2	03A0	 	 
 - stack 0: 0x10909090
-773	 EDA	MSTORE		 	  ;; # store to x29
+696	 FF1	MSTORE		 	  ;; # store to x29
 - stack 1: 0x10909090
 - stack 0: 0x3A0
-774	 EDB	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,13
-775	 EDC	PUSH32	000000000000000000000000000000000000000000000000000000000000000D	 	  ;; # signextended 13
-776	 EFD	PUSH2	0380	 	 
+697	 FF2	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,13
+698	 FF3	PUSH32	000000000000000000000000000000000000000000000000000000000000000D	 	  ;; # signextended 13
+699	 1014	PUSH2	0380	 	 
 - stack 0: 0xD
-777	 F00	MSTORE		 	  ;; # store to x28
+700	 1017	MSTORE		 	  ;; # store to x28
 - stack 1: 0xD
 - stack 0: 0x380
-778	 F01	PUSH2	0528	 	 
-779	 F04	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+701	 1018	PUSH2	0528	 	 
+702	 101B	DUP1		 	  ;; # executing pc
 - stack 0: 0x528
-780	 F07	JUMP		 	 
-- stack 1: 0x528
-- stack 0: 0x1A
-781	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x528
-782	 1B	DUP1		 	 
-- stack 0: 0x528
-783	 1C	MLOAD		 	 
+703	 101C	MLOAD		 	 
 - stack 1: 0x528
 - stack 0: 0x528
-784	 1D	PUSH1	E0	 	 
+704	 101D	PUSH1	E0	 	 
 - stack 1: 0x528
-- stack 0: 0xF6F00000FBF00000D77000003430000106A00001078000010A7000010D1
-785	 1F	SHR		 	 
+- stack 0: 0x1097000010EE00000E73000003890000119B000011AE000011E200001211
+705	 101F	SHR		 	 
 - stack 2: 0x528
-- stack 1: 0xF6F00000FBF00000D77000003430000106A00001078000010A7000010D1
+- stack 1: 0x1097000010EE00000E73000003890000119B000011AE000011E200001211
 - stack 0: 0xE0
-786	 20	JUMP		 	 
+706	 1020	JUMP		 	 
 - stack 1: 0x528
-- stack 0: 0xF6F
-787	 F6F	JUMPDEST		 ;; _riscv_5fa14b1ccd7b016f4ec0d84728784ce1c47eef0512f125d0c95e305fbd93d7e8	  ;; # pc 0x528 buffer: 639ed119 decode bne gp,t4,19c
+- stack 0: 0x1097
+707	 1097	JUMPDEST		 ;; _riscv_5fa14b1ccd7b016f4ec0d84728784ce1c47eef0512f125d0c95e305fbd93d7e8	  ;; # pc 0x528 buffer: 639ed119 decode bne gp,t4,19c
 - stack 0: 0x528
-788	 F70	PUSH2	0060	 	 
+708	 1098	PUSH2	0060	 	 
 - stack 0: 0x528
-789	 F73	MLOAD		 	  ;; # read from x3
+709	 109B	MLOAD		 	  ;; # read from x3
 - stack 1: 0x528
 - stack 0: 0x60
-790	 F74	PUSH4	FFFFFFFF	 	 
+710	 109C	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x528
 - stack 0: 0x10909090
-791	 F79	AND		 	  ;; # mask to 32 bits
+711	 10A1	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x528
 - stack 1: 0x10909090
 - stack 0: 0xFFFFFFFF
-792	 F7A	PUSH2	03A0	 	 
+712	 10A2	PUSH2	03A0	 	 
 - stack 1: 0x528
 - stack 0: 0x10909090
-793	 F7D	MLOAD		 	  ;; # read from x29
+713	 10A5	MLOAD		 	  ;; # read from x29
 - stack 2: 0x528
 - stack 1: 0x10909090
 - stack 0: 0x3A0
-794	 F7E	PUSH4	FFFFFFFF	 	 
+714	 10A6	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x528
 - stack 1: 0x10909090
 - stack 0: 0x10909090
-795	 F83	AND		 	  ;; # mask to 32 bits
+715	 10AB	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x528
 - stack 2: 0x10909090
 - stack 1: 0x10909090
 - stack 0: 0xFFFFFFFF
-796	 F84	SUB		 	 
+716	 10AC	SUB		 	 
 - stack 2: 0x528
 - stack 1: 0x10909090
 - stack 0: 0x10909090
-797	 F85	PUSH2	0F8D	 ;; _neq_1eb19ec3221fb60e754bb3303c2cabd6b1612ecf017afc6a8acd24b33fe7c228	 
+717	 10AD	PUSH2	10B5	 ;; _neq_0879c5cb657cd62343f0564861b3d924ee98d6af45b567e9ac730a5051bfedfd	 
 - stack 1: 0x528
 - stack 0: 0x0
-798	 F88	JUMPI		 	 
+718	 10B0	JUMPI		 	 
 - stack 2: 0x528
 - stack 1: 0x0
-- stack 0: 0xF8D
-799	 F89	PUSH2	0FBA	 ;; _neq_after_1eb19ec3221fb60e754bb3303c2cabd6b1612ecf017afc6a8acd24b33fe7c228	 
+- stack 0: 0x10B5
+719	 10B1	PUSH2	10E4	 ;; _neq_after_0879c5cb657cd62343f0564861b3d924ee98d6af45b567e9ac730a5051bfedfd	 
 - stack 0: 0x528
-800	 F8C	JUMP		 	 
+720	 10B4	JUMP		 	 
 - stack 1: 0x528
-- stack 0: 0xFBA
-801	 FBA	JUMPDEST		 ;; _neq_after_1eb19ec3221fb60e754bb3303c2cabd6b1612ecf017afc6a8acd24b33fe7c228	 
+- stack 0: 0x10E4
+721	 10E4	JUMPDEST		 ;; _neq_after_0879c5cb657cd62343f0564861b3d924ee98d6af45b567e9ac730a5051bfedfd	 
 - stack 0: 0x528
-802	 FBB	PUSH2	0016	 ;; _pcplus4	 
+722	 10E5	PUSH1	04	 	 
 - stack 0: 0x528
-803	 FBE	JUMP		 	 
-- stack 1: 0x528
-- stack 0: 0x16
-804	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x528
-805	 17	PUSH1	04	 	 
-- stack 0: 0x528
-806	 19	ADD		 	 
+723	 10E7	ADD		 	 
 - stack 1: 0x528
 - stack 0: 0x4
-807	 1A	JUMPDEST		 ;; _execute	 
+724	 10E8	DUP1		 	  ;; # executing pc
 - stack 0: 0x52C
-808	 1B	DUP1		 	 
-- stack 0: 0x52C
-809	 1C	MLOAD		 	 
+725	 10E9	MLOAD		 	 
 - stack 1: 0x52C
 - stack 0: 0x52C
-810	 1D	PUSH1	E0	 	 
+726	 10EA	PUSH1	E0	 	 
 - stack 1: 0x52C
-- stack 0: 0xFBF00000D77000003430000106A00001078000010A7000010D100001121
-811	 1F	SHR		 	 
+- stack 0: 0x10EE00000E73000003890000119B000011AE000011E20000121100001268
+727	 10EC	SHR		 	 
 - stack 2: 0x52C
-- stack 1: 0xFBF00000D77000003430000106A00001078000010A7000010D100001121
+- stack 1: 0x10EE00000E73000003890000119B000011AE000011E20000121100001268
 - stack 0: 0xE0
-812	 20	JUMP		 	 
+728	 10ED	JUMP		 	 
 - stack 1: 0x52C
-- stack 0: 0xFBF
-813	 FBF	JUMPDEST		 ;; _riscvopt_f1902804b5f9f787805def324ee05bd764345a0a20211020cfda820f83d3853f	  ;; # pc 0x52c buffer: b72021219380101293d17000b74e4200938e2e24130ee000
+- stack 0: 0x10EE
+729	 10EE	JUMPDEST		 ;; _riscvopt_f1902804b5f9f787805def324ee05bd764345a0a20211020cfda820f83d3853f	  ;; # pc 0x52c buffer: b72021219380101293d17000b74e4200938e2e24130ee000
 - stack 0: 0x52C
-814	 FC0	POP		 	 
+730	 10EF	POP		 	 
 - stack 0: 0x52C
-815	 FC1	JUMPDEST		 	  ;; # DEBUG: lui ra,0x21212
-816	 FC2	PUSH4	21212000	 	 
-817	 FC7	PUSH2	0020	 	 
+731	 10F0	JUMPDEST		 	  ;; # DEBUG: lui ra,0x21212
+732	 10F1	PUSH4	21212000	 	 
+733	 10F6	PUSH2	0020	 	 
 - stack 0: 0x21212000
-818	 FCA	MSTORE		 	  ;; # store to x1
+734	 10F9	MSTORE		 	  ;; # store to x1
 - stack 1: 0x21212000
 - stack 0: 0x20
-819	 FCB	JUMPDEST		 	  ;; # DEBUG: addi ra,ra,289
-820	 FCC	PUSH2	0020	 	 
-821	 FCF	MLOAD		 	  ;; # read from x1
+735	 10FA	JUMPDEST		 	  ;; # DEBUG: addi ra,ra,289
+736	 10FB	PUSH2	0020	 	 
+737	 10FE	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-822	 FD0	PUSH32	0000000000000000000000000000000000000000000000000000000000000121	 	  ;; # signextended 289
+738	 10FF	PUSH32	0000000000000000000000000000000000000000000000000000000000000121	 	  ;; # signextended 289
 - stack 0: 0x21212000
-823	 FF1	ADD		 	  ;; # ADDI
+739	 1120	ADD		 	  ;; # ADDI
 - stack 1: 0x21212000
 - stack 0: 0x121
-824	 FF2	PUSH2	0020	 	 
+740	 1121	PUSH2	0020	 	 
 - stack 0: 0x21212121
-825	 FF5	MSTORE		 	  ;; # store to x1
+741	 1124	MSTORE		 	  ;; # store to x1
 - stack 1: 0x21212121
 - stack 0: 0x20
-826	 FF6	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,7
-827	 FF7	PUSH2	0020	 	 
-828	 FFA	MLOAD		 	  ;; # read from x1
+742	 1125	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,7
+743	 1126	PUSH2	0020	 	 
+744	 1129	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-829	 FFB	PUSH4	FFFFFFFF	 	 
+745	 112A	PUSH4	FFFFFFFF	 	 
 - stack 0: 0x21212121
-830	 1000	AND		 	  ;; # mask to 32 bits
+746	 112F	AND		 	  ;; # mask to 32 bits
 - stack 1: 0x21212121
 - stack 0: 0xFFFFFFFF
-831	 1001	PUSH1	07	 	 
+747	 1130	PUSH1	07	 	 
 - stack 0: 0x21212121
-832	 1003	SHR		 	  ;; # SRLI
+748	 1132	SHR		 	  ;; # SRLI
 - stack 1: 0x21212121
 - stack 0: 0x7
-833	 1004	PUSH2	0060	 	 
+749	 1133	PUSH2	0060	 	 
 - stack 0: 0x424242
-834	 1007	MSTORE		 	  ;; # store to x3
+750	 1136	MSTORE		 	  ;; # store to x3
 - stack 1: 0x424242
 - stack 0: 0x60
-835	 1008	JUMPDEST		 	  ;; # DEBUG: lui t4,0x424
-836	 1009	PUSH4	00424000	 	 
-837	 100E	PUSH2	03A0	 	 
+751	 1137	JUMPDEST		 	  ;; # DEBUG: lui t4,0x424
+752	 1138	PUSH4	00424000	 	 
+753	 113D	PUSH2	03A0	 	 
 - stack 0: 0x424000
-838	 1011	MSTORE		 	  ;; # store to x29
+754	 1140	MSTORE		 	  ;; # store to x29
 - stack 1: 0x424000
 - stack 0: 0x3A0
-839	 1012	JUMPDEST		 	  ;; # DEBUG: addi t4,t4,578
-840	 1013	PUSH2	03A0	 	 
-841	 1016	MLOAD		 	  ;; # read from x29
+755	 1141	JUMPDEST		 	  ;; # DEBUG: addi t4,t4,578
+756	 1142	PUSH2	03A0	 	 
+757	 1145	MLOAD		 	  ;; # read from x29
 - stack 0: 0x3A0
-842	 1017	PUSH32	0000000000000000000000000000000000000000000000000000000000000242	 	  ;; # signextended 578
+758	 1146	PUSH32	0000000000000000000000000000000000000000000000000000000000000242	 	  ;; # signextended 578
 - stack 0: 0x424000
-843	 1038	ADD		 	  ;; # ADDI
+759	 1167	ADD		 	  ;; # ADDI
 - stack 1: 0x424000
 - stack 0: 0x242
-844	 1039	PUSH2	03A0	 	 
+760	 1168	PUSH2	03A0	 	 
 - stack 0: 0x424242
-845	 103C	MSTORE		 	  ;; # store to x29
+761	 116B	MSTORE		 	  ;; # store to x29
 - stack 1: 0x424242
 - stack 0: 0x3A0
-846	 103D	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,14
-847	 103E	PUSH32	000000000000000000000000000000000000000000000000000000000000000E	 	  ;; # signextended 14
-848	 105F	PUSH2	0380	 	 
+762	 116C	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,14
+763	 116D	PUSH32	000000000000000000000000000000000000000000000000000000000000000E	 	  ;; # signextended 14
+764	 118E	PUSH2	0380	 	 
 - stack 0: 0xE
-849	 1062	MSTORE		 	  ;; # store to x28
+765	 1191	MSTORE		 	  ;; # store to x28
 - stack 1: 0xE
 - stack 0: 0x380
-850	 1063	PUSH2	0544	 	 
-851	 1066	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+766	 1192	PUSH2	0544	 	 
+767	 1195	DUP1		 	  ;; # executing pc
 - stack 0: 0x544
-852	 1069	JUMP		 	 
-- stack 1: 0x544
-- stack 0: 0x1A
-853	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x544
-854	 1B	DUP1		 	 
-- stack 0: 0x544
-855	 1C	MLOAD		 	 
+768	 1196	MLOAD		 	 
 - stack 1: 0x544
 - stack 0: 0x544
-856	 1D	PUSH1	E0	 	 
+769	 1197	PUSH1	E0	 	 
 - stack 1: 0x544
-- stack 0: 0x10D10000112100000D7700000490000011CC000011DA0000120900001233
-857	 1F	SHR		 	 
+- stack 0: 0x12110000126800000E73000004F300001315000013280000135C0000138B
+770	 1199	SHR		 	 
 - stack 2: 0x544
-- stack 1: 0x10D10000112100000D7700000490000011CC000011DA0000120900001233
+- stack 1: 0x12110000126800000E73000004F300001315000013280000135C0000138B
 - stack 0: 0xE0
-858	 20	JUMP		 	 
+771	 119A	JUMP		 	 
 - stack 1: 0x544
-- stack 0: 0x10D1
-859	 10D1	JUMPDEST		 ;; _riscv_08c927068548218d0791af6624ac91c75adde9d4413fe22b48b863dc4e559aac	  ;; # pc 0x544 buffer: 6390d119 decode bne gp,t4,180
+- stack 0: 0x1211
+772	 1211	JUMPDEST		 ;; _riscv_08c927068548218d0791af6624ac91c75adde9d4413fe22b48b863dc4e559aac	  ;; # pc 0x544 buffer: 6390d119 decode bne gp,t4,180
 - stack 0: 0x544
-860	 10D2	PUSH2	0060	 	 
+773	 1212	PUSH2	0060	 	 
 - stack 0: 0x544
-861	 10D5	MLOAD		 	  ;; # read from x3
+774	 1215	MLOAD		 	  ;; # read from x3
 - stack 1: 0x544
 - stack 0: 0x60
-862	 10D6	PUSH4	FFFFFFFF	 	 
+775	 1216	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x544
 - stack 0: 0x424242
-863	 10DB	AND		 	  ;; # mask to 32 bits
+776	 121B	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x544
 - stack 1: 0x424242
 - stack 0: 0xFFFFFFFF
-864	 10DC	PUSH2	03A0	 	 
+777	 121C	PUSH2	03A0	 	 
 - stack 1: 0x544
 - stack 0: 0x424242
-865	 10DF	MLOAD		 	  ;; # read from x29
+778	 121F	MLOAD		 	  ;; # read from x29
 - stack 2: 0x544
 - stack 1: 0x424242
 - stack 0: 0x3A0
-866	 10E0	PUSH4	FFFFFFFF	 	 
+779	 1220	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x544
 - stack 1: 0x424242
 - stack 0: 0x424242
-867	 10E5	AND		 	  ;; # mask to 32 bits
+780	 1225	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x544
 - stack 2: 0x424242
 - stack 1: 0x424242
 - stack 0: 0xFFFFFFFF
-868	 10E6	SUB		 	 
+781	 1226	SUB		 	 
 - stack 2: 0x544
 - stack 1: 0x424242
 - stack 0: 0x424242
-869	 10E7	PUSH2	10EF	 ;; _neq_dbf0ee69f7d7b1da811603a7dc08c0c3ec2991322732d5b5a3e8bbde51624e60	 
+782	 1227	PUSH2	122F	 ;; _neq_5f02b1bbf5405373f5460e2c9bc8047c7993317548f850d07d61717ea5327d07	 
 - stack 1: 0x544
 - stack 0: 0x0
-870	 10EA	JUMPI		 	 
+783	 122A	JUMPI		 	 
 - stack 2: 0x544
 - stack 1: 0x0
-- stack 0: 0x10EF
-871	 10EB	PUSH2	111C	 ;; _neq_after_dbf0ee69f7d7b1da811603a7dc08c0c3ec2991322732d5b5a3e8bbde51624e60	 
+- stack 0: 0x122F
+784	 122B	PUSH2	125E	 ;; _neq_after_5f02b1bbf5405373f5460e2c9bc8047c7993317548f850d07d61717ea5327d07	 
 - stack 0: 0x544
-872	 10EE	JUMP		 	 
+785	 122E	JUMP		 	 
 - stack 1: 0x544
-- stack 0: 0x111C
-873	 111C	JUMPDEST		 ;; _neq_after_dbf0ee69f7d7b1da811603a7dc08c0c3ec2991322732d5b5a3e8bbde51624e60	 
+- stack 0: 0x125E
+786	 125E	JUMPDEST		 ;; _neq_after_5f02b1bbf5405373f5460e2c9bc8047c7993317548f850d07d61717ea5327d07	 
 - stack 0: 0x544
-874	 111D	PUSH2	0016	 ;; _pcplus4	 
+787	 125F	PUSH1	04	 	 
 - stack 0: 0x544
-875	 1120	JUMP		 	 
-- stack 1: 0x544
-- stack 0: 0x16
-876	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x544
-877	 17	PUSH1	04	 	 
-- stack 0: 0x544
-878	 19	ADD		 	 
+788	 1261	ADD		 	 
 - stack 1: 0x544
 - stack 0: 0x4
-879	 1A	JUMPDEST		 ;; _execute	 
+789	 1262	DUP1		 	  ;; # executing pc
 - stack 0: 0x548
-880	 1B	DUP1		 	 
-- stack 0: 0x548
-881	 1C	MLOAD		 	 
+790	 1263	MLOAD		 	 
 - stack 1: 0x548
 - stack 0: 0x548
-882	 1D	PUSH1	E0	 	 
+791	 1264	PUSH1	E0	 	 
 - stack 1: 0x548
-- stack 0: 0x112100000D7700000490000011CC000011DA000012090000123300001283
-883	 1F	SHR		 	 
+- stack 0: 0x126800000E73000004F300001315000013280000135C0000138B000013E2
+792	 1266	SHR		 	 
 - stack 2: 0x548
-- stack 1: 0x112100000D7700000490000011CC000011DA000012090000123300001283
+- stack 1: 0x126800000E73000004F300001315000013280000135C0000138B000013E2
 - stack 0: 0xE0
-884	 20	JUMP		 	 
+793	 1267	JUMP		 	 
 - stack 1: 0x548
-- stack 0: 0x1121
-885	 1121	JUMPDEST		 ;; _riscvopt_8b104562610d68cc62f1f23935afa06210187a58b1e780abff61b282c88a7ca7	  ;; # pc 0x548 buffer: b72021219380101293d1e000b78e0000938e4e48130ef000
+- stack 0: 0x1268
+794	 1268	JUMPDEST		 ;; _riscvopt_8b104562610d68cc62f1f23935afa06210187a58b1e780abff61b282c88a7ca7	  ;; # pc 0x548 buffer: b72021219380101293d1e000b78e0000938e4e48130ef000
 - stack 0: 0x548
-886	 1122	POP		 	 
+795	 1269	POP		 	 
 - stack 0: 0x548
-887	 1123	JUMPDEST		 	  ;; # DEBUG: lui ra,0x21212
-888	 1124	PUSH4	21212000	 	 
-889	 1129	PUSH2	0020	 	 
+796	 126A	JUMPDEST		 	  ;; # DEBUG: lui ra,0x21212
+797	 126B	PUSH4	21212000	 	 
+798	 1270	PUSH2	0020	 	 
 - stack 0: 0x21212000
-890	 112C	MSTORE		 	  ;; # store to x1
+799	 1273	MSTORE		 	  ;; # store to x1
 - stack 1: 0x21212000
 - stack 0: 0x20
-891	 112D	JUMPDEST		 	  ;; # DEBUG: addi ra,ra,289
-892	 112E	PUSH2	0020	 	 
-893	 1131	MLOAD		 	  ;; # read from x1
+800	 1274	JUMPDEST		 	  ;; # DEBUG: addi ra,ra,289
+801	 1275	PUSH2	0020	 	 
+802	 1278	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-894	 1132	PUSH32	0000000000000000000000000000000000000000000000000000000000000121	 	  ;; # signextended 289
+803	 1279	PUSH32	0000000000000000000000000000000000000000000000000000000000000121	 	  ;; # signextended 289
 - stack 0: 0x21212000
-895	 1153	ADD		 	  ;; # ADDI
+804	 129A	ADD		 	  ;; # ADDI
 - stack 1: 0x21212000
 - stack 0: 0x121
-896	 1154	PUSH2	0020	 	 
+805	 129B	PUSH2	0020	 	 
 - stack 0: 0x21212121
-897	 1157	MSTORE		 	  ;; # store to x1
+806	 129E	MSTORE		 	  ;; # store to x1
 - stack 1: 0x21212121
 - stack 0: 0x20
-898	 1158	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,14
-899	 1159	PUSH2	0020	 	 
-900	 115C	MLOAD		 	  ;; # read from x1
+807	 129F	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,14
+808	 12A0	PUSH2	0020	 	 
+809	 12A3	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-901	 115D	PUSH4	FFFFFFFF	 	 
+810	 12A4	PUSH4	FFFFFFFF	 	 
 - stack 0: 0x21212121
-902	 1162	AND		 	  ;; # mask to 32 bits
+811	 12A9	AND		 	  ;; # mask to 32 bits
 - stack 1: 0x21212121
 - stack 0: 0xFFFFFFFF
-903	 1163	PUSH1	0E	 	 
+812	 12AA	PUSH1	0E	 	 
 - stack 0: 0x21212121
-904	 1165	SHR		 	  ;; # SRLI
+813	 12AC	SHR		 	  ;; # SRLI
 - stack 1: 0x21212121
 - stack 0: 0xE
-905	 1166	PUSH2	0060	 	 
+814	 12AD	PUSH2	0060	 	 
 - stack 0: 0x8484
-906	 1169	MSTORE		 	  ;; # store to x3
+815	 12B0	MSTORE		 	  ;; # store to x3
 - stack 1: 0x8484
 - stack 0: 0x60
-907	 116A	JUMPDEST		 	  ;; # DEBUG: lui t4,0x8
-908	 116B	PUSH4	00008000	 	 
-909	 1170	PUSH2	03A0	 	 
+816	 12B1	JUMPDEST		 	  ;; # DEBUG: lui t4,0x8
+817	 12B2	PUSH4	00008000	 	 
+818	 12B7	PUSH2	03A0	 	 
 - stack 0: 0x8000
-910	 1173	MSTORE		 	  ;; # store to x29
+819	 12BA	MSTORE		 	  ;; # store to x29
 - stack 1: 0x8000
 - stack 0: 0x3A0
-911	 1174	JUMPDEST		 	  ;; # DEBUG: addi t4,t4,1156
-912	 1175	PUSH2	03A0	 	 
-913	 1178	MLOAD		 	  ;; # read from x29
+820	 12BB	JUMPDEST		 	  ;; # DEBUG: addi t4,t4,1156
+821	 12BC	PUSH2	03A0	 	 
+822	 12BF	MLOAD		 	  ;; # read from x29
 - stack 0: 0x3A0
-914	 1179	PUSH32	0000000000000000000000000000000000000000000000000000000000000484	 	  ;; # signextended 1156
+823	 12C0	PUSH32	0000000000000000000000000000000000000000000000000000000000000484	 	  ;; # signextended 1156
 - stack 0: 0x8000
-915	 119A	ADD		 	  ;; # ADDI
+824	 12E1	ADD		 	  ;; # ADDI
 - stack 1: 0x8000
 - stack 0: 0x484
-916	 119B	PUSH2	03A0	 	 
+825	 12E2	PUSH2	03A0	 	 
 - stack 0: 0x8484
-917	 119E	MSTORE		 	  ;; # store to x29
+826	 12E5	MSTORE		 	  ;; # store to x29
 - stack 1: 0x8484
 - stack 0: 0x3A0
-918	 119F	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,15
-919	 11A0	PUSH32	000000000000000000000000000000000000000000000000000000000000000F	 	  ;; # signextended 15
-920	 11C1	PUSH2	0380	 	 
+827	 12E6	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,15
+828	 12E7	PUSH32	000000000000000000000000000000000000000000000000000000000000000F	 	  ;; # signextended 15
+829	 1308	PUSH2	0380	 	 
 - stack 0: 0xF
-921	 11C4	MSTORE		 	  ;; # store to x28
+830	 130B	MSTORE		 	  ;; # store to x28
 - stack 1: 0xF
 - stack 0: 0x380
-922	 11C5	PUSH2	0560	 	 
-923	 11C8	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+831	 130C	PUSH2	0560	 	 
+832	 130F	DUP1		 	  ;; # executing pc
 - stack 0: 0x560
-924	 11CB	JUMP		 	 
-- stack 1: 0x560
-- stack 0: 0x1A
-925	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x560
-926	 1B	DUP1		 	 
-- stack 0: 0x560
-927	 1C	MLOAD		 	 
+833	 1310	MLOAD		 	 
 - stack 1: 0x560
 - stack 0: 0x560
-928	 1D	PUSH1	E0	 	 
+834	 1311	PUSH1	E0	 	 
 - stack 1: 0x560
-- stack 0: 0x12330000128300000D7700000C12000013000000130B0000133500001385
-929	 1F	SHR		 	 
+- stack 0: 0x138B000013E200000E7300000CF60000146100001471000014A0000014F7
+835	 1313	SHR		 	 
 - stack 2: 0x560
-- stack 1: 0x12330000128300000D7700000C12000013000000130B0000133500001385
+- stack 1: 0x138B000013E200000E7300000CF60000146100001471000014A0000014F7
 - stack 0: 0xE0
-930	 20	JUMP		 	 
+836	 1314	JUMP		 	 
 - stack 1: 0x560
-- stack 0: 0x1233
-931	 1233	JUMPDEST		 ;; _riscv_c9a2848ce21473b47c9e2892fcd47e84b11f751544eb75f634743682e7b4bda9	  ;; # pc 0x560 buffer: 6392d117 decode bne gp,t4,164
+- stack 0: 0x138B
+837	 138B	JUMPDEST		 ;; _riscv_c9a2848ce21473b47c9e2892fcd47e84b11f751544eb75f634743682e7b4bda9	  ;; # pc 0x560 buffer: 6392d117 decode bne gp,t4,164
 - stack 0: 0x560
-932	 1234	PUSH2	0060	 	 
+838	 138C	PUSH2	0060	 	 
 - stack 0: 0x560
-933	 1237	MLOAD		 	  ;; # read from x3
+839	 138F	MLOAD		 	  ;; # read from x3
 - stack 1: 0x560
 - stack 0: 0x60
-934	 1238	PUSH4	FFFFFFFF	 	 
+840	 1390	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x560
 - stack 0: 0x8484
-935	 123D	AND		 	  ;; # mask to 32 bits
+841	 1395	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x560
 - stack 1: 0x8484
 - stack 0: 0xFFFFFFFF
-936	 123E	PUSH2	03A0	 	 
+842	 1396	PUSH2	03A0	 	 
 - stack 1: 0x560
 - stack 0: 0x8484
-937	 1241	MLOAD		 	  ;; # read from x29
+843	 1399	MLOAD		 	  ;; # read from x29
 - stack 2: 0x560
 - stack 1: 0x8484
 - stack 0: 0x3A0
-938	 1242	PUSH4	FFFFFFFF	 	 
+844	 139A	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x560
 - stack 1: 0x8484
 - stack 0: 0x8484
-939	 1247	AND		 	  ;; # mask to 32 bits
+845	 139F	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x560
 - stack 2: 0x8484
 - stack 1: 0x8484
 - stack 0: 0xFFFFFFFF
-940	 1248	SUB		 	 
+846	 13A0	SUB		 	 
 - stack 2: 0x560
 - stack 1: 0x8484
 - stack 0: 0x8484
-941	 1249	PUSH2	1251	 ;; _neq_5ab1dd6214d0048904dcf1fa47e06c29a58539f865104d9dd56d99487e3e5966	 
+847	 13A1	PUSH2	13A9	 ;; _neq_fc7791b40ea3e903223c2f55bfc77b0023d8fe6615b1a25ad8d3fc32c0eac4c1	 
 - stack 1: 0x560
 - stack 0: 0x0
-942	 124C	JUMPI		 	 
+848	 13A4	JUMPI		 	 
 - stack 2: 0x560
 - stack 1: 0x0
-- stack 0: 0x1251
-943	 124D	PUSH2	127E	 ;; _neq_after_5ab1dd6214d0048904dcf1fa47e06c29a58539f865104d9dd56d99487e3e5966	 
+- stack 0: 0x13A9
+849	 13A5	PUSH2	13D8	 ;; _neq_after_fc7791b40ea3e903223c2f55bfc77b0023d8fe6615b1a25ad8d3fc32c0eac4c1	 
 - stack 0: 0x560
-944	 1250	JUMP		 	 
+850	 13A8	JUMP		 	 
 - stack 1: 0x560
-- stack 0: 0x127E
-945	 127E	JUMPDEST		 ;; _neq_after_5ab1dd6214d0048904dcf1fa47e06c29a58539f865104d9dd56d99487e3e5966	 
+- stack 0: 0x13D8
+851	 13D8	JUMPDEST		 ;; _neq_after_fc7791b40ea3e903223c2f55bfc77b0023d8fe6615b1a25ad8d3fc32c0eac4c1	 
 - stack 0: 0x560
-946	 127F	PUSH2	0016	 ;; _pcplus4	 
+852	 13D9	PUSH1	04	 	 
 - stack 0: 0x560
-947	 1282	JUMP		 	 
-- stack 1: 0x560
-- stack 0: 0x16
-948	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x560
-949	 17	PUSH1	04	 	 
-- stack 0: 0x560
-950	 19	ADD		 	 
+853	 13DB	ADD		 	 
 - stack 1: 0x560
 - stack 0: 0x4
-951	 1A	JUMPDEST		 ;; _execute	 
+854	 13DC	DUP1		 	  ;; # executing pc
 - stack 0: 0x564
-952	 1B	DUP1		 	 
-- stack 0: 0x564
-953	 1C	MLOAD		 	 
+855	 13DD	MLOAD		 	 
 - stack 1: 0x564
 - stack 0: 0x564
-954	 1D	PUSH1	E0	 	 
+856	 13DE	PUSH1	E0	 	 
 - stack 1: 0x564
-- stack 0: 0x128300000D7700000C12000013000000130B0000133500001385000013DA
-955	 1F	SHR		 	 
+- stack 0: 0x13E200000E7300000CF60000146100001471000014A0000014F70000154E
+857	 13E0	SHR		 	 
 - stack 2: 0x564
-- stack 1: 0x128300000D7700000C12000013000000130B0000133500001385000013DA
+- stack 1: 0x13E200000E7300000CF60000146100001471000014A0000014F70000154E
 - stack 0: 0xE0
-956	 20	JUMP		 	 
+858	 13E1	JUMP		 	 
 - stack 1: 0x564
-- stack 0: 0x1283
-957	 1283	JUMPDEST		 ;; _riscvopt_729b026dd5ef55a25b59bc9ffa4b96244dd73d933c9956d7ea7c554fd15acf7c	  ;; # pc 0x564 buffer: b72021219380101293d1f001930e0000130e0001
+- stack 0: 0x13E2
+859	 13E2	JUMPDEST		 ;; _riscvopt_729b026dd5ef55a25b59bc9ffa4b96244dd73d933c9956d7ea7c554fd15acf7c	  ;; # pc 0x564 buffer: b72021219380101293d1f001930e0000130e0001
 - stack 0: 0x564
-958	 1284	POP		 	 
+860	 13E3	POP		 	 
 - stack 0: 0x564
-959	 1285	JUMPDEST		 	  ;; # DEBUG: lui ra,0x21212
-960	 1286	PUSH4	21212000	 	 
-961	 128B	PUSH2	0020	 	 
+861	 13E4	JUMPDEST		 	  ;; # DEBUG: lui ra,0x21212
+862	 13E5	PUSH4	21212000	 	 
+863	 13EA	PUSH2	0020	 	 
 - stack 0: 0x21212000
-962	 128E	MSTORE		 	  ;; # store to x1
+864	 13ED	MSTORE		 	  ;; # store to x1
 - stack 1: 0x21212000
 - stack 0: 0x20
-963	 128F	JUMPDEST		 	  ;; # DEBUG: addi ra,ra,289
-964	 1290	PUSH2	0020	 	 
-965	 1293	MLOAD		 	  ;; # read from x1
+865	 13EE	JUMPDEST		 	  ;; # DEBUG: addi ra,ra,289
+866	 13EF	PUSH2	0020	 	 
+867	 13F2	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-966	 1294	PUSH32	0000000000000000000000000000000000000000000000000000000000000121	 	  ;; # signextended 289
+868	 13F3	PUSH32	0000000000000000000000000000000000000000000000000000000000000121	 	  ;; # signextended 289
 - stack 0: 0x21212000
-967	 12B5	ADD		 	  ;; # ADDI
+869	 1414	ADD		 	  ;; # ADDI
 - stack 1: 0x21212000
 - stack 0: 0x121
-968	 12B6	PUSH2	0020	 	 
+870	 1415	PUSH2	0020	 	 
 - stack 0: 0x21212121
-969	 12B9	MSTORE		 	  ;; # store to x1
+871	 1418	MSTORE		 	  ;; # store to x1
 - stack 1: 0x21212121
 - stack 0: 0x20
-970	 12BA	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,31
-971	 12BB	PUSH2	0020	 	 
-972	 12BE	MLOAD		 	  ;; # read from x1
+872	 1419	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,31
+873	 141A	PUSH2	0020	 	 
+874	 141D	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-973	 12BF	PUSH4	FFFFFFFF	 	 
+875	 141E	PUSH4	FFFFFFFF	 	 
 - stack 0: 0x21212121
-974	 12C4	AND		 	  ;; # mask to 32 bits
+876	 1423	AND		 	  ;; # mask to 32 bits
 - stack 1: 0x21212121
 - stack 0: 0xFFFFFFFF
-975	 12C5	PUSH1	1F	 	 
+877	 1424	PUSH1	1F	 	 
 - stack 0: 0x21212121
-976	 12C7	SHR		 	  ;; # SRLI
+878	 1426	SHR		 	  ;; # SRLI
 - stack 1: 0x21212121
 - stack 0: 0x1F
-977	 12C8	PUSH2	0060	 	 
+879	 1427	PUSH2	0060	 	 
 - stack 0: 0x0
-978	 12CB	MSTORE		 	  ;; # store to x3
+880	 142A	MSTORE		 	  ;; # store to x3
 - stack 1: 0x0
 - stack 0: 0x60
-979	 12CC	JUMPDEST		 	  ;; # DEBUG: addi t4,zero,0
-980	 12CD	PUSH1	00	 	 
-981	 12CF	PUSH2	03A0	 	 
+881	 142B	JUMPDEST		 	  ;; # DEBUG: addi t4,zero,0
+882	 142C	PUSH1	00	 	 
+883	 142E	PUSH2	03A0	 	 
 - stack 0: 0x0
-982	 12D2	MSTORE		 	  ;; # store to x29
+884	 1431	MSTORE		 	  ;; # store to x29
 - stack 1: 0x0
 - stack 0: 0x3A0
-983	 12D3	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,16
-984	 12D4	PUSH32	0000000000000000000000000000000000000000000000000000000000000010	 	  ;; # signextended 16
-985	 12F5	PUSH2	0380	 	 
+885	 1432	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,16
+886	 1433	PUSH32	0000000000000000000000000000000000000000000000000000000000000010	 	  ;; # signextended 16
+887	 1454	PUSH2	0380	 	 
 - stack 0: 0x10
-986	 12F8	MSTORE		 	  ;; # store to x28
+888	 1457	MSTORE		 	  ;; # store to x28
 - stack 1: 0x10
 - stack 0: 0x380
-987	 12F9	PUSH2	0578	 	 
-988	 12FC	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+889	 1458	PUSH2	0578	 	 
+890	 145B	DUP1		 	  ;; # executing pc
 - stack 0: 0x578
-989	 12FF	JUMP		 	 
-- stack 1: 0x578
-- stack 0: 0x1A
-990	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x578
-991	 1B	DUP1		 	 
-- stack 0: 0x578
-992	 1C	MLOAD		 	 
+891	 145C	MLOAD		 	 
 - stack 1: 0x578
 - stack 0: 0x578
-993	 1D	PUSH1	E0	 	 
+892	 145D	PUSH1	E0	 	 
 - stack 1: 0x578
-- stack 0: 0x133500001385000013DA0000023B000013F00000141A0000146A000014F0
-994	 1F	SHR		 	 
+- stack 0: 0x14A0000014F70000154E0000026E0000156900001598000015EF00001677
+893	 145F	SHR		 	 
 - stack 2: 0x578
-- stack 1: 0x133500001385000013DA0000023B000013F00000141A0000146A000014F0
+- stack 1: 0x14A0000014F70000154E0000026E0000156900001598000015EF00001677
 - stack 0: 0xE0
-995	 20	JUMP		 	 
+894	 1460	JUMP		 	 
 - stack 1: 0x578
-- stack 0: 0x1335
-996	 1335	JUMPDEST		 ;; _riscv_bd83d311ebd3d689118528dfa9c5f1961ea40b98c625010c485441c163afab84	  ;; # pc 0x578 buffer: 6396d115 decode bne gp,t4,14c
+- stack 0: 0x14A0
+895	 14A0	JUMPDEST		 ;; _riscv_bd83d311ebd3d689118528dfa9c5f1961ea40b98c625010c485441c163afab84	  ;; # pc 0x578 buffer: 6396d115 decode bne gp,t4,14c
 - stack 0: 0x578
-997	 1336	PUSH2	0060	 	 
+896	 14A1	PUSH2	0060	 	 
 - stack 0: 0x578
-998	 1339	MLOAD		 	  ;; # read from x3
+897	 14A4	MLOAD		 	  ;; # read from x3
 - stack 1: 0x578
 - stack 0: 0x60
-999	 133A	PUSH4	FFFFFFFF	 	 
+898	 14A5	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x578
 - stack 0: 0x0
-1000	 133F	AND		 	  ;; # mask to 32 bits
+899	 14AA	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x578
 - stack 1: 0x0
 - stack 0: 0xFFFFFFFF
-1001	 1340	PUSH2	03A0	 	 
+900	 14AB	PUSH2	03A0	 	 
 - stack 1: 0x578
 - stack 0: 0x0
-1002	 1343	MLOAD		 	  ;; # read from x29
+901	 14AE	MLOAD		 	  ;; # read from x29
 - stack 2: 0x578
 - stack 1: 0x0
 - stack 0: 0x3A0
-1003	 1344	PUSH4	FFFFFFFF	 	 
+902	 14AF	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x578
 - stack 1: 0x0
 - stack 0: 0x0
-1004	 1349	AND		 	  ;; # mask to 32 bits
+903	 14B4	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x578
 - stack 2: 0x0
 - stack 1: 0x0
 - stack 0: 0xFFFFFFFF
-1005	 134A	SUB		 	 
+904	 14B5	SUB		 	 
 - stack 2: 0x578
 - stack 1: 0x0
 - stack 0: 0x0
-1006	 134B	PUSH2	1353	 ;; _neq_5db251fa9487044bb23c8d9bba61d10e7fc80b52f868872ec7601b432e9c0c88	 
+905	 14B6	PUSH2	14BE	 ;; _neq_48d44ffa7c1aedf9f2d1692ba19efc34975a9358a8704837f374746bab787f58	 
 - stack 1: 0x578
 - stack 0: 0x0
-1007	 134E	JUMPI		 	 
+906	 14B9	JUMPI		 	 
 - stack 2: 0x578
 - stack 1: 0x0
-- stack 0: 0x1353
-1008	 134F	PUSH2	1380	 ;; _neq_after_5db251fa9487044bb23c8d9bba61d10e7fc80b52f868872ec7601b432e9c0c88	 
+- stack 0: 0x14BE
+907	 14BA	PUSH2	14ED	 ;; _neq_after_48d44ffa7c1aedf9f2d1692ba19efc34975a9358a8704837f374746bab787f58	 
 - stack 0: 0x578
-1009	 1352	JUMP		 	 
+908	 14BD	JUMP		 	 
 - stack 1: 0x578
-- stack 0: 0x1380
-1010	 1380	JUMPDEST		 ;; _neq_after_5db251fa9487044bb23c8d9bba61d10e7fc80b52f868872ec7601b432e9c0c88	 
+- stack 0: 0x14ED
+909	 14ED	JUMPDEST		 ;; _neq_after_48d44ffa7c1aedf9f2d1692ba19efc34975a9358a8704837f374746bab787f58	 
 - stack 0: 0x578
-1011	 1381	PUSH2	0016	 ;; _pcplus4	 
+910	 14EE	PUSH1	04	 	 
 - stack 0: 0x578
-1012	 1384	JUMP		 	 
-- stack 1: 0x578
-- stack 0: 0x16
-1013	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x578
-1014	 17	PUSH1	04	 	 
-- stack 0: 0x578
-1015	 19	ADD		 	 
+911	 14F0	ADD		 	 
 - stack 1: 0x578
 - stack 0: 0x4
-1016	 1A	JUMPDEST		 ;; _execute	 
+912	 14F1	DUP1		 	  ;; # executing pc
 - stack 0: 0x57C
-1017	 1B	DUP1		 	 
-- stack 0: 0x57C
-1018	 1C	MLOAD		 	 
+913	 14F2	MLOAD		 	 
 - stack 1: 0x57C
 - stack 0: 0x57C
-1019	 1D	PUSH1	E0	 	 
+914	 14F3	PUSH1	E0	 	 
 - stack 1: 0x57C
-- stack 0: 0x1385000013DA0000023B000013F00000141A0000146A000014F000000225
-1020	 1F	SHR		 	 
+- stack 0: 0x14F70000154E0000026E0000156900001598000015EF0000167700000253
+915	 14F5	SHR		 	 
 - stack 2: 0x57C
-- stack 1: 0x1385000013DA0000023B000013F00000141A0000146A000014F000000225
+- stack 1: 0x14F70000154E0000026E0000156900001598000015EF0000167700000253
 - stack 0: 0xE0
-1021	 20	JUMP		 	 
+916	 14F6	JUMP		 	 
 - stack 1: 0x57C
-- stack 0: 0x1385
-1022	 1385	JUMPDEST		 ;; _riscvopt_df858efe24fea76bbabfb344769e8f521ffdf58e0eb556b2fc689ad9225bb651	  ;; # pc 0x57c buffer: b780ffff93d01000b7ceff7f130e5001
+- stack 0: 0x14F7
+917	 14F7	JUMPDEST		 ;; _riscvopt_df858efe24fea76bbabfb344769e8f521ffdf58e0eb556b2fc689ad9225bb651	  ;; # pc 0x57c buffer: b780ffff93d01000b7ceff7f130e5001
 - stack 0: 0x57C
-1023	 1386	POP		 	 
+918	 14F8	POP		 	 
 - stack 0: 0x57C
-1024	 1387	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
-1025	 1388	PUSH4	ffff8000	 	 
-1026	 138D	PUSH2	0020	 	 
+919	 14F9	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
+920	 14FA	PUSH4	ffff8000	 	 
+921	 14FF	PUSH2	0020	 	 
 - stack 0: 0xFFFF8000
-1027	 1390	MSTORE		 	  ;; # store to x1
+922	 1502	MSTORE		 	  ;; # store to x1
 - stack 1: 0xFFFF8000
 - stack 0: 0x20
-1028	 1391	JUMPDEST		 	  ;; # DEBUG: srai ra,ra,1
-1029	 1392	PUSH2	0020	 	 
-1030	 1395	MLOAD		 	  ;; # read from x1
+923	 1503	JUMPDEST		 	  ;; # DEBUG: srai ra,ra,1
+924	 1504	PUSH2	0020	 	 
+925	 1507	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-1031	 1396	PUSH4	FFFFFFFF	 	 
+926	 1508	PUSH4	FFFFFFFF	 	 
 - stack 0: 0xFFFF8000
-1032	 139B	AND		 	  ;; # mask to 32 bits
+927	 150D	AND		 	  ;; # mask to 32 bits
 - stack 1: 0xFFFF8000
 - stack 0: 0xFFFFFFFF
-1033	 139C	PUSH1	01	 	 
+928	 150E	PUSH1	01	 	 
 - stack 0: 0xFFFF8000
-1034	 139E	SHR		 	  ;; # SRLI
+929	 1510	SHR		 	  ;; # SRLI
 - stack 1: 0xFFFF8000
 - stack 0: 0x1
-1035	 139F	PUSH2	0020	 	 
+930	 1511	PUSH2	0020	 	 
 - stack 0: 0x7FFFC000
-1036	 13A2	MSTORE		 	  ;; # store to x1
+931	 1514	MSTORE		 	  ;; # store to x1
 - stack 1: 0x7FFFC000
 - stack 0: 0x20
-1037	 13A3	JUMPDEST		 	  ;; # DEBUG: lui t4,0x7fffc
-1038	 13A4	PUSH4	7fffc000	 	 
-1039	 13A9	PUSH2	03A0	 	 
+932	 1515	JUMPDEST		 	  ;; # DEBUG: lui t4,0x7fffc
+933	 1516	PUSH4	7fffc000	 	 
+934	 151B	PUSH2	03A0	 	 
 - stack 0: 0x7FFFC000
-1040	 13AC	MSTORE		 	  ;; # store to x29
+935	 151E	MSTORE		 	  ;; # store to x29
 - stack 1: 0x7FFFC000
 - stack 0: 0x3A0
-1041	 13AD	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,21
-1042	 13AE	PUSH32	0000000000000000000000000000000000000000000000000000000000000015	 	  ;; # signextended 21
-1043	 13CF	PUSH2	0380	 	 
+936	 151F	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,21
+937	 1520	PUSH32	0000000000000000000000000000000000000000000000000000000000000015	 	  ;; # signextended 21
+938	 1541	PUSH2	0380	 	 
 - stack 0: 0x15
-1044	 13D2	MSTORE		 	  ;; # store to x28
+939	 1544	MSTORE		 	  ;; # store to x28
 - stack 1: 0x15
 - stack 0: 0x380
-1045	 13D3	PUSH2	058C	 	 
-1046	 13D6	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+940	 1545	PUSH2	058C	 	 
+941	 1548	DUP1		 	  ;; # executing pc
 - stack 0: 0x58C
-1047	 13D9	JUMP		 	 
-- stack 1: 0x58C
-- stack 0: 0x1A
-1048	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x58C
-1049	 1B	DUP1		 	 
-- stack 0: 0x58C
-1050	 1C	MLOAD		 	 
+942	 1549	MLOAD		 	 
 - stack 1: 0x58C
 - stack 0: 0x58C
-1051	 1D	PUSH1	E0	 	 
+943	 154A	PUSH1	E0	 	 
 - stack 1: 0x58C
-- stack 0: 0x141A0000146A000014F0000002250000156F0000157C000015AB000015D5
-1052	 1F	SHR		 	 
+- stack 0: 0x1598000015EF0000167700000253000016F80000170A0000173E0000176D
+944	 154C	SHR		 	 
 - stack 2: 0x58C
-- stack 1: 0x141A0000146A000014F0000002250000156F0000157C000015AB000015D5
+- stack 1: 0x1598000015EF0000167700000253000016F80000170A0000173E0000176D
 - stack 0: 0xE0
-1053	 20	JUMP		 	 
+945	 154D	JUMP		 	 
 - stack 1: 0x58C
-- stack 0: 0x141A
-1054	 141A	JUMPDEST		 ;; _riscv_92e2d1db0db276580faa8ed5049d31741700b18808b66325cc0d85db82391bc0	  ;; # pc 0x58c buffer: 639cd013 decode bne ra,t4,138
+- stack 0: 0x1598
+946	 1598	JUMPDEST		 ;; _riscv_92e2d1db0db276580faa8ed5049d31741700b18808b66325cc0d85db82391bc0	  ;; # pc 0x58c buffer: 639cd013 decode bne ra,t4,138
 - stack 0: 0x58C
-1055	 141B	PUSH2	0020	 	 
+947	 1599	PUSH2	0020	 	 
 - stack 0: 0x58C
-1056	 141E	MLOAD		 	  ;; # read from x1
+948	 159C	MLOAD		 	  ;; # read from x1
 - stack 1: 0x58C
 - stack 0: 0x20
-1057	 141F	PUSH4	FFFFFFFF	 	 
+949	 159D	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x58C
 - stack 0: 0x7FFFC000
-1058	 1424	AND		 	  ;; # mask to 32 bits
+950	 15A2	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x58C
 - stack 1: 0x7FFFC000
 - stack 0: 0xFFFFFFFF
-1059	 1425	PUSH2	03A0	 	 
+951	 15A3	PUSH2	03A0	 	 
 - stack 1: 0x58C
 - stack 0: 0x7FFFC000
-1060	 1428	MLOAD		 	  ;; # read from x29
+952	 15A6	MLOAD		 	  ;; # read from x29
 - stack 2: 0x58C
 - stack 1: 0x7FFFC000
 - stack 0: 0x3A0
-1061	 1429	PUSH4	FFFFFFFF	 	 
+953	 15A7	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x58C
 - stack 1: 0x7FFFC000
 - stack 0: 0x7FFFC000
-1062	 142E	AND		 	  ;; # mask to 32 bits
+954	 15AC	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x58C
 - stack 2: 0x7FFFC000
 - stack 1: 0x7FFFC000
 - stack 0: 0xFFFFFFFF
-1063	 142F	SUB		 	 
+955	 15AD	SUB		 	 
 - stack 2: 0x58C
 - stack 1: 0x7FFFC000
 - stack 0: 0x7FFFC000
-1064	 1430	PUSH2	1438	 ;; _neq_e45db975ef0a4b407105f5255e31d2a307620ca67d646da3a28ea64be149df5f	 
+956	 15AE	PUSH2	15B6	 ;; _neq_1185f693cbced2e489bcceea43f8666e0b371c6c8dad93124d7c49782661bf90	 
 - stack 1: 0x58C
 - stack 0: 0x0
-1065	 1433	JUMPI		 	 
+957	 15B1	JUMPI		 	 
 - stack 2: 0x58C
 - stack 1: 0x0
-- stack 0: 0x1438
-1066	 1434	PUSH2	1465	 ;; _neq_after_e45db975ef0a4b407105f5255e31d2a307620ca67d646da3a28ea64be149df5f	 
+- stack 0: 0x15B6
+958	 15B2	PUSH2	15E5	 ;; _neq_after_1185f693cbced2e489bcceea43f8666e0b371c6c8dad93124d7c49782661bf90	 
 - stack 0: 0x58C
-1067	 1437	JUMP		 	 
+959	 15B5	JUMP		 	 
 - stack 1: 0x58C
-- stack 0: 0x1465
-1068	 1465	JUMPDEST		 ;; _neq_after_e45db975ef0a4b407105f5255e31d2a307620ca67d646da3a28ea64be149df5f	 
+- stack 0: 0x15E5
+960	 15E5	JUMPDEST		 ;; _neq_after_1185f693cbced2e489bcceea43f8666e0b371c6c8dad93124d7c49782661bf90	 
 - stack 0: 0x58C
-1069	 1466	PUSH2	0016	 ;; _pcplus4	 
+961	 15E6	PUSH1	04	 	 
 - stack 0: 0x58C
-1070	 1469	JUMP		 	 
-- stack 1: 0x58C
-- stack 0: 0x16
-1071	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x58C
-1072	 17	PUSH1	04	 	 
-- stack 0: 0x58C
-1073	 19	ADD		 	 
+962	 15E8	ADD		 	 
 - stack 1: 0x58C
 - stack 0: 0x4
-1074	 1A	JUMPDEST		 ;; _execute	 
+963	 15E9	DUP1		 	  ;; # executing pc
 - stack 0: 0x590
-1075	 1B	DUP1		 	 
-- stack 0: 0x590
-1076	 1C	MLOAD		 	 
+964	 15EA	MLOAD		 	 
 - stack 1: 0x590
 - stack 0: 0x590
-1077	 1D	PUSH1	E0	 	 
+965	 15EB	PUSH1	E0	 	 
 - stack 1: 0x590
-- stack 0: 0x146A000014F0000002250000156F0000157C000015AB000015D500001625
-1078	 1F	SHR		 	 
+- stack 0: 0x15EF0000167700000253000016F80000170A0000173E0000176D000017C4
+966	 15ED	SHR		 	 
 - stack 2: 0x590
-- stack 1: 0x146A000014F0000002250000156F0000157C000015AB000015D500001625
+- stack 1: 0x15EF0000167700000253000016F80000170A0000173E0000176D000017C4
 - stack 0: 0xE0
-1079	 20	JUMP		 	 
+967	 15EE	JUMP		 	 
 - stack 1: 0x590
-- stack 0: 0x146A
-1080	 146A	JUMPDEST		 ;; _riscvopt_f1d32317acb89c1473a3cb0551416f98124de8048b463f648b56fde7ecf5e64a	  ;; # pc 0x590 buffer: 13020000b780ffff93d11000138301001302120093022000
+- stack 0: 0x15EF
+968	 15EF	JUMPDEST		 ;; _riscvopt_f1d32317acb89c1473a3cb0551416f98124de8048b463f648b56fde7ecf5e64a	  ;; # pc 0x590 buffer: 13020000b780ffff93d11000138301001302120093022000
 - stack 0: 0x590
-1081	 146B	POP		 	 
+969	 15F0	POP		 	 
 - stack 0: 0x590
-1082	 146C	JUMPDEST		 	  ;; # DEBUG: addi tp,zero,0
-1083	 146D	PUSH1	00	 	 
-1084	 146F	PUSH2	0080	 	 
+970	 15F1	JUMPDEST		 	  ;; # DEBUG: addi tp,zero,0
+971	 15F2	PUSH1	00	 	 
+972	 15F4	PUSH2	0080	 	 
 - stack 0: 0x0
-1085	 1472	MSTORE		 	  ;; # store to x4
+973	 15F7	MSTORE		 	  ;; # store to x4
 - stack 1: 0x0
 - stack 0: 0x80
-1086	 1473	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
-1087	 1474	PUSH4	ffff8000	 	 
-1088	 1479	PUSH2	0020	 	 
+974	 15F8	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
+975	 15F9	PUSH4	ffff8000	 	 
+976	 15FE	PUSH2	0020	 	 
 - stack 0: 0xFFFF8000
-1089	 147C	MSTORE		 	  ;; # store to x1
+977	 1601	MSTORE		 	  ;; # store to x1
 - stack 1: 0xFFFF8000
 - stack 0: 0x20
-1090	 147D	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,1
-1091	 147E	PUSH2	0020	 	 
-1092	 1481	MLOAD		 	  ;; # read from x1
+978	 1602	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,1
+979	 1603	PUSH2	0020	 	 
+980	 1606	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-1093	 1482	PUSH4	FFFFFFFF	 	 
+981	 1607	PUSH4	FFFFFFFF	 	 
 - stack 0: 0xFFFF8000
-1094	 1487	AND		 	  ;; # mask to 32 bits
+982	 160C	AND		 	  ;; # mask to 32 bits
 - stack 1: 0xFFFF8000
 - stack 0: 0xFFFFFFFF
-1095	 1488	PUSH1	01	 	 
+983	 160D	PUSH1	01	 	 
 - stack 0: 0xFFFF8000
-1096	 148A	SHR		 	  ;; # SRLI
+984	 160F	SHR		 	  ;; # SRLI
 - stack 1: 0xFFFF8000
 - stack 0: 0x1
-1097	 148B	PUSH2	0060	 	 
+985	 1610	PUSH2	0060	 	 
 - stack 0: 0x7FFFC000
-1098	 148E	MSTORE		 	  ;; # store to x3
+986	 1613	MSTORE		 	  ;; # store to x3
 - stack 1: 0x7FFFC000
 - stack 0: 0x60
-1099	 148F	JUMPDEST		 	  ;; # DEBUG: addi t1,gp,0
-1100	 1490	PUSH2	0060	 	 
-1101	 1493	MLOAD		 	  ;; # read from x3
+987	 1614	JUMPDEST		 	  ;; # DEBUG: addi t1,gp,0
+988	 1615	PUSH2	0060	 	 
+989	 1618	MLOAD		 	  ;; # read from x3
 - stack 0: 0x60
-1102	 1494	PUSH2	00C0	 	 
+990	 1619	PUSH2	00C0	 	 
 - stack 0: 0x7FFFC000
-1103	 1497	MSTORE		 	  ;; # store to x6
+991	 161C	MSTORE		 	  ;; # store to x6
 - stack 1: 0x7FFFC000
 - stack 0: 0xC0
-1104	 1498	JUMPDEST		 	  ;; # DEBUG: addi tp,tp,1
-1105	 1499	PUSH2	0080	 	 
-1106	 149C	MLOAD		 	  ;; # read from x4
+992	 161D	JUMPDEST		 	  ;; # DEBUG: addi tp,tp,1
+993	 161E	PUSH2	0080	 	 
+994	 1621	MLOAD		 	  ;; # read from x4
 - stack 0: 0x80
-1107	 149D	PUSH32	0000000000000000000000000000000000000000000000000000000000000001	 	  ;; # signextended 1
+995	 1622	PUSH32	0000000000000000000000000000000000000000000000000000000000000001	 	  ;; # signextended 1
 - stack 0: 0x0
-1108	 14BE	ADD		 	  ;; # ADDI
+996	 1643	ADD		 	  ;; # ADDI
 - stack 1: 0x0
 - stack 0: 0x1
-1109	 14BF	PUSH2	0080	 	 
+997	 1644	PUSH2	0080	 	 
 - stack 0: 0x1
-1110	 14C2	MSTORE		 	  ;; # store to x4
+998	 1647	MSTORE		 	  ;; # store to x4
 - stack 1: 0x1
 - stack 0: 0x80
-1111	 14C3	JUMPDEST		 	  ;; # DEBUG: addi t0,zero,2
-1112	 14C4	PUSH32	0000000000000000000000000000000000000000000000000000000000000002	 	  ;; # signextended 2
-1113	 14E5	PUSH2	00A0	 	 
+999	 1648	JUMPDEST		 	  ;; # DEBUG: addi t0,zero,2
+1000	 1649	PUSH32	0000000000000000000000000000000000000000000000000000000000000002	 	  ;; # signextended 2
+1001	 166A	PUSH2	00A0	 	 
 - stack 0: 0x2
-1114	 14E8	MSTORE		 	  ;; # store to x5
+1002	 166D	MSTORE		 	  ;; # store to x5
 - stack 1: 0x2
 - stack 0: 0xA0
-1115	 14E9	PUSH2	05A8	 	 
-1116	 14EC	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+1003	 166E	PUSH2	05A8	 	 
+1004	 1671	DUP1		 	  ;; # executing pc
 - stack 0: 0x5A8
-1117	 14EF	JUMP		 	 
-- stack 1: 0x5A8
-- stack 0: 0x1A
-1118	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x5A8
-1119	 1B	DUP1		 	 
-- stack 0: 0x5A8
-1120	 1C	MLOAD		 	 
+1005	 1672	MLOAD		 	 
 - stack 1: 0x5A8
 - stack 0: 0x5A8
-1121	 1D	PUSH1	E0	 	 
+1006	 1673	PUSH1	E0	 	 
 - stack 1: 0x5A8
-- stack 0: 0x15D5000016250000165E00001688000016D80000176200000490000017E5
-1122	 1F	SHR		 	 
+- stack 0: 0x176D000017C4000017FF0000182E0000188500001911000004F300001996
+1007	 1675	SHR		 	 
 - stack 2: 0x5A8
-- stack 1: 0x15D5000016250000165E00001688000016D80000176200000490000017E5
+- stack 1: 0x176D000017C4000017FF0000182E0000188500001911000004F300001996
 - stack 0: 0xE0
-1123	 20	JUMP		 	 
+1008	 1676	JUMP		 	 
 - stack 1: 0x5A8
-- stack 0: 0x15D5
-1124	 15D5	JUMPDEST		 ;; _riscv_a13a421128742f869b3bf41989a12f16d5f636988a6d6b839570667949bd7d06	  ;; # pc 0x5a8 buffer: e31652fe decode bne tp,t0,-14
+- stack 0: 0x176D
+1009	 176D	JUMPDEST		 ;; _riscv_a13a421128742f869b3bf41989a12f16d5f636988a6d6b839570667949bd7d06	  ;; # pc 0x5a8 buffer: e31652fe decode bne tp,t0,-14
 - stack 0: 0x5A8
-1125	 15D6	PUSH2	0080	 	 
+1010	 176E	PUSH2	0080	 	 
 - stack 0: 0x5A8
-1126	 15D9	MLOAD		 	  ;; # read from x4
+1011	 1771	MLOAD		 	  ;; # read from x4
 - stack 1: 0x5A8
 - stack 0: 0x80
-1127	 15DA	PUSH4	FFFFFFFF	 	 
+1012	 1772	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x5A8
 - stack 0: 0x1
-1128	 15DF	AND		 	  ;; # mask to 32 bits
+1013	 1777	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x5A8
 - stack 1: 0x1
 - stack 0: 0xFFFFFFFF
-1129	 15E0	PUSH2	00A0	 	 
+1014	 1778	PUSH2	00A0	 	 
 - stack 1: 0x5A8
 - stack 0: 0x1
-1130	 15E3	MLOAD		 	  ;; # read from x5
+1015	 177B	MLOAD		 	  ;; # read from x5
 - stack 2: 0x5A8
 - stack 1: 0x1
 - stack 0: 0xA0
-1131	 15E4	PUSH4	FFFFFFFF	 	 
+1016	 177C	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x5A8
 - stack 1: 0x1
 - stack 0: 0x2
-1132	 15E9	AND		 	  ;; # mask to 32 bits
+1017	 1781	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x5A8
 - stack 2: 0x1
 - stack 1: 0x2
 - stack 0: 0xFFFFFFFF
-1133	 15EA	SUB		 	 
+1018	 1782	SUB		 	 
 - stack 2: 0x5A8
 - stack 1: 0x1
 - stack 0: 0x2
-1134	 15EB	PUSH2	15F3	 ;; _neq_c6d0ef42e1b174ebd4898eef263dcde9de16c75b34c3e8aafc0257fd07a9e6f5	 
+1019	 1783	PUSH2	178B	 ;; _neq_396a6e3a58ce2f185ecc704a0c095870cd64f67dc21a497dd2049b4db6a1a624	 
 - stack 1: 0x5A8
 - stack 0: 0x1
-1135	 15EE	JUMPI		 	 
+1020	 1786	JUMPI		 	 
 - stack 2: 0x5A8
 - stack 1: 0x1
-- stack 0: 0x15F3
-1136	 15F3	JUMPDEST		 ;; _neq_c6d0ef42e1b174ebd4898eef263dcde9de16c75b34c3e8aafc0257fd07a9e6f5	 
+- stack 0: 0x178B
+1021	 178B	JUMPDEST		 ;; _neq_396a6e3a58ce2f185ecc704a0c095870cd64f67dc21a497dd2049b4db6a1a624	 
 - stack 0: 0x5A8
-1137	 15F4	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEC	 	  ;; # signextended -20
+1022	 178C	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEC	 	  ;; # signextended -20
 - stack 0: 0x5A8
-1138	 1615	ADD		 	 
+1023	 17AD	ADD		 	 
 - stack 1: 0x5A8
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEC
-1139	 1616	PUSH4	FFFFFFFF	 	 
+1024	 17AE	PUSH4	FFFFFFFF	 	 
 - stack 0: 0x594
-1140	 161B	AND		 	  ;; # mask to 32 bits
+1025	 17B3	AND		 	  ;; # mask to 32 bits
 - stack 1: 0x594
 - stack 0: 0xFFFFFFFF
-1141	 161C	PUSH2	001A	 ;; _execute	 
+1026	 17B4	DUP1		 	  ;; # executing pc
 - stack 0: 0x594
-1142	 161F	JUMP		 	 
-- stack 1: 0x594
-- stack 0: 0x1A
-1143	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x594
-1144	 1B	DUP1		 	 
-- stack 0: 0x594
-1145	 1C	MLOAD		 	 
+1027	 17B5	MLOAD		 	 
 - stack 1: 0x594
 - stack 0: 0x594
-1146	 1D	PUSH1	E0	 	 
+1028	 17B6	PUSH1	E0	 	 
 - stack 1: 0x594
-- stack 0: 0x14F0000002250000156F0000157C000015AB000015D5000016250000165E
-1147	 1F	SHR		 	 
+- stack 0: 0x167700000253000016F80000170A0000173E0000176D000017C4000017FF
+1029	 17B8	SHR		 	 
 - stack 2: 0x594
-- stack 1: 0x14F0000002250000156F0000157C000015AB000015D5000016250000165E
+- stack 1: 0x167700000253000016F80000170A0000173E0000176D000017C4000017FF
 - stack 0: 0xE0
-1148	 20	JUMP		 	 
+1030	 17B9	JUMP		 	 
 - stack 1: 0x594
-- stack 0: 0x14F0
-1149	 14F0	JUMPDEST		 ;; _riscvopt_17dcafb94c619b35b3950a524cc63797a143c48ef9a0a1090dc2198122c11467	  ;; # pc 0x594 buffer: b780ffff93d11000138301001302120093022000
+- stack 0: 0x1677
+1031	 1677	JUMPDEST		 ;; _riscvopt_17dcafb94c619b35b3950a524cc63797a143c48ef9a0a1090dc2198122c11467	  ;; # pc 0x594 buffer: b780ffff93d11000138301001302120093022000
 - stack 0: 0x594
-1150	 14F1	POP		 	 
+1032	 1678	POP		 	 
 - stack 0: 0x594
-1151	 14F2	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
-1152	 14F3	PUSH4	ffff8000	 	 
-1153	 14F8	PUSH2	0020	 	 
+1033	 1679	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
+1034	 167A	PUSH4	ffff8000	 	 
+1035	 167F	PUSH2	0020	 	 
 - stack 0: 0xFFFF8000
-1154	 14FB	MSTORE		 	  ;; # store to x1
+1036	 1682	MSTORE		 	  ;; # store to x1
 - stack 1: 0xFFFF8000
 - stack 0: 0x20
-1155	 14FC	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,1
-1156	 14FD	PUSH2	0020	 	 
-1157	 1500	MLOAD		 	  ;; # read from x1
+1037	 1683	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,1
+1038	 1684	PUSH2	0020	 	 
+1039	 1687	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-1158	 1501	PUSH4	FFFFFFFF	 	 
+1040	 1688	PUSH4	FFFFFFFF	 	 
 - stack 0: 0xFFFF8000
-1159	 1506	AND		 	  ;; # mask to 32 bits
+1041	 168D	AND		 	  ;; # mask to 32 bits
 - stack 1: 0xFFFF8000
 - stack 0: 0xFFFFFFFF
-1160	 1507	PUSH1	01	 	 
+1042	 168E	PUSH1	01	 	 
 - stack 0: 0xFFFF8000
-1161	 1509	SHR		 	  ;; # SRLI
+1043	 1690	SHR		 	  ;; # SRLI
 - stack 1: 0xFFFF8000
 - stack 0: 0x1
-1162	 150A	PUSH2	0060	 	 
+1044	 1691	PUSH2	0060	 	 
 - stack 0: 0x7FFFC000
-1163	 150D	MSTORE		 	  ;; # store to x3
+1045	 1694	MSTORE		 	  ;; # store to x3
 - stack 1: 0x7FFFC000
 - stack 0: 0x60
-1164	 150E	JUMPDEST		 	  ;; # DEBUG: addi t1,gp,0
-1165	 150F	PUSH2	0060	 	 
-1166	 1512	MLOAD		 	  ;; # read from x3
+1046	 1695	JUMPDEST		 	  ;; # DEBUG: addi t1,gp,0
+1047	 1696	PUSH2	0060	 	 
+1048	 1699	MLOAD		 	  ;; # read from x3
 - stack 0: 0x60
-1167	 1513	PUSH2	00C0	 	 
+1049	 169A	PUSH2	00C0	 	 
 - stack 0: 0x7FFFC000
-1168	 1516	MSTORE		 	  ;; # store to x6
+1050	 169D	MSTORE		 	  ;; # store to x6
 - stack 1: 0x7FFFC000
 - stack 0: 0xC0
-1169	 1517	JUMPDEST		 	  ;; # DEBUG: addi tp,tp,1
-1170	 1518	PUSH2	0080	 	 
-1171	 151B	MLOAD		 	  ;; # read from x4
+1051	 169E	JUMPDEST		 	  ;; # DEBUG: addi tp,tp,1
+1052	 169F	PUSH2	0080	 	 
+1053	 16A2	MLOAD		 	  ;; # read from x4
 - stack 0: 0x80
-1172	 151C	PUSH32	0000000000000000000000000000000000000000000000000000000000000001	 	  ;; # signextended 1
+1054	 16A3	PUSH32	0000000000000000000000000000000000000000000000000000000000000001	 	  ;; # signextended 1
 - stack 0: 0x1
-1173	 153D	ADD		 	  ;; # ADDI
+1055	 16C4	ADD		 	  ;; # ADDI
 - stack 1: 0x1
 - stack 0: 0x1
-1174	 153E	PUSH2	0080	 	 
+1056	 16C5	PUSH2	0080	 	 
 - stack 0: 0x2
-1175	 1541	MSTORE		 	  ;; # store to x4
+1057	 16C8	MSTORE		 	  ;; # store to x4
 - stack 1: 0x2
 - stack 0: 0x80
-1176	 1542	JUMPDEST		 	  ;; # DEBUG: addi t0,zero,2
-1177	 1543	PUSH32	0000000000000000000000000000000000000000000000000000000000000002	 	  ;; # signextended 2
-1178	 1564	PUSH2	00A0	 	 
+1058	 16C9	JUMPDEST		 	  ;; # DEBUG: addi t0,zero,2
+1059	 16CA	PUSH32	0000000000000000000000000000000000000000000000000000000000000002	 	  ;; # signextended 2
+1060	 16EB	PUSH2	00A0	 	 
 - stack 0: 0x2
-1179	 1567	MSTORE		 	  ;; # store to x5
+1061	 16EE	MSTORE		 	  ;; # store to x5
 - stack 1: 0x2
 - stack 0: 0xA0
-1180	 1568	PUSH2	05A8	 	 
-1181	 156B	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+1062	 16EF	PUSH2	05A8	 	 
+1063	 16F2	DUP1		 	  ;; # executing pc
 - stack 0: 0x5A8
-1182	 156E	JUMP		 	 
-- stack 1: 0x5A8
-- stack 0: 0x1A
-1183	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x5A8
-1184	 1B	DUP1		 	 
-- stack 0: 0x5A8
-1185	 1C	MLOAD		 	 
+1064	 16F3	MLOAD		 	 
 - stack 1: 0x5A8
 - stack 0: 0x5A8
-1186	 1D	PUSH1	E0	 	 
+1065	 16F4	PUSH1	E0	 	 
 - stack 1: 0x5A8
-- stack 0: 0x15D5000016250000165E00001688000016D80000176200000490000017E5
-1187	 1F	SHR		 	 
+- stack 0: 0x176D000017C4000017FF0000182E0000188500001911000004F300001996
+1066	 16F6	SHR		 	 
 - stack 2: 0x5A8
-- stack 1: 0x15D5000016250000165E00001688000016D80000176200000490000017E5
+- stack 1: 0x176D000017C4000017FF0000182E0000188500001911000004F300001996
 - stack 0: 0xE0
-1188	 20	JUMP		 	 
+1067	 16F7	JUMP		 	 
 - stack 1: 0x5A8
-- stack 0: 0x15D5
-1189	 15D5	JUMPDEST		 ;; _riscv_a13a421128742f869b3bf41989a12f16d5f636988a6d6b839570667949bd7d06	  ;; # pc 0x5a8 buffer: e31652fe decode bne tp,t0,-14
+- stack 0: 0x176D
+1068	 176D	JUMPDEST		 ;; _riscv_a13a421128742f869b3bf41989a12f16d5f636988a6d6b839570667949bd7d06	  ;; # pc 0x5a8 buffer: e31652fe decode bne tp,t0,-14
 - stack 0: 0x5A8
-1190	 15D6	PUSH2	0080	 	 
+1069	 176E	PUSH2	0080	 	 
 - stack 0: 0x5A8
-1191	 15D9	MLOAD		 	  ;; # read from x4
+1070	 1771	MLOAD		 	  ;; # read from x4
 - stack 1: 0x5A8
 - stack 0: 0x80
-1192	 15DA	PUSH4	FFFFFFFF	 	 
+1071	 1772	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x5A8
 - stack 0: 0x2
-1193	 15DF	AND		 	  ;; # mask to 32 bits
+1072	 1777	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x5A8
 - stack 1: 0x2
 - stack 0: 0xFFFFFFFF
-1194	 15E0	PUSH2	00A0	 	 
+1073	 1778	PUSH2	00A0	 	 
 - stack 1: 0x5A8
 - stack 0: 0x2
-1195	 15E3	MLOAD		 	  ;; # read from x5
+1074	 177B	MLOAD		 	  ;; # read from x5
 - stack 2: 0x5A8
 - stack 1: 0x2
 - stack 0: 0xA0
-1196	 15E4	PUSH4	FFFFFFFF	 	 
+1075	 177C	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x5A8
 - stack 1: 0x2
 - stack 0: 0x2
-1197	 15E9	AND		 	  ;; # mask to 32 bits
+1076	 1781	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x5A8
 - stack 2: 0x2
 - stack 1: 0x2
 - stack 0: 0xFFFFFFFF
-1198	 15EA	SUB		 	 
+1077	 1782	SUB		 	 
 - stack 2: 0x5A8
 - stack 1: 0x2
 - stack 0: 0x2
-1199	 15EB	PUSH2	15F3	 ;; _neq_c6d0ef42e1b174ebd4898eef263dcde9de16c75b34c3e8aafc0257fd07a9e6f5	 
+1078	 1783	PUSH2	178B	 ;; _neq_396a6e3a58ce2f185ecc704a0c095870cd64f67dc21a497dd2049b4db6a1a624	 
 - stack 1: 0x5A8
 - stack 0: 0x0
-1200	 15EE	JUMPI		 	 
+1079	 1786	JUMPI		 	 
 - stack 2: 0x5A8
 - stack 1: 0x0
-- stack 0: 0x15F3
-1201	 15EF	PUSH2	1620	 ;; _neq_after_c6d0ef42e1b174ebd4898eef263dcde9de16c75b34c3e8aafc0257fd07a9e6f5	 
+- stack 0: 0x178B
+1080	 1787	PUSH2	17BA	 ;; _neq_after_396a6e3a58ce2f185ecc704a0c095870cd64f67dc21a497dd2049b4db6a1a624	 
 - stack 0: 0x5A8
-1202	 15F2	JUMP		 	 
+1081	 178A	JUMP		 	 
 - stack 1: 0x5A8
-- stack 0: 0x1620
-1203	 1620	JUMPDEST		 ;; _neq_after_c6d0ef42e1b174ebd4898eef263dcde9de16c75b34c3e8aafc0257fd07a9e6f5	 
+- stack 0: 0x17BA
+1082	 17BA	JUMPDEST		 ;; _neq_after_396a6e3a58ce2f185ecc704a0c095870cd64f67dc21a497dd2049b4db6a1a624	 
 - stack 0: 0x5A8
-1204	 1621	PUSH2	0016	 ;; _pcplus4	 
+1083	 17BB	PUSH1	04	 	 
 - stack 0: 0x5A8
-1205	 1624	JUMP		 	 
-- stack 1: 0x5A8
-- stack 0: 0x16
-1206	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x5A8
-1207	 17	PUSH1	04	 	 
-- stack 0: 0x5A8
-1208	 19	ADD		 	 
+1084	 17BD	ADD		 	 
 - stack 1: 0x5A8
 - stack 0: 0x4
-1209	 1A	JUMPDEST		 ;; _execute	 
+1085	 17BE	DUP1		 	  ;; # executing pc
 - stack 0: 0x5AC
-1210	 1B	DUP1		 	 
-- stack 0: 0x5AC
-1211	 1C	MLOAD		 	 
+1086	 17BF	MLOAD		 	 
 - stack 1: 0x5AC
 - stack 0: 0x5AC
-1212	 1D	PUSH1	E0	 	 
+1087	 17C0	PUSH1	E0	 	 
 - stack 1: 0x5AC
-- stack 0: 0x16250000165E00001688000016D80000176200000490000017E50000156F
-1213	 1F	SHR		 	 
+- stack 0: 0x17C4000017FF0000182E0000188500001911000004F300001996000016F8
+1088	 17C2	SHR		 	 
 - stack 2: 0x5AC
-- stack 1: 0x16250000165E00001688000016D80000176200000490000017E50000156F
+- stack 1: 0x17C4000017FF0000182E0000188500001911000004F300001996000016F8
 - stack 0: 0xE0
-1214	 20	JUMP		 	 
+1089	 17C3	JUMP		 	 
 - stack 1: 0x5AC
-- stack 0: 0x1625
-1215	 1625	JUMPDEST		 ;; _riscvopt_4894c9bf4b0226a4330d022a33f86cca3f3dce84fcdf6c60d545fd48d0fa862b	  ;; # pc 0x5ac buffer: b7ceff7f130e6001
+- stack 0: 0x17C4
+1090	 17C4	JUMPDEST		 ;; _riscvopt_4894c9bf4b0226a4330d022a33f86cca3f3dce84fcdf6c60d545fd48d0fa862b	  ;; # pc 0x5ac buffer: b7ceff7f130e6001
 - stack 0: 0x5AC
-1216	 1626	POP		 	 
+1091	 17C5	POP		 	 
 - stack 0: 0x5AC
-1217	 1627	JUMPDEST		 	  ;; # DEBUG: lui t4,0x7fffc
-1218	 1628	PUSH4	7fffc000	 	 
-1219	 162D	PUSH2	03A0	 	 
+1092	 17C6	JUMPDEST		 	  ;; # DEBUG: lui t4,0x7fffc
+1093	 17C7	PUSH4	7fffc000	 	 
+1094	 17CC	PUSH2	03A0	 	 
 - stack 0: 0x7FFFC000
-1220	 1630	MSTORE		 	  ;; # store to x29
+1095	 17CF	MSTORE		 	  ;; # store to x29
 - stack 1: 0x7FFFC000
 - stack 0: 0x3A0
-1221	 1631	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,22
-1222	 1632	PUSH32	0000000000000000000000000000000000000000000000000000000000000016	 	  ;; # signextended 22
-1223	 1653	PUSH2	0380	 	 
+1096	 17D0	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,22
+1097	 17D1	PUSH32	0000000000000000000000000000000000000000000000000000000000000016	 	  ;; # signextended 22
+1098	 17F2	PUSH2	0380	 	 
 - stack 0: 0x16
-1224	 1656	MSTORE		 	  ;; # store to x28
+1099	 17F5	MSTORE		 	  ;; # store to x28
 - stack 1: 0x16
 - stack 0: 0x380
-1225	 1657	PUSH2	05B4	 	 
-1226	 165A	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+1100	 17F6	PUSH2	05B4	 	 
+1101	 17F9	DUP1		 	  ;; # executing pc
 - stack 0: 0x5B4
-1227	 165D	JUMP		 	 
-- stack 1: 0x5B4
-- stack 0: 0x1A
-1228	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x5B4
-1229	 1B	DUP1		 	 
-- stack 0: 0x5B4
-1230	 1C	MLOAD		 	 
+1102	 17FA	MLOAD		 	 
 - stack 1: 0x5B4
 - stack 0: 0x5B4
-1231	 1D	PUSH1	E0	 	 
+1103	 17FB	PUSH1	E0	 	 
 - stack 1: 0x5B4
-- stack 0: 0x1688000016D80000176200000490000017E50000156F0000157C000015AB
-1232	 1F	SHR		 	 
+- stack 0: 0x182E0000188500001911000004F300001996000016F80000170A0000173E
+1104	 17FD	SHR		 	 
 - stack 2: 0x5B4
-- stack 1: 0x1688000016D80000176200000490000017E50000156F0000157C000015AB
+- stack 1: 0x182E0000188500001911000004F300001996000016F80000170A0000173E
 - stack 0: 0xE0
-1233	 20	JUMP		 	 
+1105	 17FE	JUMP		 	 
 - stack 1: 0x5B4
-- stack 0: 0x1688
-1234	 1688	JUMPDEST		 ;; _riscv_8ba978125c4067b24b09387938f19317aeeacab6fa2b21c0ee0504c3592c04df	  ;; # pc 0x5b4 buffer: 6318d311 decode bne t1,t4,110
+- stack 0: 0x182E
+1106	 182E	JUMPDEST		 ;; _riscv_8ba978125c4067b24b09387938f19317aeeacab6fa2b21c0ee0504c3592c04df	  ;; # pc 0x5b4 buffer: 6318d311 decode bne t1,t4,110
 - stack 0: 0x5B4
-1235	 1689	PUSH2	00C0	 	 
+1107	 182F	PUSH2	00C0	 	 
 - stack 0: 0x5B4
-1236	 168C	MLOAD		 	  ;; # read from x6
+1108	 1832	MLOAD		 	  ;; # read from x6
 - stack 1: 0x5B4
 - stack 0: 0xC0
-1237	 168D	PUSH4	FFFFFFFF	 	 
+1109	 1833	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x5B4
 - stack 0: 0x7FFFC000
-1238	 1692	AND		 	  ;; # mask to 32 bits
+1110	 1838	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x5B4
 - stack 1: 0x7FFFC000
 - stack 0: 0xFFFFFFFF
-1239	 1693	PUSH2	03A0	 	 
+1111	 1839	PUSH2	03A0	 	 
 - stack 1: 0x5B4
 - stack 0: 0x7FFFC000
-1240	 1696	MLOAD		 	  ;; # read from x29
+1112	 183C	MLOAD		 	  ;; # read from x29
 - stack 2: 0x5B4
 - stack 1: 0x7FFFC000
 - stack 0: 0x3A0
-1241	 1697	PUSH4	FFFFFFFF	 	 
+1113	 183D	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x5B4
 - stack 1: 0x7FFFC000
 - stack 0: 0x7FFFC000
-1242	 169C	AND		 	  ;; # mask to 32 bits
+1114	 1842	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x5B4
 - stack 2: 0x7FFFC000
 - stack 1: 0x7FFFC000
 - stack 0: 0xFFFFFFFF
-1243	 169D	SUB		 	 
+1115	 1843	SUB		 	 
 - stack 2: 0x5B4
 - stack 1: 0x7FFFC000
 - stack 0: 0x7FFFC000
-1244	 169E	PUSH2	16A6	 ;; _neq_fc35ac26783ba9783e66961a18c801650e2dfa7e82ff3194fddd67e247939992	 
+1116	 1844	PUSH2	184C	 ;; _neq_7abcae03249c5b2377595075349a377250e3eb42d61c4f0799a00b40cd234aba	 
 - stack 1: 0x5B4
 - stack 0: 0x0
-1245	 16A1	JUMPI		 	 
+1117	 1847	JUMPI		 	 
 - stack 2: 0x5B4
 - stack 1: 0x0
-- stack 0: 0x16A6
-1246	 16A2	PUSH2	16D3	 ;; _neq_after_fc35ac26783ba9783e66961a18c801650e2dfa7e82ff3194fddd67e247939992	 
+- stack 0: 0x184C
+1118	 1848	PUSH2	187B	 ;; _neq_after_7abcae03249c5b2377595075349a377250e3eb42d61c4f0799a00b40cd234aba	 
 - stack 0: 0x5B4
-1247	 16A5	JUMP		 	 
+1119	 184B	JUMP		 	 
 - stack 1: 0x5B4
-- stack 0: 0x16D3
-1248	 16D3	JUMPDEST		 ;; _neq_after_fc35ac26783ba9783e66961a18c801650e2dfa7e82ff3194fddd67e247939992	 
+- stack 0: 0x187B
+1120	 187B	JUMPDEST		 ;; _neq_after_7abcae03249c5b2377595075349a377250e3eb42d61c4f0799a00b40cd234aba	 
 - stack 0: 0x5B4
-1249	 16D4	PUSH2	0016	 ;; _pcplus4	 
+1121	 187C	PUSH1	04	 	 
 - stack 0: 0x5B4
-1250	 16D7	JUMP		 	 
-- stack 1: 0x5B4
-- stack 0: 0x16
-1251	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x5B4
-1252	 17	PUSH1	04	 	 
-- stack 0: 0x5B4
-1253	 19	ADD		 	 
+1122	 187E	ADD		 	 
 - stack 1: 0x5B4
 - stack 0: 0x4
-1254	 1A	JUMPDEST		 ;; _execute	 
+1123	 187F	DUP1		 	  ;; # executing pc
 - stack 0: 0x5B8
-1255	 1B	DUP1		 	 
-- stack 0: 0x5B8
-1256	 1C	MLOAD		 	 
+1124	 1880	MLOAD		 	 
 - stack 1: 0x5B8
 - stack 0: 0x5B8
-1257	 1D	PUSH1	E0	 	 
+1125	 1881	PUSH1	E0	 	 
 - stack 1: 0x5B8
-- stack 0: 0x16D80000176200000490000017E50000156F0000157C000015AB000017ED
-1258	 1F	SHR		 	 
+- stack 0: 0x188500001911000004F300001996000016F80000170A0000173E000019A3
+1126	 1883	SHR		 	 
 - stack 2: 0x5B8
-- stack 1: 0x16D80000176200000490000017E50000156F0000157C000015AB000017ED
+- stack 1: 0x188500001911000004F300001996000016F80000170A0000173E000019A3
 - stack 0: 0xE0
-1259	 20	JUMP		 	 
+1127	 1884	JUMP		 	 
 - stack 1: 0x5B8
-- stack 0: 0x16D8
-1260	 16D8	JUMPDEST		 ;; _riscvopt_50168786c007af09b2362fb734bbc41832a7da016df0c9a3409a3206d5329dbc	  ;; # pc 0x5b8 buffer: 13020000b780ffff93d1e00013000000138301001302120093022000
+- stack 0: 0x1885
+1128	 1885	JUMPDEST		 ;; _riscvopt_50168786c007af09b2362fb734bbc41832a7da016df0c9a3409a3206d5329dbc	  ;; # pc 0x5b8 buffer: 13020000b780ffff93d1e00013000000138301001302120093022000
 - stack 0: 0x5B8
-1261	 16D9	POP		 	 
+1129	 1886	POP		 	 
 - stack 0: 0x5B8
-1262	 16DA	JUMPDEST		 	  ;; # DEBUG: addi tp,zero,0
-1263	 16DB	PUSH1	00	 	 
-1264	 16DD	PUSH2	0080	 	 
+1130	 1887	JUMPDEST		 	  ;; # DEBUG: addi tp,zero,0
+1131	 1888	PUSH1	00	 	 
+1132	 188A	PUSH2	0080	 	 
 - stack 0: 0x0
-1265	 16E0	MSTORE		 	  ;; # store to x4
+1133	 188D	MSTORE		 	  ;; # store to x4
 - stack 1: 0x0
 - stack 0: 0x80
-1266	 16E1	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
-1267	 16E2	PUSH4	ffff8000	 	 
-1268	 16E7	PUSH2	0020	 	 
+1134	 188E	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
+1135	 188F	PUSH4	ffff8000	 	 
+1136	 1894	PUSH2	0020	 	 
 - stack 0: 0xFFFF8000
-1269	 16EA	MSTORE		 	  ;; # store to x1
+1137	 1897	MSTORE		 	  ;; # store to x1
 - stack 1: 0xFFFF8000
 - stack 0: 0x20
-1270	 16EB	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,14
-1271	 16EC	PUSH2	0020	 	 
-1272	 16EF	MLOAD		 	  ;; # read from x1
+1138	 1898	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,14
+1139	 1899	PUSH2	0020	 	 
+1140	 189C	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-1273	 16F0	PUSH4	FFFFFFFF	 	 
+1141	 189D	PUSH4	FFFFFFFF	 	 
 - stack 0: 0xFFFF8000
-1274	 16F5	AND		 	  ;; # mask to 32 bits
+1142	 18A2	AND		 	  ;; # mask to 32 bits
 - stack 1: 0xFFFF8000
 - stack 0: 0xFFFFFFFF
-1275	 16F6	PUSH1	0E	 	 
+1143	 18A3	PUSH1	0E	 	 
 - stack 0: 0xFFFF8000
-1276	 16F8	SHR		 	  ;; # SRLI
+1144	 18A5	SHR		 	  ;; # SRLI
 - stack 1: 0xFFFF8000
 - stack 0: 0xE
-1277	 16F9	PUSH2	0060	 	 
+1145	 18A6	PUSH2	0060	 	 
 - stack 0: 0x3FFFE
-1278	 16FC	MSTORE		 	  ;; # store to x3
+1146	 18A9	MSTORE		 	  ;; # store to x3
 - stack 1: 0x3FFFE
 - stack 0: 0x60
-1279	 16FD	JUMPDEST		 	  ;; # DEBUG: addi zero,zero,0
-1280	 16FE	PUSH1	00	 	 
-1281	 1700	POP		 	 
+1147	 18AA	JUMPDEST		 	  ;; # DEBUG: addi zero,zero,0
+1148	 18AB	PUSH1	00	 	 
+1149	 18AD	POP		 	 
 - stack 0: 0x0
-1282	 1701	JUMPDEST		 	  ;; # DEBUG: addi t1,gp,0
-1283	 1702	PUSH2	0060	 	 
-1284	 1705	MLOAD		 	  ;; # read from x3
+1150	 18AE	JUMPDEST		 	  ;; # DEBUG: addi t1,gp,0
+1151	 18AF	PUSH2	0060	 	 
+1152	 18B2	MLOAD		 	  ;; # read from x3
 - stack 0: 0x60
-1285	 1706	PUSH2	00C0	 	 
+1153	 18B3	PUSH2	00C0	 	 
 - stack 0: 0x3FFFE
-1286	 1709	MSTORE		 	  ;; # store to x6
+1154	 18B6	MSTORE		 	  ;; # store to x6
 - stack 1: 0x3FFFE
 - stack 0: 0xC0
-1287	 170A	JUMPDEST		 	  ;; # DEBUG: addi tp,tp,1
-1288	 170B	PUSH2	0080	 	 
-1289	 170E	MLOAD		 	  ;; # read from x4
+1155	 18B7	JUMPDEST		 	  ;; # DEBUG: addi tp,tp,1
+1156	 18B8	PUSH2	0080	 	 
+1157	 18BB	MLOAD		 	  ;; # read from x4
 - stack 0: 0x80
-1290	 170F	PUSH32	0000000000000000000000000000000000000000000000000000000000000001	 	  ;; # signextended 1
+1158	 18BC	PUSH32	0000000000000000000000000000000000000000000000000000000000000001	 	  ;; # signextended 1
 - stack 0: 0x0
-1291	 1730	ADD		 	  ;; # ADDI
+1159	 18DD	ADD		 	  ;; # ADDI
 - stack 1: 0x0
 - stack 0: 0x1
-1292	 1731	PUSH2	0080	 	 
+1160	 18DE	PUSH2	0080	 	 
 - stack 0: 0x1
-1293	 1734	MSTORE		 	  ;; # store to x4
+1161	 18E1	MSTORE		 	  ;; # store to x4
 - stack 1: 0x1
 - stack 0: 0x80
-1294	 1735	JUMPDEST		 	  ;; # DEBUG: addi t0,zero,2
-1295	 1736	PUSH32	0000000000000000000000000000000000000000000000000000000000000002	 	  ;; # signextended 2
-1296	 1757	PUSH2	00A0	 	 
+1162	 18E2	JUMPDEST		 	  ;; # DEBUG: addi t0,zero,2
+1163	 18E3	PUSH32	0000000000000000000000000000000000000000000000000000000000000002	 	  ;; # signextended 2
+1164	 1904	PUSH2	00A0	 	 
 - stack 0: 0x2
-1297	 175A	MSTORE		 	  ;; # store to x5
+1165	 1907	MSTORE		 	  ;; # store to x5
 - stack 1: 0x2
 - stack 0: 0xA0
-1298	 175B	PUSH2	05D4	 	 
-1299	 175E	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+1166	 1908	PUSH2	05D4	 	 
+1167	 190B	DUP1		 	  ;; # executing pc
 - stack 0: 0x5D4
-1300	 1761	JUMP		 	 
-- stack 1: 0x5D4
-- stack 0: 0x1A
-1301	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x5D4
-1302	 1B	DUP1		 	 
-- stack 0: 0x5D4
-1303	 1C	MLOAD		 	 
+1168	 190C	MLOAD		 	 
 - stack 1: 0x5D4
 - stack 0: 0x5D4
-1304	 1D	PUSH1	E0	 	 
+1169	 190D	PUSH1	E0	 	 
 - stack 1: 0x5D4
-- stack 0: 0x17ED0000183D000004B4000018A1000018CB0000191B000019A900000637
-1305	 1F	SHR		 	 
+- stack 0: 0x19A3000019FA0000052100001A6000001A8F00001AE600001B76000006BC
+1170	 190F	SHR		 	 
 - stack 2: 0x5D4
-- stack 1: 0x17ED0000183D000004B4000018A1000018CB0000191B000019A900000637
+- stack 1: 0x19A3000019FA0000052100001A6000001A8F00001AE600001B76000006BC
 - stack 0: 0xE0
-1306	 20	JUMP		 	 
+1171	 1910	JUMP		 	 
 - stack 1: 0x5D4
-- stack 0: 0x17ED
-1307	 17ED	JUMPDEST		 ;; _riscv_d7273c5140cafdcd4d3050473598a03941bfc5d3f709cbc0f53551f953935796	  ;; # pc 0x5d4 buffer: e31452fe decode bne tp,t0,-18
+- stack 0: 0x19A3
+1172	 19A3	JUMPDEST		 ;; _riscv_d7273c5140cafdcd4d3050473598a03941bfc5d3f709cbc0f53551f953935796	  ;; # pc 0x5d4 buffer: e31452fe decode bne tp,t0,-18
 - stack 0: 0x5D4
-1308	 17EE	PUSH2	0080	 	 
+1173	 19A4	PUSH2	0080	 	 
 - stack 0: 0x5D4
-1309	 17F1	MLOAD		 	  ;; # read from x4
+1174	 19A7	MLOAD		 	  ;; # read from x4
 - stack 1: 0x5D4
 - stack 0: 0x80
-1310	 17F2	PUSH4	FFFFFFFF	 	 
+1175	 19A8	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x5D4
 - stack 0: 0x1
-1311	 17F7	AND		 	  ;; # mask to 32 bits
+1176	 19AD	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x5D4
 - stack 1: 0x1
 - stack 0: 0xFFFFFFFF
-1312	 17F8	PUSH2	00A0	 	 
+1177	 19AE	PUSH2	00A0	 	 
 - stack 1: 0x5D4
 - stack 0: 0x1
-1313	 17FB	MLOAD		 	  ;; # read from x5
+1178	 19B1	MLOAD		 	  ;; # read from x5
 - stack 2: 0x5D4
 - stack 1: 0x1
 - stack 0: 0xA0
-1314	 17FC	PUSH4	FFFFFFFF	 	 
+1179	 19B2	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x5D4
 - stack 1: 0x1
 - stack 0: 0x2
-1315	 1801	AND		 	  ;; # mask to 32 bits
+1180	 19B7	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x5D4
 - stack 2: 0x1
 - stack 1: 0x2
 - stack 0: 0xFFFFFFFF
-1316	 1802	SUB		 	 
+1181	 19B8	SUB		 	 
 - stack 2: 0x5D4
 - stack 1: 0x1
 - stack 0: 0x2
-1317	 1803	PUSH2	180B	 ;; _neq_a4badec3f4afa31873a91324c2b0588eb98e0baeb16823180da95406f4a4934a	 
+1182	 19B9	PUSH2	19C1	 ;; _neq_1da417a6773b7ba088346070613ca637061602b911f36742dc6b868b5466b9eb	 
 - stack 1: 0x5D4
 - stack 0: 0x1
-1318	 1806	JUMPI		 	 
+1183	 19BC	JUMPI		 	 
 - stack 2: 0x5D4
 - stack 1: 0x1
-- stack 0: 0x180B
-1319	 180B	JUMPDEST		 ;; _neq_a4badec3f4afa31873a91324c2b0588eb98e0baeb16823180da95406f4a4934a	 
+- stack 0: 0x19C1
+1184	 19C1	JUMPDEST		 ;; _neq_1da417a6773b7ba088346070613ca637061602b911f36742dc6b868b5466b9eb	 
 - stack 0: 0x5D4
-1320	 180C	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE8	 	  ;; # signextended -24
+1185	 19C2	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE8	 	  ;; # signextended -24
 - stack 0: 0x5D4
-1321	 182D	ADD		 	 
+1186	 19E3	ADD		 	 
 - stack 1: 0x5D4
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE8
-1322	 182E	PUSH4	FFFFFFFF	 	 
+1187	 19E4	PUSH4	FFFFFFFF	 	 
 - stack 0: 0x5BC
-1323	 1833	AND		 	  ;; # mask to 32 bits
+1188	 19E9	AND		 	  ;; # mask to 32 bits
 - stack 1: 0x5BC
 - stack 0: 0xFFFFFFFF
-1324	 1834	PUSH2	001A	 ;; _execute	 
+1189	 19EA	DUP1		 	  ;; # executing pc
 - stack 0: 0x5BC
-1325	 1837	JUMP		 	 
-- stack 1: 0x5BC
-- stack 0: 0x1A
-1326	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x5BC
-1327	 1B	DUP1		 	 
-- stack 0: 0x5BC
-1328	 1C	MLOAD		 	 
+1190	 19EB	MLOAD		 	 
 - stack 1: 0x5BC
 - stack 0: 0x5BC
-1329	 1D	PUSH1	E0	 	 
+1191	 19EC	PUSH1	E0	 	 
 - stack 1: 0x5BC
-- stack 0: 0x176200000490000017E50000156F0000157C000015AB000017ED0000183D
-1330	 1F	SHR		 	 
+- stack 0: 0x1911000004F300001996000016F80000170A0000173E000019A3000019FA
+1192	 19EE	SHR		 	 
 - stack 2: 0x5BC
-- stack 1: 0x176200000490000017E50000156F0000157C000015AB000017ED0000183D
+- stack 1: 0x1911000004F300001996000016F80000170A0000173E000019A3000019FA
 - stack 0: 0xE0
-1331	 20	JUMP		 	 
+1193	 19EF	JUMP		 	 
 - stack 1: 0x5BC
-- stack 0: 0x1762
-1332	 1762	JUMPDEST		 ;; _riscvopt_16dc31b3b31a1f13b4648faf7021564f025e218256d707b6ce1ff7f9c1398c06	  ;; # pc 0x5bc buffer: b780ffff93d1e00013000000138301001302120093022000
+- stack 0: 0x1911
+1194	 1911	JUMPDEST		 ;; _riscvopt_16dc31b3b31a1f13b4648faf7021564f025e218256d707b6ce1ff7f9c1398c06	  ;; # pc 0x5bc buffer: b780ffff93d1e00013000000138301001302120093022000
 - stack 0: 0x5BC
-1333	 1763	POP		 	 
+1195	 1912	POP		 	 
 - stack 0: 0x5BC
-1334	 1764	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
-1335	 1765	PUSH4	ffff8000	 	 
-1336	 176A	PUSH2	0020	 	 
+1196	 1913	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
+1197	 1914	PUSH4	ffff8000	 	 
+1198	 1919	PUSH2	0020	 	 
 - stack 0: 0xFFFF8000
-1337	 176D	MSTORE		 	  ;; # store to x1
+1199	 191C	MSTORE		 	  ;; # store to x1
 - stack 1: 0xFFFF8000
 - stack 0: 0x20
-1338	 176E	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,14
-1339	 176F	PUSH2	0020	 	 
-1340	 1772	MLOAD		 	  ;; # read from x1
+1200	 191D	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,14
+1201	 191E	PUSH2	0020	 	 
+1202	 1921	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-1341	 1773	PUSH4	FFFFFFFF	 	 
+1203	 1922	PUSH4	FFFFFFFF	 	 
 - stack 0: 0xFFFF8000
-1342	 1778	AND		 	  ;; # mask to 32 bits
+1204	 1927	AND		 	  ;; # mask to 32 bits
 - stack 1: 0xFFFF8000
 - stack 0: 0xFFFFFFFF
-1343	 1779	PUSH1	0E	 	 
+1205	 1928	PUSH1	0E	 	 
 - stack 0: 0xFFFF8000
-1344	 177B	SHR		 	  ;; # SRLI
+1206	 192A	SHR		 	  ;; # SRLI
 - stack 1: 0xFFFF8000
 - stack 0: 0xE
-1345	 177C	PUSH2	0060	 	 
+1207	 192B	PUSH2	0060	 	 
 - stack 0: 0x3FFFE
-1346	 177F	MSTORE		 	  ;; # store to x3
+1208	 192E	MSTORE		 	  ;; # store to x3
 - stack 1: 0x3FFFE
 - stack 0: 0x60
-1347	 1780	JUMPDEST		 	  ;; # DEBUG: addi zero,zero,0
-1348	 1781	PUSH1	00	 	 
-1349	 1783	POP		 	 
+1209	 192F	JUMPDEST		 	  ;; # DEBUG: addi zero,zero,0
+1210	 1930	PUSH1	00	 	 
+1211	 1932	POP		 	 
 - stack 0: 0x0
-1350	 1784	JUMPDEST		 	  ;; # DEBUG: addi t1,gp,0
-1351	 1785	PUSH2	0060	 	 
-1352	 1788	MLOAD		 	  ;; # read from x3
+1212	 1933	JUMPDEST		 	  ;; # DEBUG: addi t1,gp,0
+1213	 1934	PUSH2	0060	 	 
+1214	 1937	MLOAD		 	  ;; # read from x3
 - stack 0: 0x60
-1353	 1789	PUSH2	00C0	 	 
+1215	 1938	PUSH2	00C0	 	 
 - stack 0: 0x3FFFE
-1354	 178C	MSTORE		 	  ;; # store to x6
+1216	 193B	MSTORE		 	  ;; # store to x6
 - stack 1: 0x3FFFE
 - stack 0: 0xC0
-1355	 178D	JUMPDEST		 	  ;; # DEBUG: addi tp,tp,1
-1356	 178E	PUSH2	0080	 	 
-1357	 1791	MLOAD		 	  ;; # read from x4
+1217	 193C	JUMPDEST		 	  ;; # DEBUG: addi tp,tp,1
+1218	 193D	PUSH2	0080	 	 
+1219	 1940	MLOAD		 	  ;; # read from x4
 - stack 0: 0x80
-1358	 1792	PUSH32	0000000000000000000000000000000000000000000000000000000000000001	 	  ;; # signextended 1
+1220	 1941	PUSH32	0000000000000000000000000000000000000000000000000000000000000001	 	  ;; # signextended 1
 - stack 0: 0x1
-1359	 17B3	ADD		 	  ;; # ADDI
+1221	 1962	ADD		 	  ;; # ADDI
 - stack 1: 0x1
 - stack 0: 0x1
-1360	 17B4	PUSH2	0080	 	 
+1222	 1963	PUSH2	0080	 	 
 - stack 0: 0x2
-1361	 17B7	MSTORE		 	  ;; # store to x4
+1223	 1966	MSTORE		 	  ;; # store to x4
 - stack 1: 0x2
 - stack 0: 0x80
-1362	 17B8	JUMPDEST		 	  ;; # DEBUG: addi t0,zero,2
-1363	 17B9	PUSH32	0000000000000000000000000000000000000000000000000000000000000002	 	  ;; # signextended 2
-1364	 17DA	PUSH2	00A0	 	 
+1224	 1967	JUMPDEST		 	  ;; # DEBUG: addi t0,zero,2
+1225	 1968	PUSH32	0000000000000000000000000000000000000000000000000000000000000002	 	  ;; # signextended 2
+1226	 1989	PUSH2	00A0	 	 
 - stack 0: 0x2
-1365	 17DD	MSTORE		 	  ;; # store to x5
+1227	 198C	MSTORE		 	  ;; # store to x5
 - stack 1: 0x2
 - stack 0: 0xA0
-1366	 17DE	PUSH2	05D4	 	 
-1367	 17E1	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+1228	 198D	PUSH2	05D4	 	 
+1229	 1990	DUP1		 	  ;; # executing pc
 - stack 0: 0x5D4
-1368	 17E4	JUMP		 	 
-- stack 1: 0x5D4
-- stack 0: 0x1A
-1369	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x5D4
-1370	 1B	DUP1		 	 
-- stack 0: 0x5D4
-1371	 1C	MLOAD		 	 
+1230	 1991	MLOAD		 	 
 - stack 1: 0x5D4
 - stack 0: 0x5D4
-1372	 1D	PUSH1	E0	 	 
+1231	 1992	PUSH1	E0	 	 
 - stack 1: 0x5D4
-- stack 0: 0x17ED0000183D000004B4000018A1000018CB0000191B000019A900000637
-1373	 1F	SHR		 	 
+- stack 0: 0x19A3000019FA0000052100001A6000001A8F00001AE600001B76000006BC
+1232	 1994	SHR		 	 
 - stack 2: 0x5D4
-- stack 1: 0x17ED0000183D000004B4000018A1000018CB0000191B000019A900000637
+- stack 1: 0x19A3000019FA0000052100001A6000001A8F00001AE600001B76000006BC
 - stack 0: 0xE0
-1374	 20	JUMP		 	 
+1233	 1995	JUMP		 	 
 - stack 1: 0x5D4
-- stack 0: 0x17ED
-1375	 17ED	JUMPDEST		 ;; _riscv_d7273c5140cafdcd4d3050473598a03941bfc5d3f709cbc0f53551f953935796	  ;; # pc 0x5d4 buffer: e31452fe decode bne tp,t0,-18
+- stack 0: 0x19A3
+1234	 19A3	JUMPDEST		 ;; _riscv_d7273c5140cafdcd4d3050473598a03941bfc5d3f709cbc0f53551f953935796	  ;; # pc 0x5d4 buffer: e31452fe decode bne tp,t0,-18
 - stack 0: 0x5D4
-1376	 17EE	PUSH2	0080	 	 
+1235	 19A4	PUSH2	0080	 	 
 - stack 0: 0x5D4
-1377	 17F1	MLOAD		 	  ;; # read from x4
+1236	 19A7	MLOAD		 	  ;; # read from x4
 - stack 1: 0x5D4
 - stack 0: 0x80
-1378	 17F2	PUSH4	FFFFFFFF	 	 
+1237	 19A8	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x5D4
 - stack 0: 0x2
-1379	 17F7	AND		 	  ;; # mask to 32 bits
+1238	 19AD	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x5D4
 - stack 1: 0x2
 - stack 0: 0xFFFFFFFF
-1380	 17F8	PUSH2	00A0	 	 
+1239	 19AE	PUSH2	00A0	 	 
 - stack 1: 0x5D4
 - stack 0: 0x2
-1381	 17FB	MLOAD		 	  ;; # read from x5
+1240	 19B1	MLOAD		 	  ;; # read from x5
 - stack 2: 0x5D4
 - stack 1: 0x2
 - stack 0: 0xA0
-1382	 17FC	PUSH4	FFFFFFFF	 	 
+1241	 19B2	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x5D4
 - stack 1: 0x2
 - stack 0: 0x2
-1383	 1801	AND		 	  ;; # mask to 32 bits
+1242	 19B7	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x5D4
 - stack 2: 0x2
 - stack 1: 0x2
 - stack 0: 0xFFFFFFFF
-1384	 1802	SUB		 	 
+1243	 19B8	SUB		 	 
 - stack 2: 0x5D4
 - stack 1: 0x2
 - stack 0: 0x2
-1385	 1803	PUSH2	180B	 ;; _neq_a4badec3f4afa31873a91324c2b0588eb98e0baeb16823180da95406f4a4934a	 
+1244	 19B9	PUSH2	19C1	 ;; _neq_1da417a6773b7ba088346070613ca637061602b911f36742dc6b868b5466b9eb	 
 - stack 1: 0x5D4
 - stack 0: 0x0
-1386	 1806	JUMPI		 	 
+1245	 19BC	JUMPI		 	 
 - stack 2: 0x5D4
 - stack 1: 0x0
-- stack 0: 0x180B
-1387	 1807	PUSH2	1838	 ;; _neq_after_a4badec3f4afa31873a91324c2b0588eb98e0baeb16823180da95406f4a4934a	 
+- stack 0: 0x19C1
+1246	 19BD	PUSH2	19F0	 ;; _neq_after_1da417a6773b7ba088346070613ca637061602b911f36742dc6b868b5466b9eb	 
 - stack 0: 0x5D4
-1388	 180A	JUMP		 	 
+1247	 19C0	JUMP		 	 
 - stack 1: 0x5D4
-- stack 0: 0x1838
-1389	 1838	JUMPDEST		 ;; _neq_after_a4badec3f4afa31873a91324c2b0588eb98e0baeb16823180da95406f4a4934a	 
+- stack 0: 0x19F0
+1248	 19F0	JUMPDEST		 ;; _neq_after_1da417a6773b7ba088346070613ca637061602b911f36742dc6b868b5466b9eb	 
 - stack 0: 0x5D4
-1390	 1839	PUSH2	0016	 ;; _pcplus4	 
+1249	 19F1	PUSH1	04	 	 
 - stack 0: 0x5D4
-1391	 183C	JUMP		 	 
-- stack 1: 0x5D4
-- stack 0: 0x16
-1392	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x5D4
-1393	 17	PUSH1	04	 	 
-- stack 0: 0x5D4
-1394	 19	ADD		 	 
+1250	 19F3	ADD		 	 
 - stack 1: 0x5D4
 - stack 0: 0x4
-1395	 1A	JUMPDEST		 ;; _execute	 
+1251	 19F4	DUP1		 	  ;; # executing pc
 - stack 0: 0x5D8
-1396	 1B	DUP1		 	 
-- stack 0: 0x5D8
-1397	 1C	MLOAD		 	 
+1252	 19F5	MLOAD		 	 
 - stack 1: 0x5D8
 - stack 0: 0x5D8
-1398	 1D	PUSH1	E0	 	 
+1253	 19F6	PUSH1	E0	 	 
 - stack 1: 0x5D8
-- stack 0: 0x183D000004B4000018A1000018CB0000191B000019A900000637000017E5
-1399	 1F	SHR		 	 
+- stack 0: 0x19FA0000052100001A6000001A8F00001AE600001B76000006BC00001996
+1254	 19F8	SHR		 	 
 - stack 2: 0x5D8
-- stack 1: 0x183D000004B4000018A1000018CB0000191B000019A900000637000017E5
+- stack 1: 0x19FA0000052100001A6000001A8F00001AE600001B76000006BC00001996
 - stack 0: 0xE0
-1400	 20	JUMP		 	 
+1255	 19F9	JUMP		 	 
 - stack 1: 0x5D8
-- stack 0: 0x183D
-1401	 183D	JUMPDEST		 ;; _riscvopt_292dc92f198a69486a5c275bb5a52561612ee3630b8bcac0c505cfbc1db2dba7	  ;; # pc 0x5d8 buffer: b70e0400938eeeff130e7001
+- stack 0: 0x19FA
+1256	 19FA	JUMPDEST		 ;; _riscvopt_292dc92f198a69486a5c275bb5a52561612ee3630b8bcac0c505cfbc1db2dba7	  ;; # pc 0x5d8 buffer: b70e0400938eeeff130e7001
 - stack 0: 0x5D8
-1402	 183E	POP		 	 
+1257	 19FB	POP		 	 
 - stack 0: 0x5D8
-1403	 183F	JUMPDEST		 	  ;; # DEBUG: lui t4,0x40
-1404	 1840	PUSH4	00040000	 	 
-1405	 1845	PUSH2	03A0	 	 
+1258	 19FC	JUMPDEST		 	  ;; # DEBUG: lui t4,0x40
+1259	 19FD	PUSH4	00040000	 	 
+1260	 1A02	PUSH2	03A0	 	 
 - stack 0: 0x40000
-1406	 1848	MSTORE		 	  ;; # store to x29
+1261	 1A05	MSTORE		 	  ;; # store to x29
 - stack 1: 0x40000
 - stack 0: 0x3A0
-1407	 1849	JUMPDEST		 	  ;; # DEBUG: addi t4,t4,-2
-1408	 184A	PUSH2	03A0	 	 
-1409	 184D	MLOAD		 	  ;; # read from x29
+1262	 1A06	JUMPDEST		 	  ;; # DEBUG: addi t4,t4,-2
+1263	 1A07	PUSH2	03A0	 	 
+1264	 1A0A	MLOAD		 	  ;; # read from x29
 - stack 0: 0x3A0
-1410	 184E	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE	 	  ;; # signextended -2
+1265	 1A0B	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE	 	  ;; # signextended -2
 - stack 0: 0x40000
-1411	 186F	ADD		 	  ;; # ADDI
+1266	 1A2C	ADD		 	  ;; # ADDI
 - stack 1: 0x40000
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE
-1412	 1870	PUSH2	03A0	 	 
+1267	 1A2D	PUSH2	03A0	 	 
 - stack 0: 0x3FFFE
-1413	 1873	MSTORE		 	  ;; # store to x29
+1268	 1A30	MSTORE		 	  ;; # store to x29
 - stack 1: 0x3FFFE
 - stack 0: 0x3A0
-1414	 1874	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,23
-1415	 1875	PUSH32	0000000000000000000000000000000000000000000000000000000000000017	 	  ;; # signextended 23
-1416	 1896	PUSH2	0380	 	 
+1269	 1A31	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,23
+1270	 1A32	PUSH32	0000000000000000000000000000000000000000000000000000000000000017	 	  ;; # signextended 23
+1271	 1A53	PUSH2	0380	 	 
 - stack 0: 0x17
-1417	 1899	MSTORE		 	  ;; # store to x28
+1272	 1A56	MSTORE		 	  ;; # store to x28
 - stack 1: 0x17
 - stack 0: 0x380
-1418	 189A	PUSH2	05E4	 	 
-1419	 189D	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+1273	 1A57	PUSH2	05E4	 	 
+1274	 1A5A	DUP1		 	  ;; # executing pc
 - stack 0: 0x5E4
-1420	 18A0	JUMP		 	 
-- stack 1: 0x5E4
-- stack 0: 0x1A
-1421	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x5E4
-1422	 1B	DUP1		 	 
-- stack 0: 0x5E4
-1423	 1C	MLOAD		 	 
+1275	 1A5B	MLOAD		 	 
 - stack 1: 0x5E4
 - stack 0: 0x5E4
-1424	 1D	PUSH1	E0	 	 
+1276	 1A5C	PUSH1	E0	 	 
 - stack 1: 0x5E4
-- stack 0: 0x18CB0000191B000019A900000637000017E5000017E50000156F0000157C
-1425	 1F	SHR		 	 
+- stack 0: 0x1A8F00001AE600001B76000006BC0000199600001996000016F80000170A
+1277	 1A5E	SHR		 	 
 - stack 2: 0x5E4
-- stack 1: 0x18CB0000191B000019A900000637000017E5000017E50000156F0000157C
+- stack 1: 0x1A8F00001AE600001B76000006BC0000199600001996000016F80000170A
 - stack 0: 0xE0
-1426	 20	JUMP		 	 
+1278	 1A5F	JUMP		 	 
 - stack 1: 0x5E4
-- stack 0: 0x18CB
-1427	 18CB	JUMPDEST		 ;; _riscv_79c93fea1d635fc41373d8b9b034a612e62c5727b9d6868752d45a26dd3cae87	  ;; # pc 0x5e4 buffer: 6310d30f decode bne t1,t4,e0
+- stack 0: 0x1A8F
+1279	 1A8F	JUMPDEST		 ;; _riscv_79c93fea1d635fc41373d8b9b034a612e62c5727b9d6868752d45a26dd3cae87	  ;; # pc 0x5e4 buffer: 6310d30f decode bne t1,t4,e0
 - stack 0: 0x5E4
-1428	 18CC	PUSH2	00C0	 	 
+1280	 1A90	PUSH2	00C0	 	 
 - stack 0: 0x5E4
-1429	 18CF	MLOAD		 	  ;; # read from x6
+1281	 1A93	MLOAD		 	  ;; # read from x6
 - stack 1: 0x5E4
 - stack 0: 0xC0
-1430	 18D0	PUSH4	FFFFFFFF	 	 
+1282	 1A94	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x5E4
 - stack 0: 0x3FFFE
-1431	 18D5	AND		 	  ;; # mask to 32 bits
+1283	 1A99	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x5E4
 - stack 1: 0x3FFFE
 - stack 0: 0xFFFFFFFF
-1432	 18D6	PUSH2	03A0	 	 
+1284	 1A9A	PUSH2	03A0	 	 
 - stack 1: 0x5E4
 - stack 0: 0x3FFFE
-1433	 18D9	MLOAD		 	  ;; # read from x29
+1285	 1A9D	MLOAD		 	  ;; # read from x29
 - stack 2: 0x5E4
 - stack 1: 0x3FFFE
 - stack 0: 0x3A0
-1434	 18DA	PUSH4	FFFFFFFF	 	 
+1286	 1A9E	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x5E4
 - stack 1: 0x3FFFE
 - stack 0: 0x3FFFE
-1435	 18DF	AND		 	  ;; # mask to 32 bits
+1287	 1AA3	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x5E4
 - stack 2: 0x3FFFE
 - stack 1: 0x3FFFE
 - stack 0: 0xFFFFFFFF
-1436	 18E0	SUB		 	 
+1288	 1AA4	SUB		 	 
 - stack 2: 0x5E4
 - stack 1: 0x3FFFE
 - stack 0: 0x3FFFE
-1437	 18E1	PUSH2	18E9	 ;; _neq_376cc57b956f5ffcc4050d08fdf46ef7c243c5371029672e1d1240f93b810cc9	 
+1289	 1AA5	PUSH2	1AAD	 ;; _neq_02209d96f82c13a3a0c305ca23ae8ac0b1a0f4910b08d847b6ea43ed4b975b63	 
 - stack 1: 0x5E4
 - stack 0: 0x0
-1438	 18E4	JUMPI		 	 
+1290	 1AA8	JUMPI		 	 
 - stack 2: 0x5E4
 - stack 1: 0x0
-- stack 0: 0x18E9
-1439	 18E5	PUSH2	1916	 ;; _neq_after_376cc57b956f5ffcc4050d08fdf46ef7c243c5371029672e1d1240f93b810cc9	 
+- stack 0: 0x1AAD
+1291	 1AA9	PUSH2	1ADC	 ;; _neq_after_02209d96f82c13a3a0c305ca23ae8ac0b1a0f4910b08d847b6ea43ed4b975b63	 
 - stack 0: 0x5E4
-1440	 18E8	JUMP		 	 
+1292	 1AAC	JUMP		 	 
 - stack 1: 0x5E4
-- stack 0: 0x1916
-1441	 1916	JUMPDEST		 ;; _neq_after_376cc57b956f5ffcc4050d08fdf46ef7c243c5371029672e1d1240f93b810cc9	 
+- stack 0: 0x1ADC
+1293	 1ADC	JUMPDEST		 ;; _neq_after_02209d96f82c13a3a0c305ca23ae8ac0b1a0f4910b08d847b6ea43ed4b975b63	 
 - stack 0: 0x5E4
-1442	 1917	PUSH2	0016	 ;; _pcplus4	 
+1294	 1ADD	PUSH1	04	 	 
 - stack 0: 0x5E4
-1443	 191A	JUMP		 	 
-- stack 1: 0x5E4
-- stack 0: 0x16
-1444	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x5E4
-1445	 17	PUSH1	04	 	 
-- stack 0: 0x5E4
-1446	 19	ADD		 	 
+1295	 1ADF	ADD		 	 
 - stack 1: 0x5E4
 - stack 0: 0x4
-1447	 1A	JUMPDEST		 ;; _execute	 
+1296	 1AE0	DUP1		 	  ;; # executing pc
 - stack 0: 0x5E8
-1448	 1B	DUP1		 	 
-- stack 0: 0x5E8
-1449	 1C	MLOAD		 	 
+1297	 1AE1	MLOAD		 	 
 - stack 1: 0x5E8
 - stack 0: 0x5E8
-1450	 1D	PUSH1	E0	 	 
+1298	 1AE2	PUSH1	E0	 	 
 - stack 1: 0x5E8
-- stack 0: 0x191B000019A900000637000017E5000017E50000156F0000157C000015AB
-1451	 1F	SHR		 	 
+- stack 0: 0x1AE600001B76000006BC0000199600001996000016F80000170A0000173E
+1299	 1AE4	SHR		 	 
 - stack 2: 0x5E8
-- stack 1: 0x191B000019A900000637000017E5000017E50000156F0000157C000015AB
+- stack 1: 0x1AE600001B76000006BC0000199600001996000016F80000170A0000173E
 - stack 0: 0xE0
-1452	 20	JUMP		 	 
+1300	 1AE5	JUMP		 	 
 - stack 1: 0x5E8
-- stack 0: 0x191B
-1453	 191B	JUMPDEST		 ;; _riscvopt_7cdefb45d33c6e20f2d1662e0519a2f187bc83c0322a313df4d8197852877fad	  ;; # pc 0x5e8 buffer: 13020000b780ffff93d1f0001300000013000000138301001302120093022000
+- stack 0: 0x1AE6
+1301	 1AE6	JUMPDEST		 ;; _riscvopt_7cdefb45d33c6e20f2d1662e0519a2f187bc83c0322a313df4d8197852877fad	  ;; # pc 0x5e8 buffer: 13020000b780ffff93d1f0001300000013000000138301001302120093022000
 - stack 0: 0x5E8
-1454	 191C	POP		 	 
+1302	 1AE7	POP		 	 
 - stack 0: 0x5E8
-1455	 191D	JUMPDEST		 	  ;; # DEBUG: addi tp,zero,0
-1456	 191E	PUSH1	00	 	 
-1457	 1920	PUSH2	0080	 	 
+1303	 1AE8	JUMPDEST		 	  ;; # DEBUG: addi tp,zero,0
+1304	 1AE9	PUSH1	00	 	 
+1305	 1AEB	PUSH2	0080	 	 
 - stack 0: 0x0
-1458	 1923	MSTORE		 	  ;; # store to x4
+1306	 1AEE	MSTORE		 	  ;; # store to x4
 - stack 1: 0x0
 - stack 0: 0x80
-1459	 1924	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
-1460	 1925	PUSH4	ffff8000	 	 
-1461	 192A	PUSH2	0020	 	 
+1307	 1AEF	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
+1308	 1AF0	PUSH4	ffff8000	 	 
+1309	 1AF5	PUSH2	0020	 	 
 - stack 0: 0xFFFF8000
-1462	 192D	MSTORE		 	  ;; # store to x1
+1310	 1AF8	MSTORE		 	  ;; # store to x1
 - stack 1: 0xFFFF8000
 - stack 0: 0x20
-1463	 192E	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,15
-1464	 192F	PUSH2	0020	 	 
-1465	 1932	MLOAD		 	  ;; # read from x1
+1311	 1AF9	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,15
+1312	 1AFA	PUSH2	0020	 	 
+1313	 1AFD	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-1466	 1933	PUSH4	FFFFFFFF	 	 
+1314	 1AFE	PUSH4	FFFFFFFF	 	 
 - stack 0: 0xFFFF8000
-1467	 1938	AND		 	  ;; # mask to 32 bits
+1315	 1B03	AND		 	  ;; # mask to 32 bits
 - stack 1: 0xFFFF8000
 - stack 0: 0xFFFFFFFF
-1468	 1939	PUSH1	0F	 	 
+1316	 1B04	PUSH1	0F	 	 
 - stack 0: 0xFFFF8000
-1469	 193B	SHR		 	  ;; # SRLI
+1317	 1B06	SHR		 	  ;; # SRLI
 - stack 1: 0xFFFF8000
 - stack 0: 0xF
-1470	 193C	PUSH2	0060	 	 
+1318	 1B07	PUSH2	0060	 	 
 - stack 0: 0x1FFFF
-1471	 193F	MSTORE		 	  ;; # store to x3
+1319	 1B0A	MSTORE		 	  ;; # store to x3
 - stack 1: 0x1FFFF
 - stack 0: 0x60
-1472	 1940	JUMPDEST		 	  ;; # DEBUG: addi zero,zero,0
-1473	 1941	PUSH1	00	 	 
-1474	 1943	POP		 	 
+1320	 1B0B	JUMPDEST		 	  ;; # DEBUG: addi zero,zero,0
+1321	 1B0C	PUSH1	00	 	 
+1322	 1B0E	POP		 	 
 - stack 0: 0x0
-1475	 1944	JUMPDEST		 	  ;; # DEBUG: addi zero,zero,0
-1476	 1945	PUSH1	00	 	 
-1477	 1947	POP		 	 
+1323	 1B0F	JUMPDEST		 	  ;; # DEBUG: addi zero,zero,0
+1324	 1B10	PUSH1	00	 	 
+1325	 1B12	POP		 	 
 - stack 0: 0x0
-1478	 1948	JUMPDEST		 	  ;; # DEBUG: addi t1,gp,0
-1479	 1949	PUSH2	0060	 	 
-1480	 194C	MLOAD		 	  ;; # read from x3
+1326	 1B13	JUMPDEST		 	  ;; # DEBUG: addi t1,gp,0
+1327	 1B14	PUSH2	0060	 	 
+1328	 1B17	MLOAD		 	  ;; # read from x3
 - stack 0: 0x60
-1481	 194D	PUSH2	00C0	 	 
+1329	 1B18	PUSH2	00C0	 	 
 - stack 0: 0x1FFFF
-1482	 1950	MSTORE		 	  ;; # store to x6
+1330	 1B1B	MSTORE		 	  ;; # store to x6
 - stack 1: 0x1FFFF
 - stack 0: 0xC0
-1483	 1951	JUMPDEST		 	  ;; # DEBUG: addi tp,tp,1
-1484	 1952	PUSH2	0080	 	 
-1485	 1955	MLOAD		 	  ;; # read from x4
+1331	 1B1C	JUMPDEST		 	  ;; # DEBUG: addi tp,tp,1
+1332	 1B1D	PUSH2	0080	 	 
+1333	 1B20	MLOAD		 	  ;; # read from x4
 - stack 0: 0x80
-1486	 1956	PUSH32	0000000000000000000000000000000000000000000000000000000000000001	 	  ;; # signextended 1
+1334	 1B21	PUSH32	0000000000000000000000000000000000000000000000000000000000000001	 	  ;; # signextended 1
 - stack 0: 0x0
-1487	 1977	ADD		 	  ;; # ADDI
+1335	 1B42	ADD		 	  ;; # ADDI
 - stack 1: 0x0
 - stack 0: 0x1
-1488	 1978	PUSH2	0080	 	 
+1336	 1B43	PUSH2	0080	 	 
 - stack 0: 0x1
-1489	 197B	MSTORE		 	  ;; # store to x4
+1337	 1B46	MSTORE		 	  ;; # store to x4
 - stack 1: 0x1
 - stack 0: 0x80
-1490	 197C	JUMPDEST		 	  ;; # DEBUG: addi t0,zero,2
-1491	 197D	PUSH32	0000000000000000000000000000000000000000000000000000000000000002	 	  ;; # signextended 2
-1492	 199E	PUSH2	00A0	 	 
+1338	 1B47	JUMPDEST		 	  ;; # DEBUG: addi t0,zero,2
+1339	 1B48	PUSH32	0000000000000000000000000000000000000000000000000000000000000002	 	  ;; # signextended 2
+1340	 1B69	PUSH2	00A0	 	 
 - stack 0: 0x2
-1493	 19A1	MSTORE		 	  ;; # store to x5
+1341	 1B6C	MSTORE		 	  ;; # store to x5
 - stack 1: 0x2
 - stack 0: 0xA0
-1494	 19A2	PUSH2	0608	 	 
-1495	 19A5	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+1342	 1B6D	PUSH2	0608	 	 
+1343	 1B70	DUP1		 	  ;; # executing pc
 - stack 0: 0x608
-1496	 19A8	JUMP		 	 
-- stack 1: 0x608
-- stack 0: 0x1A
-1497	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x608
-1498	 1B	DUP1		 	 
-- stack 0: 0x608
-1499	 1C	MLOAD		 	 
+1344	 1B71	MLOAD		 	 
 - stack 1: 0x608
 - stack 0: 0x608
-1500	 1D	PUSH1	E0	 	 
+1345	 1B72	PUSH1	E0	 	 
 - stack 1: 0x608
-- stack 0: 0x1A3000001A800000065B00001AE400001B0E00001B5E00001BDB00000225
-1501	 1F	SHR		 	 
+- stack 0: 0x1BFF00001C56000006EA00001CBC00001CEB00001D4200001DC100000253
+1346	 1B74	SHR		 	 
 - stack 2: 0x608
-- stack 1: 0x1A3000001A800000065B00001AE400001B0E00001B5E00001BDB00000225
+- stack 1: 0x1BFF00001C56000006EA00001CBC00001CEB00001D4200001DC100000253
 - stack 0: 0xE0
-1502	 20	JUMP		 	 
+1347	 1B75	JUMP		 	 
 - stack 1: 0x608
-- stack 0: 0x1A30
-1503	 1A30	JUMPDEST		 ;; _riscv_b4f66f8067ede3f73f0f35e8826bdde82060ff2dce53624326a19b1cc1612689	  ;; # pc 0x608 buffer: e31252fe decode bne tp,t0,-1c
+- stack 0: 0x1BFF
+1348	 1BFF	JUMPDEST		 ;; _riscv_b4f66f8067ede3f73f0f35e8826bdde82060ff2dce53624326a19b1cc1612689	  ;; # pc 0x608 buffer: e31252fe decode bne tp,t0,-1c
 - stack 0: 0x608
-1504	 1A31	PUSH2	0080	 	 
+1349	 1C00	PUSH2	0080	 	 
 - stack 0: 0x608
-1505	 1A34	MLOAD		 	  ;; # read from x4
+1350	 1C03	MLOAD		 	  ;; # read from x4
 - stack 1: 0x608
 - stack 0: 0x80
-1506	 1A35	PUSH4	FFFFFFFF	 	 
+1351	 1C04	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x608
 - stack 0: 0x1
-1507	 1A3A	AND		 	  ;; # mask to 32 bits
+1352	 1C09	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x608
 - stack 1: 0x1
 - stack 0: 0xFFFFFFFF
-1508	 1A3B	PUSH2	00A0	 	 
+1353	 1C0A	PUSH2	00A0	 	 
 - stack 1: 0x608
 - stack 0: 0x1
-1509	 1A3E	MLOAD		 	  ;; # read from x5
+1354	 1C0D	MLOAD		 	  ;; # read from x5
 - stack 2: 0x608
 - stack 1: 0x1
 - stack 0: 0xA0
-1510	 1A3F	PUSH4	FFFFFFFF	 	 
+1355	 1C0E	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x608
 - stack 1: 0x1
 - stack 0: 0x2
-1511	 1A44	AND		 	  ;; # mask to 32 bits
+1356	 1C13	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x608
 - stack 2: 0x1
 - stack 1: 0x2
 - stack 0: 0xFFFFFFFF
-1512	 1A45	SUB		 	 
+1357	 1C14	SUB		 	 
 - stack 2: 0x608
 - stack 1: 0x1
 - stack 0: 0x2
-1513	 1A46	PUSH2	1A4E	 ;; _neq_89d11329f9f8913e26560ba49f6104e4598054f9b05a2fb7aed5bb9bb6872814	 
+1358	 1C15	PUSH2	1C1D	 ;; _neq_e5f605e9ccae1eae45b816b3bf4778c2a1ec27cab0bda40c8542da86e349419f	 
 - stack 1: 0x608
 - stack 0: 0x1
-1514	 1A49	JUMPI		 	 
+1359	 1C18	JUMPI		 	 
 - stack 2: 0x608
 - stack 1: 0x1
-- stack 0: 0x1A4E
-1515	 1A4E	JUMPDEST		 ;; _neq_89d11329f9f8913e26560ba49f6104e4598054f9b05a2fb7aed5bb9bb6872814	 
+- stack 0: 0x1C1D
+1360	 1C1D	JUMPDEST		 ;; _neq_e5f605e9ccae1eae45b816b3bf4778c2a1ec27cab0bda40c8542da86e349419f	 
 - stack 0: 0x608
-1516	 1A4F	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE4	 	  ;; # signextended -28
+1361	 1C1E	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE4	 	  ;; # signextended -28
 - stack 0: 0x608
-1517	 1A70	ADD		 	 
+1362	 1C3F	ADD		 	 
 - stack 1: 0x608
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE4
-1518	 1A71	PUSH4	FFFFFFFF	 	 
+1363	 1C40	PUSH4	FFFFFFFF	 	 
 - stack 0: 0x5EC
-1519	 1A76	AND		 	  ;; # mask to 32 bits
+1364	 1C45	AND		 	  ;; # mask to 32 bits
 - stack 1: 0x5EC
 - stack 0: 0xFFFFFFFF
-1520	 1A77	PUSH2	001A	 ;; _execute	 
+1365	 1C46	DUP1		 	  ;; # executing pc
 - stack 0: 0x5EC
-1521	 1A7A	JUMP		 	 
-- stack 1: 0x5EC
-- stack 0: 0x1A
-1522	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x5EC
-1523	 1B	DUP1		 	 
-- stack 0: 0x5EC
-1524	 1C	MLOAD		 	 
+1366	 1C47	MLOAD		 	 
 - stack 1: 0x5EC
 - stack 0: 0x5EC
-1525	 1D	PUSH1	E0	 	 
+1367	 1C48	PUSH1	E0	 	 
 - stack 1: 0x5EC
-- stack 0: 0x19A900000637000017E5000017E50000156F0000157C000015AB00001A30
-1526	 1F	SHR		 	 
+- stack 0: 0x1B76000006BC0000199600001996000016F80000170A0000173E00001BFF
+1368	 1C4A	SHR		 	 
 - stack 2: 0x5EC
-- stack 1: 0x19A900000637000017E5000017E50000156F0000157C000015AB00001A30
+- stack 1: 0x1B76000006BC0000199600001996000016F80000170A0000173E00001BFF
 - stack 0: 0xE0
-1527	 20	JUMP		 	 
+1369	 1C4B	JUMP		 	 
 - stack 1: 0x5EC
-- stack 0: 0x19A9
-1528	 19A9	JUMPDEST		 ;; _riscvopt_03ed6b61da10e94e56d998756b714e2bc91ded52d9e45192356e23fb7085671f	  ;; # pc 0x5ec buffer: b780ffff93d1f0001300000013000000138301001302120093022000
+- stack 0: 0x1B76
+1370	 1B76	JUMPDEST		 ;; _riscvopt_03ed6b61da10e94e56d998756b714e2bc91ded52d9e45192356e23fb7085671f	  ;; # pc 0x5ec buffer: b780ffff93d1f0001300000013000000138301001302120093022000
 - stack 0: 0x5EC
-1529	 19AA	POP		 	 
+1371	 1B77	POP		 	 
 - stack 0: 0x5EC
-1530	 19AB	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
-1531	 19AC	PUSH4	ffff8000	 	 
-1532	 19B1	PUSH2	0020	 	 
+1372	 1B78	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
+1373	 1B79	PUSH4	ffff8000	 	 
+1374	 1B7E	PUSH2	0020	 	 
 - stack 0: 0xFFFF8000
-1533	 19B4	MSTORE		 	  ;; # store to x1
+1375	 1B81	MSTORE		 	  ;; # store to x1
 - stack 1: 0xFFFF8000
 - stack 0: 0x20
-1534	 19B5	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,15
-1535	 19B6	PUSH2	0020	 	 
-1536	 19B9	MLOAD		 	  ;; # read from x1
+1376	 1B82	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,15
+1377	 1B83	PUSH2	0020	 	 
+1378	 1B86	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-1537	 19BA	PUSH4	FFFFFFFF	 	 
+1379	 1B87	PUSH4	FFFFFFFF	 	 
 - stack 0: 0xFFFF8000
-1538	 19BF	AND		 	  ;; # mask to 32 bits
+1380	 1B8C	AND		 	  ;; # mask to 32 bits
 - stack 1: 0xFFFF8000
 - stack 0: 0xFFFFFFFF
-1539	 19C0	PUSH1	0F	 	 
+1381	 1B8D	PUSH1	0F	 	 
 - stack 0: 0xFFFF8000
-1540	 19C2	SHR		 	  ;; # SRLI
+1382	 1B8F	SHR		 	  ;; # SRLI
 - stack 1: 0xFFFF8000
 - stack 0: 0xF
-1541	 19C3	PUSH2	0060	 	 
+1383	 1B90	PUSH2	0060	 	 
 - stack 0: 0x1FFFF
-1542	 19C6	MSTORE		 	  ;; # store to x3
+1384	 1B93	MSTORE		 	  ;; # store to x3
 - stack 1: 0x1FFFF
 - stack 0: 0x60
-1543	 19C7	JUMPDEST		 	  ;; # DEBUG: addi zero,zero,0
-1544	 19C8	PUSH1	00	 	 
-1545	 19CA	POP		 	 
+1385	 1B94	JUMPDEST		 	  ;; # DEBUG: addi zero,zero,0
+1386	 1B95	PUSH1	00	 	 
+1387	 1B97	POP		 	 
 - stack 0: 0x0
-1546	 19CB	JUMPDEST		 	  ;; # DEBUG: addi zero,zero,0
-1547	 19CC	PUSH1	00	 	 
-1548	 19CE	POP		 	 
+1388	 1B98	JUMPDEST		 	  ;; # DEBUG: addi zero,zero,0
+1389	 1B99	PUSH1	00	 	 
+1390	 1B9B	POP		 	 
 - stack 0: 0x0
-1549	 19CF	JUMPDEST		 	  ;; # DEBUG: addi t1,gp,0
-1550	 19D0	PUSH2	0060	 	 
-1551	 19D3	MLOAD		 	  ;; # read from x3
+1391	 1B9C	JUMPDEST		 	  ;; # DEBUG: addi t1,gp,0
+1392	 1B9D	PUSH2	0060	 	 
+1393	 1BA0	MLOAD		 	  ;; # read from x3
 - stack 0: 0x60
-1552	 19D4	PUSH2	00C0	 	 
+1394	 1BA1	PUSH2	00C0	 	 
 - stack 0: 0x1FFFF
-1553	 19D7	MSTORE		 	  ;; # store to x6
+1395	 1BA4	MSTORE		 	  ;; # store to x6
 - stack 1: 0x1FFFF
 - stack 0: 0xC0
-1554	 19D8	JUMPDEST		 	  ;; # DEBUG: addi tp,tp,1
-1555	 19D9	PUSH2	0080	 	 
-1556	 19DC	MLOAD		 	  ;; # read from x4
+1396	 1BA5	JUMPDEST		 	  ;; # DEBUG: addi tp,tp,1
+1397	 1BA6	PUSH2	0080	 	 
+1398	 1BA9	MLOAD		 	  ;; # read from x4
 - stack 0: 0x80
-1557	 19DD	PUSH32	0000000000000000000000000000000000000000000000000000000000000001	 	  ;; # signextended 1
+1399	 1BAA	PUSH32	0000000000000000000000000000000000000000000000000000000000000001	 	  ;; # signextended 1
 - stack 0: 0x1
-1558	 19FE	ADD		 	  ;; # ADDI
+1400	 1BCB	ADD		 	  ;; # ADDI
 - stack 1: 0x1
 - stack 0: 0x1
-1559	 19FF	PUSH2	0080	 	 
+1401	 1BCC	PUSH2	0080	 	 
 - stack 0: 0x2
-1560	 1A02	MSTORE		 	  ;; # store to x4
+1402	 1BCF	MSTORE		 	  ;; # store to x4
 - stack 1: 0x2
 - stack 0: 0x80
-1561	 1A03	JUMPDEST		 	  ;; # DEBUG: addi t0,zero,2
-1562	 1A04	PUSH32	0000000000000000000000000000000000000000000000000000000000000002	 	  ;; # signextended 2
-1563	 1A25	PUSH2	00A0	 	 
+1403	 1BD0	JUMPDEST		 	  ;; # DEBUG: addi t0,zero,2
+1404	 1BD1	PUSH32	0000000000000000000000000000000000000000000000000000000000000002	 	  ;; # signextended 2
+1405	 1BF2	PUSH2	00A0	 	 
 - stack 0: 0x2
-1564	 1A28	MSTORE		 	  ;; # store to x5
+1406	 1BF5	MSTORE		 	  ;; # store to x5
 - stack 1: 0x2
 - stack 0: 0xA0
-1565	 1A29	PUSH2	0608	 	 
-1566	 1A2C	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+1407	 1BF6	PUSH2	0608	 	 
+1408	 1BF9	DUP1		 	  ;; # executing pc
 - stack 0: 0x608
-1567	 1A2F	JUMP		 	 
-- stack 1: 0x608
-- stack 0: 0x1A
-1568	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x608
-1569	 1B	DUP1		 	 
-- stack 0: 0x608
-1570	 1C	MLOAD		 	 
+1409	 1BFA	MLOAD		 	 
 - stack 1: 0x608
 - stack 0: 0x608
-1571	 1D	PUSH1	E0	 	 
+1410	 1BFB	PUSH1	E0	 	 
 - stack 1: 0x608
-- stack 0: 0x1A3000001A800000065B00001AE400001B0E00001B5E00001BDB00000225
-1572	 1F	SHR		 	 
+- stack 0: 0x1BFF00001C56000006EA00001CBC00001CEB00001D4200001DC100000253
+1411	 1BFD	SHR		 	 
 - stack 2: 0x608
-- stack 1: 0x1A3000001A800000065B00001AE400001B0E00001B5E00001BDB00000225
+- stack 1: 0x1BFF00001C56000006EA00001CBC00001CEB00001D4200001DC100000253
 - stack 0: 0xE0
-1573	 20	JUMP		 	 
+1412	 1BFE	JUMP		 	 
 - stack 1: 0x608
-- stack 0: 0x1A30
-1574	 1A30	JUMPDEST		 ;; _riscv_b4f66f8067ede3f73f0f35e8826bdde82060ff2dce53624326a19b1cc1612689	  ;; # pc 0x608 buffer: e31252fe decode bne tp,t0,-1c
+- stack 0: 0x1BFF
+1413	 1BFF	JUMPDEST		 ;; _riscv_b4f66f8067ede3f73f0f35e8826bdde82060ff2dce53624326a19b1cc1612689	  ;; # pc 0x608 buffer: e31252fe decode bne tp,t0,-1c
 - stack 0: 0x608
-1575	 1A31	PUSH2	0080	 	 
+1414	 1C00	PUSH2	0080	 	 
 - stack 0: 0x608
-1576	 1A34	MLOAD		 	  ;; # read from x4
+1415	 1C03	MLOAD		 	  ;; # read from x4
 - stack 1: 0x608
 - stack 0: 0x80
-1577	 1A35	PUSH4	FFFFFFFF	 	 
+1416	 1C04	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x608
 - stack 0: 0x2
-1578	 1A3A	AND		 	  ;; # mask to 32 bits
+1417	 1C09	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x608
 - stack 1: 0x2
 - stack 0: 0xFFFFFFFF
-1579	 1A3B	PUSH2	00A0	 	 
+1418	 1C0A	PUSH2	00A0	 	 
 - stack 1: 0x608
 - stack 0: 0x2
-1580	 1A3E	MLOAD		 	  ;; # read from x5
+1419	 1C0D	MLOAD		 	  ;; # read from x5
 - stack 2: 0x608
 - stack 1: 0x2
 - stack 0: 0xA0
-1581	 1A3F	PUSH4	FFFFFFFF	 	 
+1420	 1C0E	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x608
 - stack 1: 0x2
 - stack 0: 0x2
-1582	 1A44	AND		 	  ;; # mask to 32 bits
+1421	 1C13	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x608
 - stack 2: 0x2
 - stack 1: 0x2
 - stack 0: 0xFFFFFFFF
-1583	 1A45	SUB		 	 
+1422	 1C14	SUB		 	 
 - stack 2: 0x608
 - stack 1: 0x2
 - stack 0: 0x2
-1584	 1A46	PUSH2	1A4E	 ;; _neq_89d11329f9f8913e26560ba49f6104e4598054f9b05a2fb7aed5bb9bb6872814	 
+1423	 1C15	PUSH2	1C1D	 ;; _neq_e5f605e9ccae1eae45b816b3bf4778c2a1ec27cab0bda40c8542da86e349419f	 
 - stack 1: 0x608
 - stack 0: 0x0
-1585	 1A49	JUMPI		 	 
+1424	 1C18	JUMPI		 	 
 - stack 2: 0x608
 - stack 1: 0x0
-- stack 0: 0x1A4E
-1586	 1A4A	PUSH2	1A7B	 ;; _neq_after_89d11329f9f8913e26560ba49f6104e4598054f9b05a2fb7aed5bb9bb6872814	 
+- stack 0: 0x1C1D
+1425	 1C19	PUSH2	1C4C	 ;; _neq_after_e5f605e9ccae1eae45b816b3bf4778c2a1ec27cab0bda40c8542da86e349419f	 
 - stack 0: 0x608
-1587	 1A4D	JUMP		 	 
+1426	 1C1C	JUMP		 	 
 - stack 1: 0x608
-- stack 0: 0x1A7B
-1588	 1A7B	JUMPDEST		 ;; _neq_after_89d11329f9f8913e26560ba49f6104e4598054f9b05a2fb7aed5bb9bb6872814	 
+- stack 0: 0x1C4C
+1427	 1C4C	JUMPDEST		 ;; _neq_after_e5f605e9ccae1eae45b816b3bf4778c2a1ec27cab0bda40c8542da86e349419f	 
 - stack 0: 0x608
-1589	 1A7C	PUSH2	0016	 ;; _pcplus4	 
+1428	 1C4D	PUSH1	04	 	 
 - stack 0: 0x608
-1590	 1A7F	JUMP		 	 
-- stack 1: 0x608
-- stack 0: 0x16
-1591	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x608
-1592	 17	PUSH1	04	 	 
-- stack 0: 0x608
-1593	 19	ADD		 	 
+1429	 1C4F	ADD		 	 
 - stack 1: 0x608
 - stack 0: 0x4
-1594	 1A	JUMPDEST		 ;; _execute	 
+1430	 1C50	DUP1		 	  ;; # executing pc
 - stack 0: 0x60C
-1595	 1B	DUP1		 	 
-- stack 0: 0x60C
-1596	 1C	MLOAD		 	 
+1431	 1C51	MLOAD		 	 
 - stack 1: 0x60C
 - stack 0: 0x60C
-1597	 1D	PUSH1	E0	 	 
+1432	 1C52	PUSH1	E0	 	 
 - stack 1: 0x60C
-- stack 0: 0x1A800000065B00001AE400001B0E00001B5E00001BDB000002250000157C
-1598	 1F	SHR		 	 
+- stack 0: 0x1C56000006EA00001CBC00001CEB00001D4200001DC1000002530000170A
+1433	 1C54	SHR		 	 
 - stack 2: 0x60C
-- stack 1: 0x1A800000065B00001AE400001B0E00001B5E00001BDB000002250000157C
+- stack 1: 0x1C56000006EA00001CBC00001CEB00001D4200001DC1000002530000170A
 - stack 0: 0xE0
-1599	 20	JUMP		 	 
+1434	 1C55	JUMP		 	 
 - stack 1: 0x60C
-- stack 0: 0x1A80
-1600	 1A80	JUMPDEST		 ;; _riscvopt_4e5805edf4461ec2a12c8f22c1f04b5ec69976395496a6f167c2c999e7dca0d6	  ;; # pc 0x60c buffer: b70e0200938efeff130e8001
+- stack 0: 0x1C56
+1435	 1C56	JUMPDEST		 ;; _riscvopt_4e5805edf4461ec2a12c8f22c1f04b5ec69976395496a6f167c2c999e7dca0d6	  ;; # pc 0x60c buffer: b70e0200938efeff130e8001
 - stack 0: 0x60C
-1601	 1A81	POP		 	 
+1436	 1C57	POP		 	 
 - stack 0: 0x60C
-1602	 1A82	JUMPDEST		 	  ;; # DEBUG: lui t4,0x20
-1603	 1A83	PUSH4	00020000	 	 
-1604	 1A88	PUSH2	03A0	 	 
+1437	 1C58	JUMPDEST		 	  ;; # DEBUG: lui t4,0x20
+1438	 1C59	PUSH4	00020000	 	 
+1439	 1C5E	PUSH2	03A0	 	 
 - stack 0: 0x20000
-1605	 1A8B	MSTORE		 	  ;; # store to x29
+1440	 1C61	MSTORE		 	  ;; # store to x29
 - stack 1: 0x20000
 - stack 0: 0x3A0
-1606	 1A8C	JUMPDEST		 	  ;; # DEBUG: addi t4,t4,-1
-1607	 1A8D	PUSH2	03A0	 	 
-1608	 1A90	MLOAD		 	  ;; # read from x29
+1441	 1C62	JUMPDEST		 	  ;; # DEBUG: addi t4,t4,-1
+1442	 1C63	PUSH2	03A0	 	 
+1443	 1C66	MLOAD		 	  ;; # read from x29
 - stack 0: 0x3A0
-1609	 1A91	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	  ;; # signextended -1
+1444	 1C67	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	  ;; # signextended -1
 - stack 0: 0x20000
-1610	 1AB2	ADD		 	  ;; # ADDI
+1445	 1C88	ADD		 	  ;; # ADDI
 - stack 1: 0x20000
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-1611	 1AB3	PUSH2	03A0	 	 
+1446	 1C89	PUSH2	03A0	 	 
 - stack 0: 0x1FFFF
-1612	 1AB6	MSTORE		 	  ;; # store to x29
+1447	 1C8C	MSTORE		 	  ;; # store to x29
 - stack 1: 0x1FFFF
 - stack 0: 0x3A0
-1613	 1AB7	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,24
-1614	 1AB8	PUSH32	0000000000000000000000000000000000000000000000000000000000000018	 	  ;; # signextended 24
-1615	 1AD9	PUSH2	0380	 	 
+1448	 1C8D	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,24
+1449	 1C8E	PUSH32	0000000000000000000000000000000000000000000000000000000000000018	 	  ;; # signextended 24
+1450	 1CAF	PUSH2	0380	 	 
 - stack 0: 0x18
-1616	 1ADC	MSTORE		 	  ;; # store to x28
+1451	 1CB2	MSTORE		 	  ;; # store to x28
 - stack 1: 0x18
 - stack 0: 0x380
-1617	 1ADD	PUSH2	0618	 	 
-1618	 1AE0	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+1452	 1CB3	PUSH2	0618	 	 
+1453	 1CB6	DUP1		 	  ;; # executing pc
 - stack 0: 0x618
-1619	 1AE3	JUMP		 	 
-- stack 1: 0x618
-- stack 0: 0x1A
-1620	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x618
-1621	 1B	DUP1		 	 
-- stack 0: 0x618
-1622	 1C	MLOAD		 	 
+1454	 1CB7	MLOAD		 	 
 - stack 1: 0x618
 - stack 0: 0x618
-1623	 1D	PUSH1	E0	 	 
+1455	 1CB8	PUSH1	E0	 	 
 - stack 1: 0x618
-- stack 0: 0x1B0E00001B5E00001BDB000002250000157C000015AB00001C5100001CA1
-1624	 1F	SHR		 	 
+- stack 0: 0x1CEB00001D4200001DC1000002530000170A0000173E00001E3900001E90
+1456	 1CBA	SHR		 	 
 - stack 2: 0x618
-- stack 1: 0x1B0E00001B5E00001BDB000002250000157C000015AB00001C5100001CA1
+- stack 1: 0x1CEB00001D4200001DC1000002530000170A0000173E00001E3900001E90
 - stack 0: 0xE0
-1625	 20	JUMP		 	 
+1457	 1CBB	JUMP		 	 
 - stack 1: 0x618
-- stack 0: 0x1B0E
-1626	 1B0E	JUMPDEST		 ;; _riscv_20261e461a5286a0464e4d3420acd1b0414b6f7b9f58e00dbc288412956fc5f1	  ;; # pc 0x618 buffer: 6316d30b decode bne t1,t4,ac
+- stack 0: 0x1CEB
+1458	 1CEB	JUMPDEST		 ;; _riscv_20261e461a5286a0464e4d3420acd1b0414b6f7b9f58e00dbc288412956fc5f1	  ;; # pc 0x618 buffer: 6316d30b decode bne t1,t4,ac
 - stack 0: 0x618
-1627	 1B0F	PUSH2	00C0	 	 
+1459	 1CEC	PUSH2	00C0	 	 
 - stack 0: 0x618
-1628	 1B12	MLOAD		 	  ;; # read from x6
+1460	 1CEF	MLOAD		 	  ;; # read from x6
 - stack 1: 0x618
 - stack 0: 0xC0
-1629	 1B13	PUSH4	FFFFFFFF	 	 
+1461	 1CF0	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x618
 - stack 0: 0x1FFFF
-1630	 1B18	AND		 	  ;; # mask to 32 bits
+1462	 1CF5	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x618
 - stack 1: 0x1FFFF
 - stack 0: 0xFFFFFFFF
-1631	 1B19	PUSH2	03A0	 	 
+1463	 1CF6	PUSH2	03A0	 	 
 - stack 1: 0x618
 - stack 0: 0x1FFFF
-1632	 1B1C	MLOAD		 	  ;; # read from x29
+1464	 1CF9	MLOAD		 	  ;; # read from x29
 - stack 2: 0x618
 - stack 1: 0x1FFFF
 - stack 0: 0x3A0
-1633	 1B1D	PUSH4	FFFFFFFF	 	 
+1465	 1CFA	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x618
 - stack 1: 0x1FFFF
 - stack 0: 0x1FFFF
-1634	 1B22	AND		 	  ;; # mask to 32 bits
+1466	 1CFF	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x618
 - stack 2: 0x1FFFF
 - stack 1: 0x1FFFF
 - stack 0: 0xFFFFFFFF
-1635	 1B23	SUB		 	 
+1467	 1D00	SUB		 	 
 - stack 2: 0x618
 - stack 1: 0x1FFFF
 - stack 0: 0x1FFFF
-1636	 1B24	PUSH2	1B2C	 ;; _neq_e34f78f510f86e6f8da66227a3cc4c08d6c3cd8f9f71fa3cbec9019d361dd7c0	 
+1468	 1D01	PUSH2	1D09	 ;; _neq_633413ca3f31e665ffcb20d10159ce005632d04de75017ff5e40f94c4c7aea4e	 
 - stack 1: 0x618
 - stack 0: 0x0
-1637	 1B27	JUMPI		 	 
+1469	 1D04	JUMPI		 	 
 - stack 2: 0x618
 - stack 1: 0x0
-- stack 0: 0x1B2C
-1638	 1B28	PUSH2	1B59	 ;; _neq_after_e34f78f510f86e6f8da66227a3cc4c08d6c3cd8f9f71fa3cbec9019d361dd7c0	 
+- stack 0: 0x1D09
+1470	 1D05	PUSH2	1D38	 ;; _neq_after_633413ca3f31e665ffcb20d10159ce005632d04de75017ff5e40f94c4c7aea4e	 
 - stack 0: 0x618
-1639	 1B2B	JUMP		 	 
+1471	 1D08	JUMP		 	 
 - stack 1: 0x618
-- stack 0: 0x1B59
-1640	 1B59	JUMPDEST		 ;; _neq_after_e34f78f510f86e6f8da66227a3cc4c08d6c3cd8f9f71fa3cbec9019d361dd7c0	 
+- stack 0: 0x1D38
+1472	 1D38	JUMPDEST		 ;; _neq_after_633413ca3f31e665ffcb20d10159ce005632d04de75017ff5e40f94c4c7aea4e	 
 - stack 0: 0x618
-1641	 1B5A	PUSH2	0016	 ;; _pcplus4	 
+1473	 1D39	PUSH1	04	 	 
 - stack 0: 0x618
-1642	 1B5D	JUMP		 	 
-- stack 1: 0x618
-- stack 0: 0x16
-1643	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x618
-1644	 17	PUSH1	04	 	 
-- stack 0: 0x618
-1645	 19	ADD		 	 
+1474	 1D3B	ADD		 	 
 - stack 1: 0x618
 - stack 0: 0x4
-1646	 1A	JUMPDEST		 ;; _execute	 
+1475	 1D3C	DUP1		 	  ;; # executing pc
 - stack 0: 0x61C
-1647	 1B	DUP1		 	 
-- stack 0: 0x61C
-1648	 1C	MLOAD		 	 
+1476	 1D3D	MLOAD		 	 
 - stack 1: 0x61C
 - stack 0: 0x61C
-1649	 1D	PUSH1	E0	 	 
+1477	 1D3E	PUSH1	E0	 	 
 - stack 1: 0x61C
-- stack 0: 0x1B5E00001BDB000002250000157C000015AB00001C5100001CA100001CDA
-1650	 1F	SHR		 	 
+- stack 0: 0x1D4200001DC1000002530000170A0000173E00001E3900001E9000001ECB
+1478	 1D40	SHR		 	 
 - stack 2: 0x61C
-- stack 1: 0x1B5E00001BDB000002250000157C000015AB00001C5100001CA100001CDA
+- stack 1: 0x1D4200001DC1000002530000170A0000173E00001E3900001E9000001ECB
 - stack 0: 0xE0
-1651	 20	JUMP		 	 
+1479	 1D41	JUMP		 	 
 - stack 1: 0x61C
-- stack 0: 0x1B5E
-1652	 1B5E	JUMPDEST		 ;; _riscvopt_358ddec0d21c29c34c1740391a8b275c095818e300dcbe78daa7db0457862e0f	  ;; # pc 0x61c buffer: 13020000b780ffff93d110001302120093022000
+- stack 0: 0x1D42
+1480	 1D42	JUMPDEST		 ;; _riscvopt_358ddec0d21c29c34c1740391a8b275c095818e300dcbe78daa7db0457862e0f	  ;; # pc 0x61c buffer: 13020000b780ffff93d110001302120093022000
 - stack 0: 0x61C
-1653	 1B5F	POP		 	 
+1481	 1D43	POP		 	 
 - stack 0: 0x61C
-1654	 1B60	JUMPDEST		 	  ;; # DEBUG: addi tp,zero,0
-1655	 1B61	PUSH1	00	 	 
-1656	 1B63	PUSH2	0080	 	 
+1482	 1D44	JUMPDEST		 	  ;; # DEBUG: addi tp,zero,0
+1483	 1D45	PUSH1	00	 	 
+1484	 1D47	PUSH2	0080	 	 
 - stack 0: 0x0
-1657	 1B66	MSTORE		 	  ;; # store to x4
+1485	 1D4A	MSTORE		 	  ;; # store to x4
 - stack 1: 0x0
 - stack 0: 0x80
-1658	 1B67	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
-1659	 1B68	PUSH4	ffff8000	 	 
-1660	 1B6D	PUSH2	0020	 	 
+1486	 1D4B	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
+1487	 1D4C	PUSH4	ffff8000	 	 
+1488	 1D51	PUSH2	0020	 	 
 - stack 0: 0xFFFF8000
-1661	 1B70	MSTORE		 	  ;; # store to x1
+1489	 1D54	MSTORE		 	  ;; # store to x1
 - stack 1: 0xFFFF8000
 - stack 0: 0x20
-1662	 1B71	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,1
-1663	 1B72	PUSH2	0020	 	 
-1664	 1B75	MLOAD		 	  ;; # read from x1
+1490	 1D55	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,1
+1491	 1D56	PUSH2	0020	 	 
+1492	 1D59	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-1665	 1B76	PUSH4	FFFFFFFF	 	 
+1493	 1D5A	PUSH4	FFFFFFFF	 	 
 - stack 0: 0xFFFF8000
-1666	 1B7B	AND		 	  ;; # mask to 32 bits
+1494	 1D5F	AND		 	  ;; # mask to 32 bits
 - stack 1: 0xFFFF8000
 - stack 0: 0xFFFFFFFF
-1667	 1B7C	PUSH1	01	 	 
+1495	 1D60	PUSH1	01	 	 
 - stack 0: 0xFFFF8000
-1668	 1B7E	SHR		 	  ;; # SRLI
+1496	 1D62	SHR		 	  ;; # SRLI
 - stack 1: 0xFFFF8000
 - stack 0: 0x1
-1669	 1B7F	PUSH2	0060	 	 
+1497	 1D63	PUSH2	0060	 	 
 - stack 0: 0x7FFFC000
-1670	 1B82	MSTORE		 	  ;; # store to x3
+1498	 1D66	MSTORE		 	  ;; # store to x3
 - stack 1: 0x7FFFC000
 - stack 0: 0x60
-1671	 1B83	JUMPDEST		 	  ;; # DEBUG: addi tp,tp,1
-1672	 1B84	PUSH2	0080	 	 
-1673	 1B87	MLOAD		 	  ;; # read from x4
+1499	 1D67	JUMPDEST		 	  ;; # DEBUG: addi tp,tp,1
+1500	 1D68	PUSH2	0080	 	 
+1501	 1D6B	MLOAD		 	  ;; # read from x4
 - stack 0: 0x80
-1674	 1B88	PUSH32	0000000000000000000000000000000000000000000000000000000000000001	 	  ;; # signextended 1
+1502	 1D6C	PUSH32	0000000000000000000000000000000000000000000000000000000000000001	 	  ;; # signextended 1
 - stack 0: 0x0
-1675	 1BA9	ADD		 	  ;; # ADDI
+1503	 1D8D	ADD		 	  ;; # ADDI
 - stack 1: 0x0
 - stack 0: 0x1
-1676	 1BAA	PUSH2	0080	 	 
+1504	 1D8E	PUSH2	0080	 	 
 - stack 0: 0x1
-1677	 1BAD	MSTORE		 	  ;; # store to x4
+1505	 1D91	MSTORE		 	  ;; # store to x4
 - stack 1: 0x1
 - stack 0: 0x80
-1678	 1BAE	JUMPDEST		 	  ;; # DEBUG: addi t0,zero,2
-1679	 1BAF	PUSH32	0000000000000000000000000000000000000000000000000000000000000002	 	  ;; # signextended 2
-1680	 1BD0	PUSH2	00A0	 	 
+1506	 1D92	JUMPDEST		 	  ;; # DEBUG: addi t0,zero,2
+1507	 1D93	PUSH32	0000000000000000000000000000000000000000000000000000000000000002	 	  ;; # signextended 2
+1508	 1DB4	PUSH2	00A0	 	 
 - stack 0: 0x2
-1681	 1BD3	MSTORE		 	  ;; # store to x5
+1509	 1DB7	MSTORE		 	  ;; # store to x5
 - stack 1: 0x2
 - stack 0: 0xA0
-1682	 1BD4	PUSH2	0630	 	 
-1683	 1BD7	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+1510	 1DB8	PUSH2	0630	 	 
+1511	 1DBB	DUP1		 	  ;; # executing pc
 - stack 0: 0x630
-1684	 1BDA	JUMP		 	 
-- stack 1: 0x630
-- stack 0: 0x1A
-1685	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x630
-1686	 1B	DUP1		 	 
-- stack 0: 0x630
-1687	 1C	MLOAD		 	 
+1512	 1DBC	MLOAD		 	 
 - stack 1: 0x630
 - stack 0: 0x630
-1688	 1D	PUSH1	E0	 	 
+1513	 1DBD	PUSH1	E0	 	 
 - stack 1: 0x630
-- stack 0: 0x1C5100001CA100001CDA00001D0400001D5400001DD5000017E500000490
-1689	 1F	SHR		 	 
+- stack 0: 0x1E3900001E9000001ECB00001EFA00001F5100001FD400001996000004F3
+1514	 1DBF	SHR		 	 
 - stack 2: 0x630
-- stack 1: 0x1C5100001CA100001CDA00001D0400001D5400001DD5000017E500000490
+- stack 1: 0x1E3900001E9000001ECB00001EFA00001F5100001FD400001996000004F3
 - stack 0: 0xE0
-1690	 20	JUMP		 	 
+1515	 1DC0	JUMP		 	 
 - stack 1: 0x630
-- stack 0: 0x1C51
-1691	 1C51	JUMPDEST		 ;; _riscv_57adba93e280a730d774eb6dbad8e5cfbe32eb46545dd983b0192e8a5f8b081a	  ;; # pc 0x630 buffer: e31852fe decode bne tp,t0,-10
+- stack 0: 0x1E39
+1516	 1E39	JUMPDEST		 ;; _riscv_57adba93e280a730d774eb6dbad8e5cfbe32eb46545dd983b0192e8a5f8b081a	  ;; # pc 0x630 buffer: e31852fe decode bne tp,t0,-10
 - stack 0: 0x630
-1692	 1C52	PUSH2	0080	 	 
+1517	 1E3A	PUSH2	0080	 	 
 - stack 0: 0x630
-1693	 1C55	MLOAD		 	  ;; # read from x4
+1518	 1E3D	MLOAD		 	  ;; # read from x4
 - stack 1: 0x630
 - stack 0: 0x80
-1694	 1C56	PUSH4	FFFFFFFF	 	 
+1519	 1E3E	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x630
 - stack 0: 0x1
-1695	 1C5B	AND		 	  ;; # mask to 32 bits
+1520	 1E43	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x630
 - stack 1: 0x1
 - stack 0: 0xFFFFFFFF
-1696	 1C5C	PUSH2	00A0	 	 
+1521	 1E44	PUSH2	00A0	 	 
 - stack 1: 0x630
 - stack 0: 0x1
-1697	 1C5F	MLOAD		 	  ;; # read from x5
+1522	 1E47	MLOAD		 	  ;; # read from x5
 - stack 2: 0x630
 - stack 1: 0x1
 - stack 0: 0xA0
-1698	 1C60	PUSH4	FFFFFFFF	 	 
+1523	 1E48	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x630
 - stack 1: 0x1
 - stack 0: 0x2
-1699	 1C65	AND		 	  ;; # mask to 32 bits
+1524	 1E4D	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x630
 - stack 2: 0x1
 - stack 1: 0x2
 - stack 0: 0xFFFFFFFF
-1700	 1C66	SUB		 	 
+1525	 1E4E	SUB		 	 
 - stack 2: 0x630
 - stack 1: 0x1
 - stack 0: 0x2
-1701	 1C67	PUSH2	1C6F	 ;; _neq_763acfcf03da7cd74a3f5ae59669a3a672a3799078b4d3dd70a75edb93a86c6e	 
+1526	 1E4F	PUSH2	1E57	 ;; _neq_0899c42dce0bf6f5b1ca3c74775263f85039f9bc309fba7bb44c87098e6cf9f1	 
 - stack 1: 0x630
 - stack 0: 0x1
-1702	 1C6A	JUMPI		 	 
+1527	 1E52	JUMPI		 	 
 - stack 2: 0x630
 - stack 1: 0x1
-- stack 0: 0x1C6F
-1703	 1C6F	JUMPDEST		 ;; _neq_763acfcf03da7cd74a3f5ae59669a3a672a3799078b4d3dd70a75edb93a86c6e	 
+- stack 0: 0x1E57
+1528	 1E57	JUMPDEST		 ;; _neq_0899c42dce0bf6f5b1ca3c74775263f85039f9bc309fba7bb44c87098e6cf9f1	 
 - stack 0: 0x630
-1704	 1C70	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0	 	  ;; # signextended -16
+1529	 1E58	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0	 	  ;; # signextended -16
 - stack 0: 0x630
-1705	 1C91	ADD		 	 
+1530	 1E79	ADD		 	 
 - stack 1: 0x630
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0
-1706	 1C92	PUSH4	FFFFFFFF	 	 
+1531	 1E7A	PUSH4	FFFFFFFF	 	 
 - stack 0: 0x620
-1707	 1C97	AND		 	  ;; # mask to 32 bits
+1532	 1E7F	AND		 	  ;; # mask to 32 bits
 - stack 1: 0x620
 - stack 0: 0xFFFFFFFF
-1708	 1C98	PUSH2	001A	 ;; _execute	 
+1533	 1E80	DUP1		 	  ;; # executing pc
 - stack 0: 0x620
-1709	 1C9B	JUMP		 	 
-- stack 1: 0x620
-- stack 0: 0x1A
-1710	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x620
-1711	 1B	DUP1		 	 
-- stack 0: 0x620
-1712	 1C	MLOAD		 	 
+1534	 1E81	MLOAD		 	 
 - stack 1: 0x620
 - stack 0: 0x620
-1713	 1D	PUSH1	E0	 	 
+1535	 1E82	PUSH1	E0	 	 
 - stack 1: 0x620
-- stack 0: 0x1BDB000002250000157C000015AB00001C5100001CA100001CDA00001D04
-1714	 1F	SHR		 	 
+- stack 0: 0x1DC1000002530000170A0000173E00001E3900001E9000001ECB00001EFA
+1536	 1E84	SHR		 	 
 - stack 2: 0x620
-- stack 1: 0x1BDB000002250000157C000015AB00001C5100001CA100001CDA00001D04
+- stack 1: 0x1DC1000002530000170A0000173E00001E3900001E9000001ECB00001EFA
 - stack 0: 0xE0
-1715	 20	JUMP		 	 
+1537	 1E85	JUMP		 	 
 - stack 1: 0x620
-- stack 0: 0x1BDB
-1716	 1BDB	JUMPDEST		 ;; _riscvopt_582745d81b75c1a3c52661f21f58d42e801a2503ec8485ccc000329d1e81ea0d	  ;; # pc 0x620 buffer: b780ffff93d110001302120093022000
+- stack 0: 0x1DC1
+1538	 1DC1	JUMPDEST		 ;; _riscvopt_582745d81b75c1a3c52661f21f58d42e801a2503ec8485ccc000329d1e81ea0d	  ;; # pc 0x620 buffer: b780ffff93d110001302120093022000
 - stack 0: 0x620
-1717	 1BDC	POP		 	 
+1539	 1DC2	POP		 	 
 - stack 0: 0x620
-1718	 1BDD	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
-1719	 1BDE	PUSH4	ffff8000	 	 
-1720	 1BE3	PUSH2	0020	 	 
+1540	 1DC3	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
+1541	 1DC4	PUSH4	ffff8000	 	 
+1542	 1DC9	PUSH2	0020	 	 
 - stack 0: 0xFFFF8000
-1721	 1BE6	MSTORE		 	  ;; # store to x1
+1543	 1DCC	MSTORE		 	  ;; # store to x1
 - stack 1: 0xFFFF8000
 - stack 0: 0x20
-1722	 1BE7	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,1
-1723	 1BE8	PUSH2	0020	 	 
-1724	 1BEB	MLOAD		 	  ;; # read from x1
+1544	 1DCD	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,1
+1545	 1DCE	PUSH2	0020	 	 
+1546	 1DD1	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-1725	 1BEC	PUSH4	FFFFFFFF	 	 
+1547	 1DD2	PUSH4	FFFFFFFF	 	 
 - stack 0: 0xFFFF8000
-1726	 1BF1	AND		 	  ;; # mask to 32 bits
+1548	 1DD7	AND		 	  ;; # mask to 32 bits
 - stack 1: 0xFFFF8000
 - stack 0: 0xFFFFFFFF
-1727	 1BF2	PUSH1	01	 	 
+1549	 1DD8	PUSH1	01	 	 
 - stack 0: 0xFFFF8000
-1728	 1BF4	SHR		 	  ;; # SRLI
+1550	 1DDA	SHR		 	  ;; # SRLI
 - stack 1: 0xFFFF8000
 - stack 0: 0x1
-1729	 1BF5	PUSH2	0060	 	 
+1551	 1DDB	PUSH2	0060	 	 
 - stack 0: 0x7FFFC000
-1730	 1BF8	MSTORE		 	  ;; # store to x3
+1552	 1DDE	MSTORE		 	  ;; # store to x3
 - stack 1: 0x7FFFC000
 - stack 0: 0x60
-1731	 1BF9	JUMPDEST		 	  ;; # DEBUG: addi tp,tp,1
-1732	 1BFA	PUSH2	0080	 	 
-1733	 1BFD	MLOAD		 	  ;; # read from x4
+1553	 1DDF	JUMPDEST		 	  ;; # DEBUG: addi tp,tp,1
+1554	 1DE0	PUSH2	0080	 	 
+1555	 1DE3	MLOAD		 	  ;; # read from x4
 - stack 0: 0x80
-1734	 1BFE	PUSH32	0000000000000000000000000000000000000000000000000000000000000001	 	  ;; # signextended 1
+1556	 1DE4	PUSH32	0000000000000000000000000000000000000000000000000000000000000001	 	  ;; # signextended 1
 - stack 0: 0x1
-1735	 1C1F	ADD		 	  ;; # ADDI
+1557	 1E05	ADD		 	  ;; # ADDI
 - stack 1: 0x1
 - stack 0: 0x1
-1736	 1C20	PUSH2	0080	 	 
+1558	 1E06	PUSH2	0080	 	 
 - stack 0: 0x2
-1737	 1C23	MSTORE		 	  ;; # store to x4
+1559	 1E09	MSTORE		 	  ;; # store to x4
 - stack 1: 0x2
 - stack 0: 0x80
-1738	 1C24	JUMPDEST		 	  ;; # DEBUG: addi t0,zero,2
-1739	 1C25	PUSH32	0000000000000000000000000000000000000000000000000000000000000002	 	  ;; # signextended 2
-1740	 1C46	PUSH2	00A0	 	 
+1560	 1E0A	JUMPDEST		 	  ;; # DEBUG: addi t0,zero,2
+1561	 1E0B	PUSH32	0000000000000000000000000000000000000000000000000000000000000002	 	  ;; # signextended 2
+1562	 1E2C	PUSH2	00A0	 	 
 - stack 0: 0x2
-1741	 1C49	MSTORE		 	  ;; # store to x5
+1563	 1E2F	MSTORE		 	  ;; # store to x5
 - stack 1: 0x2
 - stack 0: 0xA0
-1742	 1C4A	PUSH2	0630	 	 
-1743	 1C4D	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+1564	 1E30	PUSH2	0630	 	 
+1565	 1E33	DUP1		 	  ;; # executing pc
 - stack 0: 0x630
-1744	 1C50	JUMP		 	 
-- stack 1: 0x630
-- stack 0: 0x1A
-1745	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x630
-1746	 1B	DUP1		 	 
-- stack 0: 0x630
-1747	 1C	MLOAD		 	 
+1566	 1E34	MLOAD		 	 
 - stack 1: 0x630
 - stack 0: 0x630
-1748	 1D	PUSH1	E0	 	 
+1567	 1E35	PUSH1	E0	 	 
 - stack 1: 0x630
-- stack 0: 0x1C5100001CA100001CDA00001D0400001D5400001DD5000017E500000490
-1749	 1F	SHR		 	 
+- stack 0: 0x1E3900001E9000001ECB00001EFA00001F5100001FD400001996000004F3
+1568	 1E37	SHR		 	 
 - stack 2: 0x630
-- stack 1: 0x1C5100001CA100001CDA00001D0400001D5400001DD5000017E500000490
+- stack 1: 0x1E3900001E9000001ECB00001EFA00001F5100001FD400001996000004F3
 - stack 0: 0xE0
-1750	 20	JUMP		 	 
+1569	 1E38	JUMP		 	 
 - stack 1: 0x630
-- stack 0: 0x1C51
-1751	 1C51	JUMPDEST		 ;; _riscv_57adba93e280a730d774eb6dbad8e5cfbe32eb46545dd983b0192e8a5f8b081a	  ;; # pc 0x630 buffer: e31852fe decode bne tp,t0,-10
+- stack 0: 0x1E39
+1570	 1E39	JUMPDEST		 ;; _riscv_57adba93e280a730d774eb6dbad8e5cfbe32eb46545dd983b0192e8a5f8b081a	  ;; # pc 0x630 buffer: e31852fe decode bne tp,t0,-10
 - stack 0: 0x630
-1752	 1C52	PUSH2	0080	 	 
+1571	 1E3A	PUSH2	0080	 	 
 - stack 0: 0x630
-1753	 1C55	MLOAD		 	  ;; # read from x4
+1572	 1E3D	MLOAD		 	  ;; # read from x4
 - stack 1: 0x630
 - stack 0: 0x80
-1754	 1C56	PUSH4	FFFFFFFF	 	 
+1573	 1E3E	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x630
 - stack 0: 0x2
-1755	 1C5B	AND		 	  ;; # mask to 32 bits
+1574	 1E43	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x630
 - stack 1: 0x2
 - stack 0: 0xFFFFFFFF
-1756	 1C5C	PUSH2	00A0	 	 
+1575	 1E44	PUSH2	00A0	 	 
 - stack 1: 0x630
 - stack 0: 0x2
-1757	 1C5F	MLOAD		 	  ;; # read from x5
+1576	 1E47	MLOAD		 	  ;; # read from x5
 - stack 2: 0x630
 - stack 1: 0x2
 - stack 0: 0xA0
-1758	 1C60	PUSH4	FFFFFFFF	 	 
+1577	 1E48	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x630
 - stack 1: 0x2
 - stack 0: 0x2
-1759	 1C65	AND		 	  ;; # mask to 32 bits
+1578	 1E4D	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x630
 - stack 2: 0x2
 - stack 1: 0x2
 - stack 0: 0xFFFFFFFF
-1760	 1C66	SUB		 	 
+1579	 1E4E	SUB		 	 
 - stack 2: 0x630
 - stack 1: 0x2
 - stack 0: 0x2
-1761	 1C67	PUSH2	1C6F	 ;; _neq_763acfcf03da7cd74a3f5ae59669a3a672a3799078b4d3dd70a75edb93a86c6e	 
+1580	 1E4F	PUSH2	1E57	 ;; _neq_0899c42dce0bf6f5b1ca3c74775263f85039f9bc309fba7bb44c87098e6cf9f1	 
 - stack 1: 0x630
 - stack 0: 0x0
-1762	 1C6A	JUMPI		 	 
+1581	 1E52	JUMPI		 	 
 - stack 2: 0x630
 - stack 1: 0x0
-- stack 0: 0x1C6F
-1763	 1C6B	PUSH2	1C9C	 ;; _neq_after_763acfcf03da7cd74a3f5ae59669a3a672a3799078b4d3dd70a75edb93a86c6e	 
+- stack 0: 0x1E57
+1582	 1E53	PUSH2	1E86	 ;; _neq_after_0899c42dce0bf6f5b1ca3c74775263f85039f9bc309fba7bb44c87098e6cf9f1	 
 - stack 0: 0x630
-1764	 1C6E	JUMP		 	 
+1583	 1E56	JUMP		 	 
 - stack 1: 0x630
-- stack 0: 0x1C9C
-1765	 1C9C	JUMPDEST		 ;; _neq_after_763acfcf03da7cd74a3f5ae59669a3a672a3799078b4d3dd70a75edb93a86c6e	 
+- stack 0: 0x1E86
+1584	 1E86	JUMPDEST		 ;; _neq_after_0899c42dce0bf6f5b1ca3c74775263f85039f9bc309fba7bb44c87098e6cf9f1	 
 - stack 0: 0x630
-1766	 1C9D	PUSH2	0016	 ;; _pcplus4	 
+1585	 1E87	PUSH1	04	 	 
 - stack 0: 0x630
-1767	 1CA0	JUMP		 	 
-- stack 1: 0x630
-- stack 0: 0x16
-1768	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x630
-1769	 17	PUSH1	04	 	 
-- stack 0: 0x630
-1770	 19	ADD		 	 
+1586	 1E89	ADD		 	 
 - stack 1: 0x630
 - stack 0: 0x4
-1771	 1A	JUMPDEST		 ;; _execute	 
+1587	 1E8A	DUP1		 	  ;; # executing pc
 - stack 0: 0x634
-1772	 1B	DUP1		 	 
-- stack 0: 0x634
-1773	 1C	MLOAD		 	 
+1588	 1E8B	MLOAD		 	 
 - stack 1: 0x634
 - stack 0: 0x634
-1774	 1D	PUSH1	E0	 	 
+1589	 1E8C	PUSH1	E0	 	 
 - stack 1: 0x634
-- stack 0: 0x1CA100001CDA00001D0400001D5400001DD5000017E5000004900000157C
-1775	 1F	SHR		 	 
+- stack 0: 0x1E9000001ECB00001EFA00001F5100001FD400001996000004F30000170A
+1590	 1E8E	SHR		 	 
 - stack 2: 0x634
-- stack 1: 0x1CA100001CDA00001D0400001D5400001DD5000017E5000004900000157C
+- stack 1: 0x1E9000001ECB00001EFA00001F5100001FD400001996000004F30000170A
 - stack 0: 0xE0
-1776	 20	JUMP		 	 
+1591	 1E8F	JUMP		 	 
 - stack 1: 0x634
-- stack 0: 0x1CA1
-1777	 1CA1	JUMPDEST		 ;; _riscvopt_6fe5d0922013eb51da668111b94334343994b88706795c5ebfeec10e9137ae5a	  ;; # pc 0x634 buffer: b7ceff7f130e9001
+- stack 0: 0x1E90
+1592	 1E90	JUMPDEST		 ;; _riscvopt_6fe5d0922013eb51da668111b94334343994b88706795c5ebfeec10e9137ae5a	  ;; # pc 0x634 buffer: b7ceff7f130e9001
 - stack 0: 0x634
-1778	 1CA2	POP		 	 
+1593	 1E91	POP		 	 
 - stack 0: 0x634
-1779	 1CA3	JUMPDEST		 	  ;; # DEBUG: lui t4,0x7fffc
-1780	 1CA4	PUSH4	7fffc000	 	 
-1781	 1CA9	PUSH2	03A0	 	 
+1594	 1E92	JUMPDEST		 	  ;; # DEBUG: lui t4,0x7fffc
+1595	 1E93	PUSH4	7fffc000	 	 
+1596	 1E98	PUSH2	03A0	 	 
 - stack 0: 0x7FFFC000
-1782	 1CAC	MSTORE		 	  ;; # store to x29
+1597	 1E9B	MSTORE		 	  ;; # store to x29
 - stack 1: 0x7FFFC000
 - stack 0: 0x3A0
-1783	 1CAD	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,25
-1784	 1CAE	PUSH32	0000000000000000000000000000000000000000000000000000000000000019	 	  ;; # signextended 25
-1785	 1CCF	PUSH2	0380	 	 
+1598	 1E9C	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,25
+1599	 1E9D	PUSH32	0000000000000000000000000000000000000000000000000000000000000019	 	  ;; # signextended 25
+1600	 1EBE	PUSH2	0380	 	 
 - stack 0: 0x19
-1786	 1CD2	MSTORE		 	  ;; # store to x28
+1601	 1EC1	MSTORE		 	  ;; # store to x28
 - stack 1: 0x19
 - stack 0: 0x380
-1787	 1CD3	PUSH2	063C	 	 
-1788	 1CD6	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+1602	 1EC2	PUSH2	063C	 	 
+1603	 1EC5	DUP1		 	  ;; # executing pc
 - stack 0: 0x63C
-1789	 1CD9	JUMP		 	 
-- stack 1: 0x63C
-- stack 0: 0x1A
-1790	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x63C
-1791	 1B	DUP1		 	 
-- stack 0: 0x63C
-1792	 1C	MLOAD		 	 
+1604	 1EC6	MLOAD		 	 
 - stack 1: 0x63C
 - stack 0: 0x63C
-1793	 1D	PUSH1	E0	 	 
+1605	 1EC7	PUSH1	E0	 	 
 - stack 1: 0x63C
-- stack 0: 0x1D0400001D5400001DD5000017E5000004900000157C000015AB000015D5
-1794	 1F	SHR		 	 
+- stack 0: 0x1EFA00001F5100001FD400001996000004F30000170A0000173E0000176D
+1606	 1EC9	SHR		 	 
 - stack 2: 0x63C
-- stack 1: 0x1D0400001D5400001DD5000017E5000004900000157C000015AB000015D5
+- stack 1: 0x1EFA00001F5100001FD400001996000004F30000170A0000173E0000176D
 - stack 0: 0xE0
-1795	 20	JUMP		 	 
+1607	 1ECA	JUMP		 	 
 - stack 1: 0x63C
-- stack 0: 0x1D04
-1796	 1D04	JUMPDEST		 ;; _riscv_d89992e62d11826f145c4c8b8f793d322c36b27a0e38b2914d3aaa2ec8cfef7c	  ;; # pc 0x63c buffer: 6394d109 decode bne gp,t4,88
+- stack 0: 0x1EFA
+1608	 1EFA	JUMPDEST		 ;; _riscv_d89992e62d11826f145c4c8b8f793d322c36b27a0e38b2914d3aaa2ec8cfef7c	  ;; # pc 0x63c buffer: 6394d109 decode bne gp,t4,88
 - stack 0: 0x63C
-1797	 1D05	PUSH2	0060	 	 
+1609	 1EFB	PUSH2	0060	 	 
 - stack 0: 0x63C
-1798	 1D08	MLOAD		 	  ;; # read from x3
+1610	 1EFE	MLOAD		 	  ;; # read from x3
 - stack 1: 0x63C
 - stack 0: 0x60
-1799	 1D09	PUSH4	FFFFFFFF	 	 
+1611	 1EFF	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x63C
 - stack 0: 0x7FFFC000
-1800	 1D0E	AND		 	  ;; # mask to 32 bits
+1612	 1F04	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x63C
 - stack 1: 0x7FFFC000
 - stack 0: 0xFFFFFFFF
-1801	 1D0F	PUSH2	03A0	 	 
+1613	 1F05	PUSH2	03A0	 	 
 - stack 1: 0x63C
 - stack 0: 0x7FFFC000
-1802	 1D12	MLOAD		 	  ;; # read from x29
+1614	 1F08	MLOAD		 	  ;; # read from x29
 - stack 2: 0x63C
 - stack 1: 0x7FFFC000
 - stack 0: 0x3A0
-1803	 1D13	PUSH4	FFFFFFFF	 	 
+1615	 1F09	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x63C
 - stack 1: 0x7FFFC000
 - stack 0: 0x7FFFC000
-1804	 1D18	AND		 	  ;; # mask to 32 bits
+1616	 1F0E	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x63C
 - stack 2: 0x7FFFC000
 - stack 1: 0x7FFFC000
 - stack 0: 0xFFFFFFFF
-1805	 1D19	SUB		 	 
+1617	 1F0F	SUB		 	 
 - stack 2: 0x63C
 - stack 1: 0x7FFFC000
 - stack 0: 0x7FFFC000
-1806	 1D1A	PUSH2	1D22	 ;; _neq_d09847bbb7b916dc63bfeda8a5a4f51385fe99101f6e9639a457dd1310bbf406	 
+1618	 1F10	PUSH2	1F18	 ;; _neq_bfc4ded72d4786505d21f53b8feb2f913b89a21b69e022d493986ab5ab2f76a6	 
 - stack 1: 0x63C
 - stack 0: 0x0
-1807	 1D1D	JUMPI		 	 
+1619	 1F13	JUMPI		 	 
 - stack 2: 0x63C
 - stack 1: 0x0
-- stack 0: 0x1D22
-1808	 1D1E	PUSH2	1D4F	 ;; _neq_after_d09847bbb7b916dc63bfeda8a5a4f51385fe99101f6e9639a457dd1310bbf406	 
+- stack 0: 0x1F18
+1620	 1F14	PUSH2	1F47	 ;; _neq_after_bfc4ded72d4786505d21f53b8feb2f913b89a21b69e022d493986ab5ab2f76a6	 
 - stack 0: 0x63C
-1809	 1D21	JUMP		 	 
+1621	 1F17	JUMP		 	 
 - stack 1: 0x63C
-- stack 0: 0x1D4F
-1810	 1D4F	JUMPDEST		 ;; _neq_after_d09847bbb7b916dc63bfeda8a5a4f51385fe99101f6e9639a457dd1310bbf406	 
+- stack 0: 0x1F47
+1622	 1F47	JUMPDEST		 ;; _neq_after_bfc4ded72d4786505d21f53b8feb2f913b89a21b69e022d493986ab5ab2f76a6	 
 - stack 0: 0x63C
-1811	 1D50	PUSH2	0016	 ;; _pcplus4	 
+1623	 1F48	PUSH1	04	 	 
 - stack 0: 0x63C
-1812	 1D53	JUMP		 	 
-- stack 1: 0x63C
-- stack 0: 0x16
-1813	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x63C
-1814	 17	PUSH1	04	 	 
-- stack 0: 0x63C
-1815	 19	ADD		 	 
+1624	 1F4A	ADD		 	 
 - stack 1: 0x63C
 - stack 0: 0x4
-1816	 1A	JUMPDEST		 ;; _execute	 
+1625	 1F4B	DUP1		 	  ;; # executing pc
 - stack 0: 0x640
-1817	 1B	DUP1		 	 
-- stack 0: 0x640
-1818	 1C	MLOAD		 	 
+1626	 1F4C	MLOAD		 	 
 - stack 1: 0x640
 - stack 0: 0x640
-1819	 1D	PUSH1	E0	 	 
+1627	 1F4D	PUSH1	E0	 	 
 - stack 1: 0x640
-- stack 0: 0x1D5400001DD5000017E5000004900000157C000015AB000015D500001E4F
-1820	 1F	SHR		 	 
+- stack 0: 0x1F5100001FD400001996000004F30000170A0000173E0000176D00002050
+1628	 1F4F	SHR		 	 
 - stack 2: 0x640
-- stack 1: 0x1D5400001DD5000017E5000004900000157C000015AB000015D500001E4F
+- stack 1: 0x1F5100001FD400001996000004F30000170A0000173E0000176D00002050
 - stack 0: 0xE0
-1821	 20	JUMP		 	 
+1629	 1F50	JUMP		 	 
 - stack 1: 0x640
-- stack 0: 0x1D54
-1822	 1D54	JUMPDEST		 ;; _riscvopt_81829e09e545e060f99fb7101c78e09670687173b38350b05b1ce2d19b2d628c	  ;; # pc 0x640 buffer: 13020000b780ffff1300000093d1e0001302120093022000
+- stack 0: 0x1F51
+1630	 1F51	JUMPDEST		 ;; _riscvopt_81829e09e545e060f99fb7101c78e09670687173b38350b05b1ce2d19b2d628c	  ;; # pc 0x640 buffer: 13020000b780ffff1300000093d1e0001302120093022000
 - stack 0: 0x640
-1823	 1D55	POP		 	 
+1631	 1F52	POP		 	 
 - stack 0: 0x640
-1824	 1D56	JUMPDEST		 	  ;; # DEBUG: addi tp,zero,0
-1825	 1D57	PUSH1	00	 	 
-1826	 1D59	PUSH2	0080	 	 
+1632	 1F53	JUMPDEST		 	  ;; # DEBUG: addi tp,zero,0
+1633	 1F54	PUSH1	00	 	 
+1634	 1F56	PUSH2	0080	 	 
 - stack 0: 0x0
-1827	 1D5C	MSTORE		 	  ;; # store to x4
+1635	 1F59	MSTORE		 	  ;; # store to x4
 - stack 1: 0x0
 - stack 0: 0x80
-1828	 1D5D	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
-1829	 1D5E	PUSH4	ffff8000	 	 
-1830	 1D63	PUSH2	0020	 	 
+1636	 1F5A	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
+1637	 1F5B	PUSH4	ffff8000	 	 
+1638	 1F60	PUSH2	0020	 	 
 - stack 0: 0xFFFF8000
-1831	 1D66	MSTORE		 	  ;; # store to x1
+1639	 1F63	MSTORE		 	  ;; # store to x1
 - stack 1: 0xFFFF8000
 - stack 0: 0x20
-1832	 1D67	JUMPDEST		 	  ;; # DEBUG: addi zero,zero,0
-1833	 1D68	PUSH1	00	 	 
-1834	 1D6A	POP		 	 
+1640	 1F64	JUMPDEST		 	  ;; # DEBUG: addi zero,zero,0
+1641	 1F65	PUSH1	00	 	 
+1642	 1F67	POP		 	 
 - stack 0: 0x0
-1835	 1D6B	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,14
-1836	 1D6C	PUSH2	0020	 	 
-1837	 1D6F	MLOAD		 	  ;; # read from x1
+1643	 1F68	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,14
+1644	 1F69	PUSH2	0020	 	 
+1645	 1F6C	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-1838	 1D70	PUSH4	FFFFFFFF	 	 
+1646	 1F6D	PUSH4	FFFFFFFF	 	 
 - stack 0: 0xFFFF8000
-1839	 1D75	AND		 	  ;; # mask to 32 bits
+1647	 1F72	AND		 	  ;; # mask to 32 bits
 - stack 1: 0xFFFF8000
 - stack 0: 0xFFFFFFFF
-1840	 1D76	PUSH1	0E	 	 
+1648	 1F73	PUSH1	0E	 	 
 - stack 0: 0xFFFF8000
-1841	 1D78	SHR		 	  ;; # SRLI
+1649	 1F75	SHR		 	  ;; # SRLI
 - stack 1: 0xFFFF8000
 - stack 0: 0xE
-1842	 1D79	PUSH2	0060	 	 
+1650	 1F76	PUSH2	0060	 	 
 - stack 0: 0x3FFFE
-1843	 1D7C	MSTORE		 	  ;; # store to x3
+1651	 1F79	MSTORE		 	  ;; # store to x3
 - stack 1: 0x3FFFE
 - stack 0: 0x60
-1844	 1D7D	JUMPDEST		 	  ;; # DEBUG: addi tp,tp,1
-1845	 1D7E	PUSH2	0080	 	 
-1846	 1D81	MLOAD		 	  ;; # read from x4
+1652	 1F7A	JUMPDEST		 	  ;; # DEBUG: addi tp,tp,1
+1653	 1F7B	PUSH2	0080	 	 
+1654	 1F7E	MLOAD		 	  ;; # read from x4
 - stack 0: 0x80
-1847	 1D82	PUSH32	0000000000000000000000000000000000000000000000000000000000000001	 	  ;; # signextended 1
+1655	 1F7F	PUSH32	0000000000000000000000000000000000000000000000000000000000000001	 	  ;; # signextended 1
 - stack 0: 0x0
-1848	 1DA3	ADD		 	  ;; # ADDI
+1656	 1FA0	ADD		 	  ;; # ADDI
 - stack 1: 0x0
 - stack 0: 0x1
-1849	 1DA4	PUSH2	0080	 	 
+1657	 1FA1	PUSH2	0080	 	 
 - stack 0: 0x1
-1850	 1DA7	MSTORE		 	  ;; # store to x4
+1658	 1FA4	MSTORE		 	  ;; # store to x4
 - stack 1: 0x1
 - stack 0: 0x80
-1851	 1DA8	JUMPDEST		 	  ;; # DEBUG: addi t0,zero,2
-1852	 1DA9	PUSH32	0000000000000000000000000000000000000000000000000000000000000002	 	  ;; # signextended 2
-1853	 1DCA	PUSH2	00A0	 	 
+1659	 1FA5	JUMPDEST		 	  ;; # DEBUG: addi t0,zero,2
+1660	 1FA6	PUSH32	0000000000000000000000000000000000000000000000000000000000000002	 	  ;; # signextended 2
+1661	 1FC7	PUSH2	00A0	 	 
 - stack 0: 0x2
-1854	 1DCD	MSTORE		 	  ;; # store to x5
+1662	 1FCA	MSTORE		 	  ;; # store to x5
 - stack 1: 0x2
 - stack 0: 0xA0
-1855	 1DCE	PUSH2	0658	 	 
-1856	 1DD1	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+1663	 1FCB	PUSH2	0658	 	 
+1664	 1FCE	DUP1		 	  ;; # executing pc
 - stack 0: 0x658
-1857	 1DD4	JUMP		 	 
-- stack 1: 0x658
-- stack 0: 0x1A
-1858	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x658
-1859	 1B	DUP1		 	 
-- stack 0: 0x658
-1860	 1C	MLOAD		 	 
+1665	 1FCF	MLOAD		 	 
 - stack 1: 0x658
 - stack 0: 0x658
-1861	 1D	PUSH1	E0	 	 
+1666	 1FD0	PUSH1	E0	 	 
 - stack 1: 0x658
-- stack 0: 0x15D500001E4F000004B400001EB300001EDD00001F2D00001FB2000017E5
-1862	 1F	SHR		 	 
+- stack 0: 0x176D0000205000000521000020B6000020E50000213C000021C300001996
+1667	 1FD2	SHR		 	 
 - stack 2: 0x658
-- stack 1: 0x15D500001E4F000004B400001EB300001EDD00001F2D00001FB2000017E5
+- stack 1: 0x176D0000205000000521000020B6000020E50000213C000021C300001996
 - stack 0: 0xE0
-1863	 20	JUMP		 	 
+1668	 1FD3	JUMP		 	 
 - stack 1: 0x658
-- stack 0: 0x15D5
-1864	 15D5	JUMPDEST		 ;; _riscv_a13a421128742f869b3bf41989a12f16d5f636988a6d6b839570667949bd7d06	  ;; # pc 0x5a8 buffer: e31652fe decode bne tp,t0,-14
+- stack 0: 0x176D
+1669	 176D	JUMPDEST		 ;; _riscv_a13a421128742f869b3bf41989a12f16d5f636988a6d6b839570667949bd7d06	  ;; # pc 0x5a8 buffer: e31652fe decode bne tp,t0,-14
 - stack 0: 0x658
-1865	 15D6	PUSH2	0080	 	 
+1670	 176E	PUSH2	0080	 	 
 - stack 0: 0x658
-1866	 15D9	MLOAD		 	  ;; # read from x4
+1671	 1771	MLOAD		 	  ;; # read from x4
 - stack 1: 0x658
 - stack 0: 0x80
-1867	 15DA	PUSH4	FFFFFFFF	 	 
+1672	 1772	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x658
 - stack 0: 0x1
-1868	 15DF	AND		 	  ;; # mask to 32 bits
+1673	 1777	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x658
 - stack 1: 0x1
 - stack 0: 0xFFFFFFFF
-1869	 15E0	PUSH2	00A0	 	 
+1674	 1778	PUSH2	00A0	 	 
 - stack 1: 0x658
 - stack 0: 0x1
-1870	 15E3	MLOAD		 	  ;; # read from x5
+1675	 177B	MLOAD		 	  ;; # read from x5
 - stack 2: 0x658
 - stack 1: 0x1
 - stack 0: 0xA0
-1871	 15E4	PUSH4	FFFFFFFF	 	 
+1676	 177C	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x658
 - stack 1: 0x1
 - stack 0: 0x2
-1872	 15E9	AND		 	  ;; # mask to 32 bits
+1677	 1781	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x658
 - stack 2: 0x1
 - stack 1: 0x2
 - stack 0: 0xFFFFFFFF
-1873	 15EA	SUB		 	 
+1678	 1782	SUB		 	 
 - stack 2: 0x658
 - stack 1: 0x1
 - stack 0: 0x2
-1874	 15EB	PUSH2	15F3	 ;; _neq_c6d0ef42e1b174ebd4898eef263dcde9de16c75b34c3e8aafc0257fd07a9e6f5	 
+1679	 1783	PUSH2	178B	 ;; _neq_396a6e3a58ce2f185ecc704a0c095870cd64f67dc21a497dd2049b4db6a1a624	 
 - stack 1: 0x658
 - stack 0: 0x1
-1875	 15EE	JUMPI		 	 
+1680	 1786	JUMPI		 	 
 - stack 2: 0x658
 - stack 1: 0x1
-- stack 0: 0x15F3
-1876	 15F3	JUMPDEST		 ;; _neq_c6d0ef42e1b174ebd4898eef263dcde9de16c75b34c3e8aafc0257fd07a9e6f5	 
+- stack 0: 0x178B
+1681	 178B	JUMPDEST		 ;; _neq_396a6e3a58ce2f185ecc704a0c095870cd64f67dc21a497dd2049b4db6a1a624	 
 - stack 0: 0x658
-1877	 15F4	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEC	 	  ;; # signextended -20
+1682	 178C	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEC	 	  ;; # signextended -20
 - stack 0: 0x658
-1878	 1615	ADD		 	 
+1683	 17AD	ADD		 	 
 - stack 1: 0x658
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEC
-1879	 1616	PUSH4	FFFFFFFF	 	 
+1684	 17AE	PUSH4	FFFFFFFF	 	 
 - stack 0: 0x644
-1880	 161B	AND		 	  ;; # mask to 32 bits
+1685	 17B3	AND		 	  ;; # mask to 32 bits
 - stack 1: 0x644
 - stack 0: 0xFFFFFFFF
-1881	 161C	PUSH2	001A	 ;; _execute	 
+1686	 17B4	DUP1		 	  ;; # executing pc
 - stack 0: 0x644
-1882	 161F	JUMP		 	 
-- stack 1: 0x644
-- stack 0: 0x1A
-1883	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x644
-1884	 1B	DUP1		 	 
-- stack 0: 0x644
-1885	 1C	MLOAD		 	 
+1687	 17B5	MLOAD		 	 
 - stack 1: 0x644
 - stack 0: 0x644
-1886	 1D	PUSH1	E0	 	 
+1688	 17B6	PUSH1	E0	 	 
 - stack 1: 0x644
-- stack 0: 0x1DD5000017E5000004900000157C000015AB000015D500001E4F000004B4
-1887	 1F	SHR		 	 
+- stack 0: 0x1FD400001996000004F30000170A0000173E0000176D0000205000000521
+1689	 17B8	SHR		 	 
 - stack 2: 0x644
-- stack 1: 0x1DD5000017E5000004900000157C000015AB000015D500001E4F000004B4
+- stack 1: 0x1FD400001996000004F30000170A0000173E0000176D0000205000000521
 - stack 0: 0xE0
-1888	 20	JUMP		 	 
+1690	 17B9	JUMP		 	 
 - stack 1: 0x644
-- stack 0: 0x1DD5
-1889	 1DD5	JUMPDEST		 ;; _riscvopt_586a88ab085c48e0d927dd759ad2e34775825afa9f2fe7ea52787c26cc88b35b	  ;; # pc 0x644 buffer: b780ffff1300000093d1e0001302120093022000
+- stack 0: 0x1FD4
+1691	 1FD4	JUMPDEST		 ;; _riscvopt_586a88ab085c48e0d927dd759ad2e34775825afa9f2fe7ea52787c26cc88b35b	  ;; # pc 0x644 buffer: b780ffff1300000093d1e0001302120093022000
 - stack 0: 0x644
-1890	 1DD6	POP		 	 
+1692	 1FD5	POP		 	 
 - stack 0: 0x644
-1891	 1DD7	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
-1892	 1DD8	PUSH4	ffff8000	 	 
-1893	 1DDD	PUSH2	0020	 	 
+1693	 1FD6	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
+1694	 1FD7	PUSH4	ffff8000	 	 
+1695	 1FDC	PUSH2	0020	 	 
 - stack 0: 0xFFFF8000
-1894	 1DE0	MSTORE		 	  ;; # store to x1
+1696	 1FDF	MSTORE		 	  ;; # store to x1
 - stack 1: 0xFFFF8000
 - stack 0: 0x20
-1895	 1DE1	JUMPDEST		 	  ;; # DEBUG: addi zero,zero,0
-1896	 1DE2	PUSH1	00	 	 
-1897	 1DE4	POP		 	 
+1697	 1FE0	JUMPDEST		 	  ;; # DEBUG: addi zero,zero,0
+1698	 1FE1	PUSH1	00	 	 
+1699	 1FE3	POP		 	 
 - stack 0: 0x0
-1898	 1DE5	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,14
-1899	 1DE6	PUSH2	0020	 	 
-1900	 1DE9	MLOAD		 	  ;; # read from x1
+1700	 1FE4	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,14
+1701	 1FE5	PUSH2	0020	 	 
+1702	 1FE8	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-1901	 1DEA	PUSH4	FFFFFFFF	 	 
+1703	 1FE9	PUSH4	FFFFFFFF	 	 
 - stack 0: 0xFFFF8000
-1902	 1DEF	AND		 	  ;; # mask to 32 bits
+1704	 1FEE	AND		 	  ;; # mask to 32 bits
 - stack 1: 0xFFFF8000
 - stack 0: 0xFFFFFFFF
-1903	 1DF0	PUSH1	0E	 	 
+1705	 1FEF	PUSH1	0E	 	 
 - stack 0: 0xFFFF8000
-1904	 1DF2	SHR		 	  ;; # SRLI
+1706	 1FF1	SHR		 	  ;; # SRLI
 - stack 1: 0xFFFF8000
 - stack 0: 0xE
-1905	 1DF3	PUSH2	0060	 	 
+1707	 1FF2	PUSH2	0060	 	 
 - stack 0: 0x3FFFE
-1906	 1DF6	MSTORE		 	  ;; # store to x3
+1708	 1FF5	MSTORE		 	  ;; # store to x3
 - stack 1: 0x3FFFE
 - stack 0: 0x60
-1907	 1DF7	JUMPDEST		 	  ;; # DEBUG: addi tp,tp,1
-1908	 1DF8	PUSH2	0080	 	 
-1909	 1DFB	MLOAD		 	  ;; # read from x4
+1709	 1FF6	JUMPDEST		 	  ;; # DEBUG: addi tp,tp,1
+1710	 1FF7	PUSH2	0080	 	 
+1711	 1FFA	MLOAD		 	  ;; # read from x4
 - stack 0: 0x80
-1910	 1DFC	PUSH32	0000000000000000000000000000000000000000000000000000000000000001	 	  ;; # signextended 1
+1712	 1FFB	PUSH32	0000000000000000000000000000000000000000000000000000000000000001	 	  ;; # signextended 1
 - stack 0: 0x1
-1911	 1E1D	ADD		 	  ;; # ADDI
+1713	 201C	ADD		 	  ;; # ADDI
 - stack 1: 0x1
 - stack 0: 0x1
-1912	 1E1E	PUSH2	0080	 	 
+1714	 201D	PUSH2	0080	 	 
 - stack 0: 0x2
-1913	 1E21	MSTORE		 	  ;; # store to x4
+1715	 2020	MSTORE		 	  ;; # store to x4
 - stack 1: 0x2
 - stack 0: 0x80
-1914	 1E22	JUMPDEST		 	  ;; # DEBUG: addi t0,zero,2
-1915	 1E23	PUSH32	0000000000000000000000000000000000000000000000000000000000000002	 	  ;; # signextended 2
-1916	 1E44	PUSH2	00A0	 	 
+1716	 2021	JUMPDEST		 	  ;; # DEBUG: addi t0,zero,2
+1717	 2022	PUSH32	0000000000000000000000000000000000000000000000000000000000000002	 	  ;; # signextended 2
+1718	 2043	PUSH2	00A0	 	 
 - stack 0: 0x2
-1917	 1E47	MSTORE		 	  ;; # store to x5
+1719	 2046	MSTORE		 	  ;; # store to x5
 - stack 1: 0x2
 - stack 0: 0xA0
-1918	 1E48	PUSH2	0658	 	 
-1919	 1E4B	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+1720	 2047	PUSH2	0658	 	 
+1721	 204A	DUP1		 	  ;; # executing pc
 - stack 0: 0x658
-1920	 1E4E	JUMP		 	 
-- stack 1: 0x658
-- stack 0: 0x1A
-1921	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x658
-1922	 1B	DUP1		 	 
-- stack 0: 0x658
-1923	 1C	MLOAD		 	 
+1722	 204B	MLOAD		 	 
 - stack 1: 0x658
 - stack 0: 0x658
-1924	 1D	PUSH1	E0	 	 
+1723	 204C	PUSH1	E0	 	 
 - stack 1: 0x658
-- stack 0: 0x15D500001E4F000004B400001EB300001EDD00001F2D00001FB2000017E5
-1925	 1F	SHR		 	 
+- stack 0: 0x176D0000205000000521000020B6000020E50000213C000021C300001996
+1724	 204E	SHR		 	 
 - stack 2: 0x658
-- stack 1: 0x15D500001E4F000004B400001EB300001EDD00001F2D00001FB2000017E5
+- stack 1: 0x176D0000205000000521000020B6000020E50000213C000021C300001996
 - stack 0: 0xE0
-1926	 20	JUMP		 	 
+1725	 204F	JUMP		 	 
 - stack 1: 0x658
-- stack 0: 0x15D5
-1927	 15D5	JUMPDEST		 ;; _riscv_a13a421128742f869b3bf41989a12f16d5f636988a6d6b839570667949bd7d06	  ;; # pc 0x5a8 buffer: e31652fe decode bne tp,t0,-14
+- stack 0: 0x176D
+1726	 176D	JUMPDEST		 ;; _riscv_a13a421128742f869b3bf41989a12f16d5f636988a6d6b839570667949bd7d06	  ;; # pc 0x5a8 buffer: e31652fe decode bne tp,t0,-14
 - stack 0: 0x658
-1928	 15D6	PUSH2	0080	 	 
+1727	 176E	PUSH2	0080	 	 
 - stack 0: 0x658
-1929	 15D9	MLOAD		 	  ;; # read from x4
+1728	 1771	MLOAD		 	  ;; # read from x4
 - stack 1: 0x658
 - stack 0: 0x80
-1930	 15DA	PUSH4	FFFFFFFF	 	 
+1729	 1772	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x658
 - stack 0: 0x2
-1931	 15DF	AND		 	  ;; # mask to 32 bits
+1730	 1777	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x658
 - stack 1: 0x2
 - stack 0: 0xFFFFFFFF
-1932	 15E0	PUSH2	00A0	 	 
+1731	 1778	PUSH2	00A0	 	 
 - stack 1: 0x658
 - stack 0: 0x2
-1933	 15E3	MLOAD		 	  ;; # read from x5
+1732	 177B	MLOAD		 	  ;; # read from x5
 - stack 2: 0x658
 - stack 1: 0x2
 - stack 0: 0xA0
-1934	 15E4	PUSH4	FFFFFFFF	 	 
+1733	 177C	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x658
 - stack 1: 0x2
 - stack 0: 0x2
-1935	 15E9	AND		 	  ;; # mask to 32 bits
+1734	 1781	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x658
 - stack 2: 0x2
 - stack 1: 0x2
 - stack 0: 0xFFFFFFFF
-1936	 15EA	SUB		 	 
+1735	 1782	SUB		 	 
 - stack 2: 0x658
 - stack 1: 0x2
 - stack 0: 0x2
-1937	 15EB	PUSH2	15F3	 ;; _neq_c6d0ef42e1b174ebd4898eef263dcde9de16c75b34c3e8aafc0257fd07a9e6f5	 
+1736	 1783	PUSH2	178B	 ;; _neq_396a6e3a58ce2f185ecc704a0c095870cd64f67dc21a497dd2049b4db6a1a624	 
 - stack 1: 0x658
 - stack 0: 0x0
-1938	 15EE	JUMPI		 	 
+1737	 1786	JUMPI		 	 
 - stack 2: 0x658
 - stack 1: 0x0
-- stack 0: 0x15F3
-1939	 15EF	PUSH2	1620	 ;; _neq_after_c6d0ef42e1b174ebd4898eef263dcde9de16c75b34c3e8aafc0257fd07a9e6f5	 
+- stack 0: 0x178B
+1738	 1787	PUSH2	17BA	 ;; _neq_after_396a6e3a58ce2f185ecc704a0c095870cd64f67dc21a497dd2049b4db6a1a624	 
 - stack 0: 0x658
-1940	 15F2	JUMP		 	 
+1739	 178A	JUMP		 	 
 - stack 1: 0x658
-- stack 0: 0x1620
-1941	 1620	JUMPDEST		 ;; _neq_after_c6d0ef42e1b174ebd4898eef263dcde9de16c75b34c3e8aafc0257fd07a9e6f5	 
+- stack 0: 0x17BA
+1740	 17BA	JUMPDEST		 ;; _neq_after_396a6e3a58ce2f185ecc704a0c095870cd64f67dc21a497dd2049b4db6a1a624	 
 - stack 0: 0x658
-1942	 1621	PUSH2	0016	 ;; _pcplus4	 
+1741	 17BB	PUSH1	04	 	 
 - stack 0: 0x658
-1943	 1624	JUMP		 	 
-- stack 1: 0x658
-- stack 0: 0x16
-1944	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x658
-1945	 17	PUSH1	04	 	 
-- stack 0: 0x658
-1946	 19	ADD		 	 
+1742	 17BD	ADD		 	 
 - stack 1: 0x658
 - stack 0: 0x4
-1947	 1A	JUMPDEST		 ;; _execute	 
+1743	 17BE	DUP1		 	  ;; # executing pc
 - stack 0: 0x65C
-1948	 1B	DUP1		 	 
-- stack 0: 0x65C
-1949	 1C	MLOAD		 	 
+1744	 17BF	MLOAD		 	 
 - stack 1: 0x65C
 - stack 0: 0x65C
-1950	 1D	PUSH1	E0	 	 
+1745	 17C0	PUSH1	E0	 	 
 - stack 1: 0x65C
-- stack 0: 0x1E4F000004B400001EB300001EDD00001F2D00001FB2000017E5000017E5
-1951	 1F	SHR		 	 
+- stack 0: 0x205000000521000020B6000020E50000213C000021C30000199600001996
+1746	 17C2	SHR		 	 
 - stack 2: 0x65C
-- stack 1: 0x1E4F000004B400001EB300001EDD00001F2D00001FB2000017E5000017E5
+- stack 1: 0x205000000521000020B6000020E50000213C000021C30000199600001996
 - stack 0: 0xE0
-1952	 20	JUMP		 	 
+1747	 17C3	JUMP		 	 
 - stack 1: 0x65C
-- stack 0: 0x1E4F
-1953	 1E4F	JUMPDEST		 ;; _riscvopt_5d185e32f65d1d290d72a6473f6ce857a0630eaca854c20ad0573141c0faacc9	  ;; # pc 0x65c buffer: b70e0400938eeeff130ea001
+- stack 0: 0x2050
+1748	 2050	JUMPDEST		 ;; _riscvopt_5d185e32f65d1d290d72a6473f6ce857a0630eaca854c20ad0573141c0faacc9	  ;; # pc 0x65c buffer: b70e0400938eeeff130ea001
 - stack 0: 0x65C
-1954	 1E50	POP		 	 
+1749	 2051	POP		 	 
 - stack 0: 0x65C
-1955	 1E51	JUMPDEST		 	  ;; # DEBUG: lui t4,0x40
-1956	 1E52	PUSH4	00040000	 	 
-1957	 1E57	PUSH2	03A0	 	 
+1750	 2052	JUMPDEST		 	  ;; # DEBUG: lui t4,0x40
+1751	 2053	PUSH4	00040000	 	 
+1752	 2058	PUSH2	03A0	 	 
 - stack 0: 0x40000
-1958	 1E5A	MSTORE		 	  ;; # store to x29
+1753	 205B	MSTORE		 	  ;; # store to x29
 - stack 1: 0x40000
 - stack 0: 0x3A0
-1959	 1E5B	JUMPDEST		 	  ;; # DEBUG: addi t4,t4,-2
-1960	 1E5C	PUSH2	03A0	 	 
-1961	 1E5F	MLOAD		 	  ;; # read from x29
+1754	 205C	JUMPDEST		 	  ;; # DEBUG: addi t4,t4,-2
+1755	 205D	PUSH2	03A0	 	 
+1756	 2060	MLOAD		 	  ;; # read from x29
 - stack 0: 0x3A0
-1962	 1E60	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE	 	  ;; # signextended -2
+1757	 2061	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE	 	  ;; # signextended -2
 - stack 0: 0x40000
-1963	 1E81	ADD		 	  ;; # ADDI
+1758	 2082	ADD		 	  ;; # ADDI
 - stack 1: 0x40000
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE
-1964	 1E82	PUSH2	03A0	 	 
+1759	 2083	PUSH2	03A0	 	 
 - stack 0: 0x3FFFE
-1965	 1E85	MSTORE		 	  ;; # store to x29
+1760	 2086	MSTORE		 	  ;; # store to x29
 - stack 1: 0x3FFFE
 - stack 0: 0x3A0
-1966	 1E86	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,26
-1967	 1E87	PUSH32	000000000000000000000000000000000000000000000000000000000000001A	 	  ;; # signextended 26
-1968	 1EA8	PUSH2	0380	 	 
+1761	 2087	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,26
+1762	 2088	PUSH32	000000000000000000000000000000000000000000000000000000000000001A	 	  ;; # signextended 26
+1763	 20A9	PUSH2	0380	 	 
 - stack 0: 0x1A
-1969	 1EAB	MSTORE		 	  ;; # store to x28
+1764	 20AC	MSTORE		 	  ;; # store to x28
 - stack 1: 0x1A
 - stack 0: 0x380
-1970	 1EAC	PUSH2	0668	 	 
-1971	 1EAF	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+1765	 20AD	PUSH2	0668	 	 
+1766	 20B0	DUP1		 	  ;; # executing pc
 - stack 0: 0x668
-1972	 1EB2	JUMP		 	 
-- stack 1: 0x668
-- stack 0: 0x1A
-1973	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x668
-1974	 1B	DUP1		 	 
-- stack 0: 0x668
-1975	 1C	MLOAD		 	 
+1767	 20B1	MLOAD		 	 
 - stack 1: 0x668
 - stack 0: 0x668
-1976	 1D	PUSH1	E0	 	 
+1768	 20B2	PUSH1	E0	 	 
 - stack 1: 0x668
-- stack 0: 0x1EDD00001F2D00001FB2000017E5000017E5000006370000157C000015AB
-1977	 1F	SHR		 	 
+- stack 0: 0x20E50000213C000021C30000199600001996000006BC0000170A0000173E
+1769	 20B4	SHR		 	 
 - stack 2: 0x668
-- stack 1: 0x1EDD00001F2D00001FB2000017E5000017E5000006370000157C000015AB
+- stack 1: 0x20E50000213C000021C30000199600001996000006BC0000170A0000173E
 - stack 0: 0xE0
-1978	 20	JUMP		 	 
+1770	 20B5	JUMP		 	 
 - stack 1: 0x668
-- stack 0: 0x1EDD
-1979	 1EDD	JUMPDEST		 ;; _riscv_2d41812ea591cfbc601e5a2db42ab0813a6051cc45c4e6123f8aadd562838758	  ;; # pc 0x668 buffer: 639ed105 decode bne gp,t4,5c
+- stack 0: 0x20E5
+1771	 20E5	JUMPDEST		 ;; _riscv_2d41812ea591cfbc601e5a2db42ab0813a6051cc45c4e6123f8aadd562838758	  ;; # pc 0x668 buffer: 639ed105 decode bne gp,t4,5c
 - stack 0: 0x668
-1980	 1EDE	PUSH2	0060	 	 
+1772	 20E6	PUSH2	0060	 	 
 - stack 0: 0x668
-1981	 1EE1	MLOAD		 	  ;; # read from x3
+1773	 20E9	MLOAD		 	  ;; # read from x3
 - stack 1: 0x668
 - stack 0: 0x60
-1982	 1EE2	PUSH4	FFFFFFFF	 	 
+1774	 20EA	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x668
 - stack 0: 0x3FFFE
-1983	 1EE7	AND		 	  ;; # mask to 32 bits
+1775	 20EF	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x668
 - stack 1: 0x3FFFE
 - stack 0: 0xFFFFFFFF
-1984	 1EE8	PUSH2	03A0	 	 
+1776	 20F0	PUSH2	03A0	 	 
 - stack 1: 0x668
 - stack 0: 0x3FFFE
-1985	 1EEB	MLOAD		 	  ;; # read from x29
+1777	 20F3	MLOAD		 	  ;; # read from x29
 - stack 2: 0x668
 - stack 1: 0x3FFFE
 - stack 0: 0x3A0
-1986	 1EEC	PUSH4	FFFFFFFF	 	 
+1778	 20F4	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x668
 - stack 1: 0x3FFFE
 - stack 0: 0x3FFFE
-1987	 1EF1	AND		 	  ;; # mask to 32 bits
+1779	 20F9	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x668
 - stack 2: 0x3FFFE
 - stack 1: 0x3FFFE
 - stack 0: 0xFFFFFFFF
-1988	 1EF2	SUB		 	 
+1780	 20FA	SUB		 	 
 - stack 2: 0x668
 - stack 1: 0x3FFFE
 - stack 0: 0x3FFFE
-1989	 1EF3	PUSH2	1EFB	 ;; _neq_56b24e6e2e9b98113fbae70f3c489a58b67c66d98095adf87b40a63445522024	 
+1781	 20FB	PUSH2	2103	 ;; _neq_372bf0abbaf525be94fbb04b0c7b5a0ccc1e85c543ded0a27b04d985db1c8f16	 
 - stack 1: 0x668
 - stack 0: 0x0
-1990	 1EF6	JUMPI		 	 
+1782	 20FE	JUMPI		 	 
 - stack 2: 0x668
 - stack 1: 0x0
-- stack 0: 0x1EFB
-1991	 1EF7	PUSH2	1F28	 ;; _neq_after_56b24e6e2e9b98113fbae70f3c489a58b67c66d98095adf87b40a63445522024	 
+- stack 0: 0x2103
+1783	 20FF	PUSH2	2132	 ;; _neq_after_372bf0abbaf525be94fbb04b0c7b5a0ccc1e85c543ded0a27b04d985db1c8f16	 
 - stack 0: 0x668
-1992	 1EFA	JUMP		 	 
+1784	 2102	JUMP		 	 
 - stack 1: 0x668
-- stack 0: 0x1F28
-1993	 1F28	JUMPDEST		 ;; _neq_after_56b24e6e2e9b98113fbae70f3c489a58b67c66d98095adf87b40a63445522024	 
+- stack 0: 0x2132
+1785	 2132	JUMPDEST		 ;; _neq_after_372bf0abbaf525be94fbb04b0c7b5a0ccc1e85c543ded0a27b04d985db1c8f16	 
 - stack 0: 0x668
-1994	 1F29	PUSH2	0016	 ;; _pcplus4	 
+1786	 2133	PUSH1	04	 	 
 - stack 0: 0x668
-1995	 1F2C	JUMP		 	 
-- stack 1: 0x668
-- stack 0: 0x16
-1996	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x668
-1997	 17	PUSH1	04	 	 
-- stack 0: 0x668
-1998	 19	ADD		 	 
+1787	 2135	ADD		 	 
 - stack 1: 0x668
 - stack 0: 0x4
-1999	 1A	JUMPDEST		 ;; _execute	 
+1788	 2136	DUP1		 	  ;; # executing pc
 - stack 0: 0x66C
-2000	 1B	DUP1		 	 
-- stack 0: 0x66C
-2001	 1C	MLOAD		 	 
+1789	 2137	MLOAD		 	 
 - stack 1: 0x66C
 - stack 0: 0x66C
-2002	 1D	PUSH1	E0	 	 
+1790	 2138	PUSH1	E0	 	 
 - stack 1: 0x66C
-- stack 0: 0x1F2D00001FB2000017E5000017E5000006370000157C000015AB000017ED
-2003	 1F	SHR		 	 
+- stack 0: 0x213C000021C30000199600001996000006BC0000170A0000173E000019A3
+1791	 213A	SHR		 	 
 - stack 2: 0x66C
-- stack 1: 0x1F2D00001FB2000017E5000017E5000006370000157C000015AB000017ED
+- stack 1: 0x213C000021C30000199600001996000006BC0000170A0000173E000019A3
 - stack 0: 0xE0
-2004	 20	JUMP		 	 
+1792	 213B	JUMP		 	 
 - stack 1: 0x66C
-- stack 0: 0x1F2D
-2005	 1F2D	JUMPDEST		 ;; _riscvopt_12cb279d18db190b4ddf15a51e40b7e3d18f4f195ef79fbf699aa6a1dd093c58	  ;; # pc 0x66c buffer: 13020000b780ffff130000001300000093d1f0001302120093022000
+- stack 0: 0x213C
+1793	 213C	JUMPDEST		 ;; _riscvopt_12cb279d18db190b4ddf15a51e40b7e3d18f4f195ef79fbf699aa6a1dd093c58	  ;; # pc 0x66c buffer: 13020000b780ffff130000001300000093d1f0001302120093022000
 - stack 0: 0x66C
-2006	 1F2E	POP		 	 
+1794	 213D	POP		 	 
 - stack 0: 0x66C
-2007	 1F2F	JUMPDEST		 	  ;; # DEBUG: addi tp,zero,0
-2008	 1F30	PUSH1	00	 	 
-2009	 1F32	PUSH2	0080	 	 
+1795	 213E	JUMPDEST		 	  ;; # DEBUG: addi tp,zero,0
+1796	 213F	PUSH1	00	 	 
+1797	 2141	PUSH2	0080	 	 
 - stack 0: 0x0
-2010	 1F35	MSTORE		 	  ;; # store to x4
+1798	 2144	MSTORE		 	  ;; # store to x4
 - stack 1: 0x0
 - stack 0: 0x80
-2011	 1F36	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
-2012	 1F37	PUSH4	ffff8000	 	 
-2013	 1F3C	PUSH2	0020	 	 
+1799	 2145	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
+1800	 2146	PUSH4	ffff8000	 	 
+1801	 214B	PUSH2	0020	 	 
 - stack 0: 0xFFFF8000
-2014	 1F3F	MSTORE		 	  ;; # store to x1
+1802	 214E	MSTORE		 	  ;; # store to x1
 - stack 1: 0xFFFF8000
 - stack 0: 0x20
-2015	 1F40	JUMPDEST		 	  ;; # DEBUG: addi zero,zero,0
-2016	 1F41	PUSH1	00	 	 
-2017	 1F43	POP		 	 
+1803	 214F	JUMPDEST		 	  ;; # DEBUG: addi zero,zero,0
+1804	 2150	PUSH1	00	 	 
+1805	 2152	POP		 	 
 - stack 0: 0x0
-2018	 1F44	JUMPDEST		 	  ;; # DEBUG: addi zero,zero,0
-2019	 1F45	PUSH1	00	 	 
-2020	 1F47	POP		 	 
+1806	 2153	JUMPDEST		 	  ;; # DEBUG: addi zero,zero,0
+1807	 2154	PUSH1	00	 	 
+1808	 2156	POP		 	 
 - stack 0: 0x0
-2021	 1F48	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,15
-2022	 1F49	PUSH2	0020	 	 
-2023	 1F4C	MLOAD		 	  ;; # read from x1
+1809	 2157	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,15
+1810	 2158	PUSH2	0020	 	 
+1811	 215B	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-2024	 1F4D	PUSH4	FFFFFFFF	 	 
+1812	 215C	PUSH4	FFFFFFFF	 	 
 - stack 0: 0xFFFF8000
-2025	 1F52	AND		 	  ;; # mask to 32 bits
+1813	 2161	AND		 	  ;; # mask to 32 bits
 - stack 1: 0xFFFF8000
 - stack 0: 0xFFFFFFFF
-2026	 1F53	PUSH1	0F	 	 
+1814	 2162	PUSH1	0F	 	 
 - stack 0: 0xFFFF8000
-2027	 1F55	SHR		 	  ;; # SRLI
+1815	 2164	SHR		 	  ;; # SRLI
 - stack 1: 0xFFFF8000
 - stack 0: 0xF
-2028	 1F56	PUSH2	0060	 	 
+1816	 2165	PUSH2	0060	 	 
 - stack 0: 0x1FFFF
-2029	 1F59	MSTORE		 	  ;; # store to x3
+1817	 2168	MSTORE		 	  ;; # store to x3
 - stack 1: 0x1FFFF
 - stack 0: 0x60
-2030	 1F5A	JUMPDEST		 	  ;; # DEBUG: addi tp,tp,1
-2031	 1F5B	PUSH2	0080	 	 
-2032	 1F5E	MLOAD		 	  ;; # read from x4
+1818	 2169	JUMPDEST		 	  ;; # DEBUG: addi tp,tp,1
+1819	 216A	PUSH2	0080	 	 
+1820	 216D	MLOAD		 	  ;; # read from x4
 - stack 0: 0x80
-2033	 1F5F	PUSH32	0000000000000000000000000000000000000000000000000000000000000001	 	  ;; # signextended 1
+1821	 216E	PUSH32	0000000000000000000000000000000000000000000000000000000000000001	 	  ;; # signextended 1
 - stack 0: 0x0
-2034	 1F80	ADD		 	  ;; # ADDI
+1822	 218F	ADD		 	  ;; # ADDI
 - stack 1: 0x0
 - stack 0: 0x1
-2035	 1F81	PUSH2	0080	 	 
+1823	 2190	PUSH2	0080	 	 
 - stack 0: 0x1
-2036	 1F84	MSTORE		 	  ;; # store to x4
+1824	 2193	MSTORE		 	  ;; # store to x4
 - stack 1: 0x1
 - stack 0: 0x80
-2037	 1F85	JUMPDEST		 	  ;; # DEBUG: addi t0,zero,2
-2038	 1F86	PUSH32	0000000000000000000000000000000000000000000000000000000000000002	 	  ;; # signextended 2
-2039	 1FA7	PUSH2	00A0	 	 
+1825	 2194	JUMPDEST		 	  ;; # DEBUG: addi t0,zero,2
+1826	 2195	PUSH32	0000000000000000000000000000000000000000000000000000000000000002	 	  ;; # signextended 2
+1827	 21B6	PUSH2	00A0	 	 
 - stack 0: 0x2
-2040	 1FAA	MSTORE		 	  ;; # store to x5
+1828	 21B9	MSTORE		 	  ;; # store to x5
 - stack 1: 0x2
 - stack 0: 0xA0
-2041	 1FAB	PUSH2	0688	 	 
-2042	 1FAE	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+1829	 21BA	PUSH2	0688	 	 
+1830	 21BD	DUP1		 	  ;; # executing pc
 - stack 0: 0x688
-2043	 1FB1	JUMP		 	 
-- stack 1: 0x688
-- stack 0: 0x1A
-2044	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x688
-2045	 1B	DUP1		 	 
-- stack 0: 0x688
-2046	 1C	MLOAD		 	 
+1831	 21BE	MLOAD		 	 
 - stack 1: 0x688
 - stack 0: 0x688
-2047	 1D	PUSH1	E0	 	 
+1832	 21BF	PUSH1	E0	 	 
 - stack 1: 0x688
-- stack 0: 0x17ED000020300000065B00002094000020BE0000210E0000130000002154
-2048	 1F	SHR		 	 
+- stack 0: 0x19A300002243000006EA000022A9000022D80000232F0000146100002377
+1833	 21C1	SHR		 	 
 - stack 2: 0x688
-- stack 1: 0x17ED000020300000065B00002094000020BE0000210E0000130000002154
+- stack 1: 0x19A300002243000006EA000022A9000022D80000232F0000146100002377
 - stack 0: 0xE0
-2049	 20	JUMP		 	 
+1834	 21C2	JUMP		 	 
 - stack 1: 0x688
-- stack 0: 0x17ED
-2050	 17ED	JUMPDEST		 ;; _riscv_d7273c5140cafdcd4d3050473598a03941bfc5d3f709cbc0f53551f953935796	  ;; # pc 0x5d4 buffer: e31452fe decode bne tp,t0,-18
+- stack 0: 0x19A3
+1835	 19A3	JUMPDEST		 ;; _riscv_d7273c5140cafdcd4d3050473598a03941bfc5d3f709cbc0f53551f953935796	  ;; # pc 0x5d4 buffer: e31452fe decode bne tp,t0,-18
 - stack 0: 0x688
-2051	 17EE	PUSH2	0080	 	 
+1836	 19A4	PUSH2	0080	 	 
 - stack 0: 0x688
-2052	 17F1	MLOAD		 	  ;; # read from x4
+1837	 19A7	MLOAD		 	  ;; # read from x4
 - stack 1: 0x688
 - stack 0: 0x80
-2053	 17F2	PUSH4	FFFFFFFF	 	 
+1838	 19A8	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x688
 - stack 0: 0x1
-2054	 17F7	AND		 	  ;; # mask to 32 bits
+1839	 19AD	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x688
 - stack 1: 0x1
 - stack 0: 0xFFFFFFFF
-2055	 17F8	PUSH2	00A0	 	 
+1840	 19AE	PUSH2	00A0	 	 
 - stack 1: 0x688
 - stack 0: 0x1
-2056	 17FB	MLOAD		 	  ;; # read from x5
+1841	 19B1	MLOAD		 	  ;; # read from x5
 - stack 2: 0x688
 - stack 1: 0x1
 - stack 0: 0xA0
-2057	 17FC	PUSH4	FFFFFFFF	 	 
+1842	 19B2	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x688
 - stack 1: 0x1
 - stack 0: 0x2
-2058	 1801	AND		 	  ;; # mask to 32 bits
+1843	 19B7	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x688
 - stack 2: 0x1
 - stack 1: 0x2
 - stack 0: 0xFFFFFFFF
-2059	 1802	SUB		 	 
+1844	 19B8	SUB		 	 
 - stack 2: 0x688
 - stack 1: 0x1
 - stack 0: 0x2
-2060	 1803	PUSH2	180B	 ;; _neq_a4badec3f4afa31873a91324c2b0588eb98e0baeb16823180da95406f4a4934a	 
+1845	 19B9	PUSH2	19C1	 ;; _neq_1da417a6773b7ba088346070613ca637061602b911f36742dc6b868b5466b9eb	 
 - stack 1: 0x688
 - stack 0: 0x1
-2061	 1806	JUMPI		 	 
+1846	 19BC	JUMPI		 	 
 - stack 2: 0x688
 - stack 1: 0x1
-- stack 0: 0x180B
-2062	 180B	JUMPDEST		 ;; _neq_a4badec3f4afa31873a91324c2b0588eb98e0baeb16823180da95406f4a4934a	 
+- stack 0: 0x19C1
+1847	 19C1	JUMPDEST		 ;; _neq_1da417a6773b7ba088346070613ca637061602b911f36742dc6b868b5466b9eb	 
 - stack 0: 0x688
-2063	 180C	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE8	 	  ;; # signextended -24
+1848	 19C2	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE8	 	  ;; # signextended -24
 - stack 0: 0x688
-2064	 182D	ADD		 	 
+1849	 19E3	ADD		 	 
 - stack 1: 0x688
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE8
-2065	 182E	PUSH4	FFFFFFFF	 	 
+1850	 19E4	PUSH4	FFFFFFFF	 	 
 - stack 0: 0x670
-2066	 1833	AND		 	  ;; # mask to 32 bits
+1851	 19E9	AND		 	  ;; # mask to 32 bits
 - stack 1: 0x670
 - stack 0: 0xFFFFFFFF
-2067	 1834	PUSH2	001A	 ;; _execute	 
+1852	 19EA	DUP1		 	  ;; # executing pc
 - stack 0: 0x670
-2068	 1837	JUMP		 	 
-- stack 1: 0x670
-- stack 0: 0x1A
-2069	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x670
-2070	 1B	DUP1		 	 
-- stack 0: 0x670
-2071	 1C	MLOAD		 	 
+1853	 19EB	MLOAD		 	 
 - stack 1: 0x670
 - stack 0: 0x670
-2072	 1D	PUSH1	E0	 	 
+1854	 19EC	PUSH1	E0	 	 
 - stack 1: 0x670
-- stack 0: 0x1FB2000017E5000017E5000006370000157C000015AB000017ED00002030
-2073	 1F	SHR		 	 
+- stack 0: 0x21C30000199600001996000006BC0000170A0000173E000019A300002243
+1855	 19EE	SHR		 	 
 - stack 2: 0x670
-- stack 1: 0x1FB2000017E5000017E5000006370000157C000015AB000017ED00002030
+- stack 1: 0x21C30000199600001996000006BC0000170A0000173E000019A300002243
 - stack 0: 0xE0
-2074	 20	JUMP		 	 
+1856	 19EF	JUMP		 	 
 - stack 1: 0x670
-- stack 0: 0x1FB2
-2075	 1FB2	JUMPDEST		 ;; _riscvopt_63f1dc204a650524b709f6d93d558acd319b8e1c599a652e7dbf4389f7d0c1bf	  ;; # pc 0x670 buffer: b780ffff130000001300000093d1f0001302120093022000
+- stack 0: 0x21C3
+1857	 21C3	JUMPDEST		 ;; _riscvopt_63f1dc204a650524b709f6d93d558acd319b8e1c599a652e7dbf4389f7d0c1bf	  ;; # pc 0x670 buffer: b780ffff130000001300000093d1f0001302120093022000
 - stack 0: 0x670
-2076	 1FB3	POP		 	 
+1858	 21C4	POP		 	 
 - stack 0: 0x670
-2077	 1FB4	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
-2078	 1FB5	PUSH4	ffff8000	 	 
-2079	 1FBA	PUSH2	0020	 	 
+1859	 21C5	JUMPDEST		 	  ;; # DEBUG: lui ra,0xffff8
+1860	 21C6	PUSH4	ffff8000	 	 
+1861	 21CB	PUSH2	0020	 	 
 - stack 0: 0xFFFF8000
-2080	 1FBD	MSTORE		 	  ;; # store to x1
+1862	 21CE	MSTORE		 	  ;; # store to x1
 - stack 1: 0xFFFF8000
 - stack 0: 0x20
-2081	 1FBE	JUMPDEST		 	  ;; # DEBUG: addi zero,zero,0
-2082	 1FBF	PUSH1	00	 	 
-2083	 1FC1	POP		 	 
+1863	 21CF	JUMPDEST		 	  ;; # DEBUG: addi zero,zero,0
+1864	 21D0	PUSH1	00	 	 
+1865	 21D2	POP		 	 
 - stack 0: 0x0
-2084	 1FC2	JUMPDEST		 	  ;; # DEBUG: addi zero,zero,0
-2085	 1FC3	PUSH1	00	 	 
-2086	 1FC5	POP		 	 
+1866	 21D3	JUMPDEST		 	  ;; # DEBUG: addi zero,zero,0
+1867	 21D4	PUSH1	00	 	 
+1868	 21D6	POP		 	 
 - stack 0: 0x0
-2087	 1FC6	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,15
-2088	 1FC7	PUSH2	0020	 	 
-2089	 1FCA	MLOAD		 	  ;; # read from x1
+1869	 21D7	JUMPDEST		 	  ;; # DEBUG: srai gp,ra,15
+1870	 21D8	PUSH2	0020	 	 
+1871	 21DB	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-2090	 1FCB	PUSH4	FFFFFFFF	 	 
+1872	 21DC	PUSH4	FFFFFFFF	 	 
 - stack 0: 0xFFFF8000
-2091	 1FD0	AND		 	  ;; # mask to 32 bits
+1873	 21E1	AND		 	  ;; # mask to 32 bits
 - stack 1: 0xFFFF8000
 - stack 0: 0xFFFFFFFF
-2092	 1FD1	PUSH1	0F	 	 
+1874	 21E2	PUSH1	0F	 	 
 - stack 0: 0xFFFF8000
-2093	 1FD3	SHR		 	  ;; # SRLI
+1875	 21E4	SHR		 	  ;; # SRLI
 - stack 1: 0xFFFF8000
 - stack 0: 0xF
-2094	 1FD4	PUSH2	0060	 	 
+1876	 21E5	PUSH2	0060	 	 
 - stack 0: 0x1FFFF
-2095	 1FD7	MSTORE		 	  ;; # store to x3
+1877	 21E8	MSTORE		 	  ;; # store to x3
 - stack 1: 0x1FFFF
 - stack 0: 0x60
-2096	 1FD8	JUMPDEST		 	  ;; # DEBUG: addi tp,tp,1
-2097	 1FD9	PUSH2	0080	 	 
-2098	 1FDC	MLOAD		 	  ;; # read from x4
+1878	 21E9	JUMPDEST		 	  ;; # DEBUG: addi tp,tp,1
+1879	 21EA	PUSH2	0080	 	 
+1880	 21ED	MLOAD		 	  ;; # read from x4
 - stack 0: 0x80
-2099	 1FDD	PUSH32	0000000000000000000000000000000000000000000000000000000000000001	 	  ;; # signextended 1
+1881	 21EE	PUSH32	0000000000000000000000000000000000000000000000000000000000000001	 	  ;; # signextended 1
 - stack 0: 0x1
-2100	 1FFE	ADD		 	  ;; # ADDI
+1882	 220F	ADD		 	  ;; # ADDI
 - stack 1: 0x1
 - stack 0: 0x1
-2101	 1FFF	PUSH2	0080	 	 
+1883	 2210	PUSH2	0080	 	 
 - stack 0: 0x2
-2102	 2002	MSTORE		 	  ;; # store to x4
+1884	 2213	MSTORE		 	  ;; # store to x4
 - stack 1: 0x2
 - stack 0: 0x80
-2103	 2003	JUMPDEST		 	  ;; # DEBUG: addi t0,zero,2
-2104	 2004	PUSH32	0000000000000000000000000000000000000000000000000000000000000002	 	  ;; # signextended 2
-2105	 2025	PUSH2	00A0	 	 
+1885	 2214	JUMPDEST		 	  ;; # DEBUG: addi t0,zero,2
+1886	 2215	PUSH32	0000000000000000000000000000000000000000000000000000000000000002	 	  ;; # signextended 2
+1887	 2236	PUSH2	00A0	 	 
 - stack 0: 0x2
-2106	 2028	MSTORE		 	  ;; # store to x5
+1888	 2239	MSTORE		 	  ;; # store to x5
 - stack 1: 0x2
 - stack 0: 0xA0
-2107	 2029	PUSH2	0688	 	 
-2108	 202C	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+1889	 223A	PUSH2	0688	 	 
+1890	 223D	DUP1		 	  ;; # executing pc
 - stack 0: 0x688
-2109	 202F	JUMP		 	 
-- stack 1: 0x688
-- stack 0: 0x1A
-2110	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x688
-2111	 1B	DUP1		 	 
-- stack 0: 0x688
-2112	 1C	MLOAD		 	 
+1891	 223E	MLOAD		 	 
 - stack 1: 0x688
 - stack 0: 0x688
-2113	 1D	PUSH1	E0	 	 
+1892	 223F	PUSH1	E0	 	 
 - stack 1: 0x688
-- stack 0: 0x17ED000020300000065B00002094000020BE0000210E0000130000002154
-2114	 1F	SHR		 	 
+- stack 0: 0x19A300002243000006EA000022A9000022D80000232F0000146100002377
+1893	 2241	SHR		 	 
 - stack 2: 0x688
-- stack 1: 0x17ED000020300000065B00002094000020BE0000210E0000130000002154
+- stack 1: 0x19A300002243000006EA000022A9000022D80000232F0000146100002377
 - stack 0: 0xE0
-2115	 20	JUMP		 	 
+1894	 2242	JUMP		 	 
 - stack 1: 0x688
-- stack 0: 0x17ED
-2116	 17ED	JUMPDEST		 ;; _riscv_d7273c5140cafdcd4d3050473598a03941bfc5d3f709cbc0f53551f953935796	  ;; # pc 0x5d4 buffer: e31452fe decode bne tp,t0,-18
+- stack 0: 0x19A3
+1895	 19A3	JUMPDEST		 ;; _riscv_d7273c5140cafdcd4d3050473598a03941bfc5d3f709cbc0f53551f953935796	  ;; # pc 0x5d4 buffer: e31452fe decode bne tp,t0,-18
 - stack 0: 0x688
-2117	 17EE	PUSH2	0080	 	 
+1896	 19A4	PUSH2	0080	 	 
 - stack 0: 0x688
-2118	 17F1	MLOAD		 	  ;; # read from x4
+1897	 19A7	MLOAD		 	  ;; # read from x4
 - stack 1: 0x688
 - stack 0: 0x80
-2119	 17F2	PUSH4	FFFFFFFF	 	 
+1898	 19A8	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x688
 - stack 0: 0x2
-2120	 17F7	AND		 	  ;; # mask to 32 bits
+1899	 19AD	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x688
 - stack 1: 0x2
 - stack 0: 0xFFFFFFFF
-2121	 17F8	PUSH2	00A0	 	 
+1900	 19AE	PUSH2	00A0	 	 
 - stack 1: 0x688
 - stack 0: 0x2
-2122	 17FB	MLOAD		 	  ;; # read from x5
+1901	 19B1	MLOAD		 	  ;; # read from x5
 - stack 2: 0x688
 - stack 1: 0x2
 - stack 0: 0xA0
-2123	 17FC	PUSH4	FFFFFFFF	 	 
+1902	 19B2	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x688
 - stack 1: 0x2
 - stack 0: 0x2
-2124	 1801	AND		 	  ;; # mask to 32 bits
+1903	 19B7	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x688
 - stack 2: 0x2
 - stack 1: 0x2
 - stack 0: 0xFFFFFFFF
-2125	 1802	SUB		 	 
+1904	 19B8	SUB		 	 
 - stack 2: 0x688
 - stack 1: 0x2
 - stack 0: 0x2
-2126	 1803	PUSH2	180B	 ;; _neq_a4badec3f4afa31873a91324c2b0588eb98e0baeb16823180da95406f4a4934a	 
+1905	 19B9	PUSH2	19C1	 ;; _neq_1da417a6773b7ba088346070613ca637061602b911f36742dc6b868b5466b9eb	 
 - stack 1: 0x688
 - stack 0: 0x0
-2127	 1806	JUMPI		 	 
+1906	 19BC	JUMPI		 	 
 - stack 2: 0x688
 - stack 1: 0x0
-- stack 0: 0x180B
-2128	 1807	PUSH2	1838	 ;; _neq_after_a4badec3f4afa31873a91324c2b0588eb98e0baeb16823180da95406f4a4934a	 
+- stack 0: 0x19C1
+1907	 19BD	PUSH2	19F0	 ;; _neq_after_1da417a6773b7ba088346070613ca637061602b911f36742dc6b868b5466b9eb	 
 - stack 0: 0x688
-2129	 180A	JUMP		 	 
+1908	 19C0	JUMP		 	 
 - stack 1: 0x688
-- stack 0: 0x1838
-2130	 1838	JUMPDEST		 ;; _neq_after_a4badec3f4afa31873a91324c2b0588eb98e0baeb16823180da95406f4a4934a	 
+- stack 0: 0x19F0
+1909	 19F0	JUMPDEST		 ;; _neq_after_1da417a6773b7ba088346070613ca637061602b911f36742dc6b868b5466b9eb	 
 - stack 0: 0x688
-2131	 1839	PUSH2	0016	 ;; _pcplus4	 
+1910	 19F1	PUSH1	04	 	 
 - stack 0: 0x688
-2132	 183C	JUMP		 	 
-- stack 1: 0x688
-- stack 0: 0x16
-2133	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x688
-2134	 17	PUSH1	04	 	 
-- stack 0: 0x688
-2135	 19	ADD		 	 
+1911	 19F3	ADD		 	 
 - stack 1: 0x688
 - stack 0: 0x4
-2136	 1A	JUMPDEST		 ;; _execute	 
+1912	 19F4	DUP1		 	  ;; # executing pc
 - stack 0: 0x68C
-2137	 1B	DUP1		 	 
-- stack 0: 0x68C
-2138	 1C	MLOAD		 	 
+1913	 19F5	MLOAD		 	 
 - stack 1: 0x68C
 - stack 0: 0x68C
-2139	 1D	PUSH1	E0	 	 
+1914	 19F6	PUSH1	E0	 	 
 - stack 1: 0x68C
-- stack 0: 0x20300000065B00002094000020BE0000210E00001300000021540000217E
-2140	 1F	SHR		 	 
+- stack 0: 0x2243000006EA000022A9000022D80000232F0000146100002377000023A6
+1915	 19F8	SHR		 	 
 - stack 2: 0x68C
-- stack 1: 0x20300000065B00002094000020BE0000210E00001300000021540000217E
+- stack 1: 0x2243000006EA000022A9000022D80000232F0000146100002377000023A6
 - stack 0: 0xE0
-2141	 20	JUMP		 	 
+1916	 19F9	JUMP		 	 
 - stack 1: 0x68C
-- stack 0: 0x2030
-2142	 2030	JUMPDEST		 ;; _riscvopt_1bd9d021cca2fcc6c64b3d4782eac65b8c1a7dc36bf46106e1c506aa4eac3719	  ;; # pc 0x68c buffer: b70e0200938efeff130eb001
+- stack 0: 0x2243
+1917	 2243	JUMPDEST		 ;; _riscvopt_1bd9d021cca2fcc6c64b3d4782eac65b8c1a7dc36bf46106e1c506aa4eac3719	  ;; # pc 0x68c buffer: b70e0200938efeff130eb001
 - stack 0: 0x68C
-2143	 2031	POP		 	 
+1918	 2244	POP		 	 
 - stack 0: 0x68C
-2144	 2032	JUMPDEST		 	  ;; # DEBUG: lui t4,0x20
-2145	 2033	PUSH4	00020000	 	 
-2146	 2038	PUSH2	03A0	 	 
+1919	 2245	JUMPDEST		 	  ;; # DEBUG: lui t4,0x20
+1920	 2246	PUSH4	00020000	 	 
+1921	 224B	PUSH2	03A0	 	 
 - stack 0: 0x20000
-2147	 203B	MSTORE		 	  ;; # store to x29
+1922	 224E	MSTORE		 	  ;; # store to x29
 - stack 1: 0x20000
 - stack 0: 0x3A0
-2148	 203C	JUMPDEST		 	  ;; # DEBUG: addi t4,t4,-1
-2149	 203D	PUSH2	03A0	 	 
-2150	 2040	MLOAD		 	  ;; # read from x29
+1923	 224F	JUMPDEST		 	  ;; # DEBUG: addi t4,t4,-1
+1924	 2250	PUSH2	03A0	 	 
+1925	 2253	MLOAD		 	  ;; # read from x29
 - stack 0: 0x3A0
-2151	 2041	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	  ;; # signextended -1
+1926	 2254	PUSH32	FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF	 	  ;; # signextended -1
 - stack 0: 0x20000
-2152	 2062	ADD		 	  ;; # ADDI
+1927	 2275	ADD		 	  ;; # ADDI
 - stack 1: 0x20000
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-2153	 2063	PUSH2	03A0	 	 
+1928	 2276	PUSH2	03A0	 	 
 - stack 0: 0x1FFFF
-2154	 2066	MSTORE		 	  ;; # store to x29
+1929	 2279	MSTORE		 	  ;; # store to x29
 - stack 1: 0x1FFFF
 - stack 0: 0x3A0
-2155	 2067	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,27
-2156	 2068	PUSH32	000000000000000000000000000000000000000000000000000000000000001B	 	  ;; # signextended 27
-2157	 2089	PUSH2	0380	 	 
+1930	 227A	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,27
+1931	 227B	PUSH32	000000000000000000000000000000000000000000000000000000000000001B	 	  ;; # signextended 27
+1932	 229C	PUSH2	0380	 	 
 - stack 0: 0x1B
-2158	 208C	MSTORE		 	  ;; # store to x28
+1933	 229F	MSTORE		 	  ;; # store to x28
 - stack 1: 0x1B
 - stack 0: 0x380
-2159	 208D	PUSH2	0698	 	 
-2160	 2090	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+1934	 22A0	PUSH2	0698	 	 
+1935	 22A3	DUP1		 	  ;; # executing pc
 - stack 0: 0x698
-2161	 2093	JUMP		 	 
-- stack 1: 0x698
-- stack 0: 0x1A
-2162	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x698
-2163	 1B	DUP1		 	 
-- stack 0: 0x698
-2164	 1C	MLOAD		 	 
+1936	 22A4	MLOAD		 	 
 - stack 1: 0x698
 - stack 0: 0x698
-2165	 1D	PUSH1	E0	 	 
+1937	 22A5	PUSH1	E0	 	 
 - stack 1: 0x698
-- stack 0: 0x20BE0000210E00001300000021540000217E000021CE0000223900001300
-2166	 1F	SHR		 	 
+- stack 0: 0x22D80000232F0000146100002377000023A6000023FD0000246A00001461
+1938	 22A7	SHR		 	 
 - stack 2: 0x698
-- stack 1: 0x20BE0000210E00001300000021540000217E000021CE0000223900001300
+- stack 1: 0x22D80000232F0000146100002377000023A6000023FD0000246A00001461
 - stack 0: 0xE0
-2167	 20	JUMP		 	 
+1939	 22A8	JUMP		 	 
 - stack 1: 0x698
-- stack 0: 0x20BE
-2168	 20BE	JUMPDEST		 ;; _riscv_670a42ee801ccd6a0dcfb9064ad1b95183b4851564be435b3bd82063d846f9ae	  ;; # pc 0x698 buffer: 6396d103 decode bne gp,t4,2c
+- stack 0: 0x22D8
+1940	 22D8	JUMPDEST		 ;; _riscv_670a42ee801ccd6a0dcfb9064ad1b95183b4851564be435b3bd82063d846f9ae	  ;; # pc 0x698 buffer: 6396d103 decode bne gp,t4,2c
 - stack 0: 0x698
-2169	 20BF	PUSH2	0060	 	 
+1941	 22D9	PUSH2	0060	 	 
 - stack 0: 0x698
-2170	 20C2	MLOAD		 	  ;; # read from x3
+1942	 22DC	MLOAD		 	  ;; # read from x3
 - stack 1: 0x698
 - stack 0: 0x60
-2171	 20C3	PUSH4	FFFFFFFF	 	 
+1943	 22DD	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x698
 - stack 0: 0x1FFFF
-2172	 20C8	AND		 	  ;; # mask to 32 bits
+1944	 22E2	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x698
 - stack 1: 0x1FFFF
 - stack 0: 0xFFFFFFFF
-2173	 20C9	PUSH2	03A0	 	 
+1945	 22E3	PUSH2	03A0	 	 
 - stack 1: 0x698
 - stack 0: 0x1FFFF
-2174	 20CC	MLOAD		 	  ;; # read from x29
+1946	 22E6	MLOAD		 	  ;; # read from x29
 - stack 2: 0x698
 - stack 1: 0x1FFFF
 - stack 0: 0x3A0
-2175	 20CD	PUSH4	FFFFFFFF	 	 
+1947	 22E7	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x698
 - stack 1: 0x1FFFF
 - stack 0: 0x1FFFF
-2176	 20D2	AND		 	  ;; # mask to 32 bits
+1948	 22EC	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x698
 - stack 2: 0x1FFFF
 - stack 1: 0x1FFFF
 - stack 0: 0xFFFFFFFF
-2177	 20D3	SUB		 	 
+1949	 22ED	SUB		 	 
 - stack 2: 0x698
 - stack 1: 0x1FFFF
 - stack 0: 0x1FFFF
-2178	 20D4	PUSH2	20DC	 ;; _neq_522fc308f2c03707f8a0d954dd497ee47eee00afbbf8a26a718d536a6304b697	 
+1950	 22EE	PUSH2	22F6	 ;; _neq_8fae9bc6a4ac662a08d8d213445488f4c9ba74e57122aeb35abdbceb310ae025	 
 - stack 1: 0x698
 - stack 0: 0x0
-2179	 20D7	JUMPI		 	 
+1951	 22F1	JUMPI		 	 
 - stack 2: 0x698
 - stack 1: 0x0
-- stack 0: 0x20DC
-2180	 20D8	PUSH2	2109	 ;; _neq_after_522fc308f2c03707f8a0d954dd497ee47eee00afbbf8a26a718d536a6304b697	 
+- stack 0: 0x22F6
+1952	 22F2	PUSH2	2325	 ;; _neq_after_8fae9bc6a4ac662a08d8d213445488f4c9ba74e57122aeb35abdbceb310ae025	 
 - stack 0: 0x698
-2181	 20DB	JUMP		 	 
+1953	 22F5	JUMP		 	 
 - stack 1: 0x698
-- stack 0: 0x2109
-2182	 2109	JUMPDEST		 ;; _neq_after_522fc308f2c03707f8a0d954dd497ee47eee00afbbf8a26a718d536a6304b697	 
+- stack 0: 0x2325
+1954	 2325	JUMPDEST		 ;; _neq_after_8fae9bc6a4ac662a08d8d213445488f4c9ba74e57122aeb35abdbceb310ae025	 
 - stack 0: 0x698
-2183	 210A	PUSH2	0016	 ;; _pcplus4	 
+1955	 2326	PUSH1	04	 	 
 - stack 0: 0x698
-2184	 210D	JUMP		 	 
-- stack 1: 0x698
-- stack 0: 0x16
-2185	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x698
-2186	 17	PUSH1	04	 	 
-- stack 0: 0x698
-2187	 19	ADD		 	 
+1956	 2328	ADD		 	 
 - stack 1: 0x698
 - stack 0: 0x4
-2188	 1A	JUMPDEST		 ;; _execute	 
+1957	 2329	DUP1		 	  ;; # executing pc
 - stack 0: 0x69C
-2189	 1B	DUP1		 	 
-- stack 0: 0x69C
-2190	 1C	MLOAD		 	 
+1958	 232A	MLOAD		 	 
 - stack 1: 0x69C
 - stack 0: 0x69C
-2191	 1D	PUSH1	E0	 	 
+1959	 232B	PUSH1	E0	 	 
 - stack 1: 0x69C
-- stack 0: 0x210E00001300000021540000217E000021CE00002239000013000000224C
-2192	 1F	SHR		 	 
+- stack 0: 0x232F0000146100002377000023A6000023FD0000246A0000146100002482
+1960	 232D	SHR		 	 
 - stack 2: 0x69C
-- stack 1: 0x210E00001300000021540000217E000021CE00002239000013000000224C
+- stack 1: 0x232F0000146100002377000023A6000023FD0000246A0000146100002482
 - stack 0: 0xE0
-2193	 20	JUMP		 	 
+1961	 232E	JUMP		 	 
 - stack 1: 0x69C
-- stack 0: 0x210E
-2194	 210E	JUMPDEST		 ;; _riscvopt_236d461f401245fffcb4cc1d1c49f7ce3f66832efb05462c6a1e5bdc36d7d233	  ;; # pc 0x69c buffer: 9350f001930e0000130ec001
+- stack 0: 0x232F
+1962	 232F	JUMPDEST		 ;; _riscvopt_236d461f401245fffcb4cc1d1c49f7ce3f66832efb05462c6a1e5bdc36d7d233	  ;; # pc 0x69c buffer: 9350f001930e0000130ec001
 - stack 0: 0x69C
-2195	 210F	POP		 	 
+1963	 2330	POP		 	 
 - stack 0: 0x69C
-2196	 2110	JUMPDEST		 	  ;; # DEBUG: srai ra,zero,31
-2197	 2111	PUSH1	00	 	 
-2198	 2113	PUSH4	FFFFFFFF	 	 
+1964	 2331	JUMPDEST		 	  ;; # DEBUG: srai ra,zero,31
+1965	 2332	PUSH1	00	 	 
+1966	 2334	PUSH4	FFFFFFFF	 	 
 - stack 0: 0x0
-2199	 2118	AND		 	  ;; # mask to 32 bits
+1967	 2339	AND		 	  ;; # mask to 32 bits
 - stack 1: 0x0
 - stack 0: 0xFFFFFFFF
-2200	 2119	PUSH1	1F	 	 
+1968	 233A	PUSH1	1F	 	 
 - stack 0: 0x0
-2201	 211B	SHR		 	  ;; # SRLI
+1969	 233C	SHR		 	  ;; # SRLI
 - stack 1: 0x0
 - stack 0: 0x1F
-2202	 211C	PUSH2	0020	 	 
+1970	 233D	PUSH2	0020	 	 
 - stack 0: 0x0
-2203	 211F	MSTORE		 	  ;; # store to x1
+1971	 2340	MSTORE		 	  ;; # store to x1
 - stack 1: 0x0
 - stack 0: 0x20
-2204	 2120	JUMPDEST		 	  ;; # DEBUG: addi t4,zero,0
-2205	 2121	PUSH1	00	 	 
-2206	 2123	PUSH2	03A0	 	 
+1972	 2341	JUMPDEST		 	  ;; # DEBUG: addi t4,zero,0
+1973	 2342	PUSH1	00	 	 
+1974	 2344	PUSH2	03A0	 	 
 - stack 0: 0x0
-2207	 2126	MSTORE		 	  ;; # store to x29
+1975	 2347	MSTORE		 	  ;; # store to x29
 - stack 1: 0x0
 - stack 0: 0x3A0
-2208	 2127	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,28
-2209	 2128	PUSH32	000000000000000000000000000000000000000000000000000000000000001C	 	  ;; # signextended 28
-2210	 2149	PUSH2	0380	 	 
+1976	 2348	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,28
+1977	 2349	PUSH32	000000000000000000000000000000000000000000000000000000000000001C	 	  ;; # signextended 28
+1978	 236A	PUSH2	0380	 	 
 - stack 0: 0x1C
-2211	 214C	MSTORE		 	  ;; # store to x28
+1979	 236D	MSTORE		 	  ;; # store to x28
 - stack 1: 0x1C
 - stack 0: 0x380
-2212	 214D	PUSH2	06A8	 	 
-2213	 2150	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+1980	 236E	PUSH2	06A8	 	 
+1981	 2371	DUP1		 	  ;; # executing pc
 - stack 0: 0x6A8
-2214	 2153	JUMP		 	 
-- stack 1: 0x6A8
-- stack 0: 0x1A
-2215	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x6A8
-2216	 1B	DUP1		 	 
-- stack 0: 0x6A8
-2217	 1C	MLOAD		 	 
+1982	 2372	MLOAD		 	 
 - stack 1: 0x6A8
 - stack 0: 0x6A8
-2218	 1D	PUSH1	E0	 	 
+1983	 2373	PUSH1	E0	 	 
 - stack 1: 0x6A8
-- stack 0: 0x217E000021CE00002239000013000000224C00002276000022C400002312
-2219	 1F	SHR		 	 
+- stack 0: 0x23A6000023FD0000246A0000146100002482000024B1000025060000255B
+1984	 2375	SHR		 	 
 - stack 2: 0x6A8
-- stack 1: 0x217E000021CE00002239000013000000224C00002276000022C400002312
+- stack 1: 0x23A6000023FD0000246A0000146100002482000024B1000025060000255B
 - stack 0: 0xE0
-2220	 20	JUMP		 	 
+1985	 2376	JUMP		 	 
 - stack 1: 0x6A8
-- stack 0: 0x217E
-2221	 217E	JUMPDEST		 ;; _riscv_9fd240705fcd214d8ab27b6cf526caeaf3a8baf72c3be8e19f67f4fc2bd67467	  ;; # pc 0x6a8 buffer: 639ed001 decode bne ra,t4,1c
+- stack 0: 0x23A6
+1986	 23A6	JUMPDEST		 ;; _riscv_9fd240705fcd214d8ab27b6cf526caeaf3a8baf72c3be8e19f67f4fc2bd67467	  ;; # pc 0x6a8 buffer: 639ed001 decode bne ra,t4,1c
 - stack 0: 0x6A8
-2222	 217F	PUSH2	0020	 	 
+1987	 23A7	PUSH2	0020	 	 
 - stack 0: 0x6A8
-2223	 2182	MLOAD		 	  ;; # read from x1
+1988	 23AA	MLOAD		 	  ;; # read from x1
 - stack 1: 0x6A8
 - stack 0: 0x20
-2224	 2183	PUSH4	FFFFFFFF	 	 
+1989	 23AB	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x6A8
 - stack 0: 0x0
-2225	 2188	AND		 	  ;; # mask to 32 bits
+1990	 23B0	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x6A8
 - stack 1: 0x0
 - stack 0: 0xFFFFFFFF
-2226	 2189	PUSH2	03A0	 	 
+1991	 23B1	PUSH2	03A0	 	 
 - stack 1: 0x6A8
 - stack 0: 0x0
-2227	 218C	MLOAD		 	  ;; # read from x29
+1992	 23B4	MLOAD		 	  ;; # read from x29
 - stack 2: 0x6A8
 - stack 1: 0x0
 - stack 0: 0x3A0
-2228	 218D	PUSH4	FFFFFFFF	 	 
+1993	 23B5	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x6A8
 - stack 1: 0x0
 - stack 0: 0x0
-2229	 2192	AND		 	  ;; # mask to 32 bits
+1994	 23BA	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x6A8
 - stack 2: 0x0
 - stack 1: 0x0
 - stack 0: 0xFFFFFFFF
-2230	 2193	SUB		 	 
+1995	 23BB	SUB		 	 
 - stack 2: 0x6A8
 - stack 1: 0x0
 - stack 0: 0x0
-2231	 2194	PUSH2	219C	 ;; _neq_0abfba03dd4af7b9f751b2eb328169de738da7d1f53e20fd72c486c81fe2d61e	 
+1996	 23BC	PUSH2	23C4	 ;; _neq_24263dfbb3e3b25caf059b746a68acd7fd693441c1ce689a004b902ee59e74c4	 
 - stack 1: 0x6A8
 - stack 0: 0x0
-2232	 2197	JUMPI		 	 
+1997	 23BF	JUMPI		 	 
 - stack 2: 0x6A8
 - stack 1: 0x0
-- stack 0: 0x219C
-2233	 2198	PUSH2	21C9	 ;; _neq_after_0abfba03dd4af7b9f751b2eb328169de738da7d1f53e20fd72c486c81fe2d61e	 
+- stack 0: 0x23C4
+1998	 23C0	PUSH2	23F3	 ;; _neq_after_24263dfbb3e3b25caf059b746a68acd7fd693441c1ce689a004b902ee59e74c4	 
 - stack 0: 0x6A8
-2234	 219B	JUMP		 	 
+1999	 23C3	JUMP		 	 
 - stack 1: 0x6A8
-- stack 0: 0x21C9
-2235	 21C9	JUMPDEST		 ;; _neq_after_0abfba03dd4af7b9f751b2eb328169de738da7d1f53e20fd72c486c81fe2d61e	 
+- stack 0: 0x23F3
+2000	 23F3	JUMPDEST		 ;; _neq_after_24263dfbb3e3b25caf059b746a68acd7fd693441c1ce689a004b902ee59e74c4	 
 - stack 0: 0x6A8
-2236	 21CA	PUSH2	0016	 ;; _pcplus4	 
+2001	 23F4	PUSH1	04	 	 
 - stack 0: 0x6A8
-2237	 21CD	JUMP		 	 
-- stack 1: 0x6A8
-- stack 0: 0x16
-2238	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x6A8
-2239	 17	PUSH1	04	 	 
-- stack 0: 0x6A8
-2240	 19	ADD		 	 
+2002	 23F6	ADD		 	 
 - stack 1: 0x6A8
 - stack 0: 0x4
-2241	 1A	JUMPDEST		 ;; _execute	 
+2003	 23F7	DUP1		 	  ;; # executing pc
 - stack 0: 0x6AC
-2242	 1B	DUP1		 	 
-- stack 0: 0x6AC
-2243	 1C	MLOAD		 	 
+2004	 23F8	MLOAD		 	 
 - stack 1: 0x6AC
 - stack 0: 0x6AC
-2244	 1D	PUSH1	E0	 	 
+2005	 23F9	PUSH1	E0	 	 
 - stack 1: 0x6AC
-- stack 0: 0x21CE00002239000013000000224C00002276000022C40000231200002320
-2245	 1F	SHR		 	 
+- stack 0: 0x23FD0000246A0000146100002482000024B1000025060000255B0000256E
+2006	 23FB	SHR		 	 
 - stack 2: 0x6AC
-- stack 1: 0x21CE00002239000013000000224C00002276000022C40000231200002320
+- stack 1: 0x23FD0000246A0000146100002482000024B1000025060000255B0000256E
 - stack 0: 0xE0
-2246	 20	JUMP		 	 
+2007	 23FC	JUMP		 	 
 - stack 1: 0x6AC
-- stack 0: 0x21CE
-2247	 21CE	JUMPDEST		 ;; _riscvopt_b18ea4d13919f0b0e950cecc226ce9e5c09cfe72fe3997a484e04a27cb19415a	  ;; # pc 0x6ac buffer: 9300100213d04001930e0000130ed001
+- stack 0: 0x23FD
+2008	 23FD	JUMPDEST		 ;; _riscvopt_b18ea4d13919f0b0e950cecc226ce9e5c09cfe72fe3997a484e04a27cb19415a	  ;; # pc 0x6ac buffer: 9300100213d04001930e0000130ed001
 - stack 0: 0x6AC
-2248	 21CF	POP		 	 
+2009	 23FE	POP		 	 
 - stack 0: 0x6AC
-2249	 21D0	JUMPDEST		 	  ;; # DEBUG: addi ra,zero,33
-2250	 21D1	PUSH32	0000000000000000000000000000000000000000000000000000000000000021	 	  ;; # signextended 33
-2251	 21F2	PUSH2	0020	 	 
+2010	 23FF	JUMPDEST		 	  ;; # DEBUG: addi ra,zero,33
+2011	 2400	PUSH32	0000000000000000000000000000000000000000000000000000000000000021	 	  ;; # signextended 33
+2012	 2421	PUSH2	0020	 	 
 - stack 0: 0x21
-2252	 21F5	MSTORE		 	  ;; # store to x1
+2013	 2424	MSTORE		 	  ;; # store to x1
 - stack 1: 0x21
 - stack 0: 0x20
-2253	 21F6	JUMPDEST		 	  ;; # DEBUG: srai zero,ra,20
-2254	 21F7	PUSH2	0020	 	 
-2255	 21FA	MLOAD		 	  ;; # read from x1
+2014	 2425	JUMPDEST		 	  ;; # DEBUG: srai zero,ra,20
+2015	 2426	PUSH2	0020	 	 
+2016	 2429	MLOAD		 	  ;; # read from x1
 - stack 0: 0x20
-2256	 21FB	PUSH4	FFFFFFFF	 	 
+2017	 242A	PUSH4	FFFFFFFF	 	 
 - stack 0: 0x21
-2257	 2200	AND		 	  ;; # mask to 32 bits
+2018	 242F	AND		 	  ;; # mask to 32 bits
 - stack 1: 0x21
 - stack 0: 0xFFFFFFFF
-2258	 2201	PUSH1	14	 	 
+2019	 2430	PUSH1	14	 	 
 - stack 0: 0x21
-2259	 2203	SHR		 	  ;; # SRLI
+2020	 2432	SHR		 	  ;; # SRLI
 - stack 1: 0x21
 - stack 0: 0x14
-2260	 2204	POP		 	 
+2021	 2433	POP		 	 
 - stack 0: 0x0
-2261	 2205	JUMPDEST		 	  ;; # DEBUG: addi t4,zero,0
-2262	 2206	PUSH1	00	 	 
-2263	 2208	PUSH2	03A0	 	 
+2022	 2434	JUMPDEST		 	  ;; # DEBUG: addi t4,zero,0
+2023	 2435	PUSH1	00	 	 
+2024	 2437	PUSH2	03A0	 	 
 - stack 0: 0x0
-2264	 220B	MSTORE		 	  ;; # store to x29
+2025	 243A	MSTORE		 	  ;; # store to x29
 - stack 1: 0x0
 - stack 0: 0x3A0
-2265	 220C	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,29
-2266	 220D	PUSH32	000000000000000000000000000000000000000000000000000000000000001D	 	  ;; # signextended 29
-2267	 222E	PUSH2	0380	 	 
+2026	 243B	JUMPDEST		 	  ;; # DEBUG: addi t3,zero,29
+2027	 243C	PUSH32	000000000000000000000000000000000000000000000000000000000000001D	 	  ;; # signextended 29
+2028	 245D	PUSH2	0380	 	 
 - stack 0: 0x1D
-2268	 2231	MSTORE		 	  ;; # store to x28
+2029	 2460	MSTORE		 	  ;; # store to x28
 - stack 1: 0x1D
 - stack 0: 0x380
-2269	 2232	PUSH2	06BC	 	 
-2270	 2235	PUSH2	001A	 ;; _execute	  ;; # upgrade PC to past optimized
+2030	 2461	PUSH2	06BC	 	 
+2031	 2464	DUP1		 	  ;; # executing pc
 - stack 0: 0x6BC
-2271	 2238	JUMP		 	 
-- stack 1: 0x6BC
-- stack 0: 0x1A
-2272	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x6BC
-2273	 1B	DUP1		 	 
-- stack 0: 0x6BC
-2274	 1C	MLOAD		 	 
+2032	 2465	MLOAD		 	 
 - stack 1: 0x6BC
 - stack 0: 0x6BC
-2275	 1D	PUSH1	E0	 	 
+2033	 2466	PUSH1	E0	 	 
 - stack 1: 0x6BC
-- stack 0: 0x2276000022C40000231200002320000000FB000001090000234F00002312
-2276	 1F	SHR		 	 
+- stack 0: 0x24B1000025060000255B0000256E0000010200000115000025A20000255B
+2034	 2468	SHR		 	 
 - stack 2: 0x6BC
-- stack 1: 0x2276000022C40000231200002320000000FB000001090000234F00002312
+- stack 1: 0x24B1000025060000255B0000256E0000010200000115000025A20000255B
 - stack 0: 0xE0
-2277	 20	JUMP		 	 
+2035	 2469	JUMP		 	 
 - stack 1: 0x6BC
-- stack 0: 0x2276
-2278	 2276	JUMPDEST		 ;; _riscv_fdf867ab5a16b9e5be6cccef2be5a99f165c3c7b155855ccc4f68c970ec463df	  ;; # pc 0x6bc buffer: 6314d001 decode bne zero,t4,8
+- stack 0: 0x24B1
+2036	 24B1	JUMPDEST		 ;; _riscv_fdf867ab5a16b9e5be6cccef2be5a99f165c3c7b155855ccc4f68c970ec463df	  ;; # pc 0x6bc buffer: 6314d001 decode bne zero,t4,8
 - stack 0: 0x6BC
-2279	 2277	PUSH1	00	 	 
+2037	 24B2	PUSH1	00	 	 
 - stack 0: 0x6BC
-2280	 2279	PUSH4	FFFFFFFF	 	 
+2038	 24B4	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x6BC
 - stack 0: 0x0
-2281	 227E	AND		 	  ;; # mask to 32 bits
+2039	 24B9	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x6BC
 - stack 1: 0x0
 - stack 0: 0xFFFFFFFF
-2282	 227F	PUSH2	03A0	 	 
+2040	 24BA	PUSH2	03A0	 	 
 - stack 1: 0x6BC
 - stack 0: 0x0
-2283	 2282	MLOAD		 	  ;; # read from x29
+2041	 24BD	MLOAD		 	  ;; # read from x29
 - stack 2: 0x6BC
 - stack 1: 0x0
 - stack 0: 0x3A0
-2284	 2283	PUSH4	FFFFFFFF	 	 
+2042	 24BE	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x6BC
 - stack 1: 0x0
 - stack 0: 0x0
-2285	 2288	AND		 	  ;; # mask to 32 bits
+2043	 24C3	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x6BC
 - stack 2: 0x0
 - stack 1: 0x0
 - stack 0: 0xFFFFFFFF
-2286	 2289	SUB		 	 
+2044	 24C4	SUB		 	 
 - stack 2: 0x6BC
 - stack 1: 0x0
 - stack 0: 0x0
-2287	 228A	PUSH2	2292	 ;; _neq_de1f4bb2e992b3a10eef66581ed5c5fed915f8cf803af991cbdc7657ea02057f	 
+2045	 24C5	PUSH2	24CD	 ;; _neq_547ace1dda7c9ad472764e5402dd8d119976ef7d8d7c42d12446141394b3481d	 
 - stack 1: 0x6BC
 - stack 0: 0x0
-2288	 228D	JUMPI		 	 
+2046	 24C8	JUMPI		 	 
 - stack 2: 0x6BC
 - stack 1: 0x0
-- stack 0: 0x2292
-2289	 228E	PUSH2	22BF	 ;; _neq_after_de1f4bb2e992b3a10eef66581ed5c5fed915f8cf803af991cbdc7657ea02057f	 
+- stack 0: 0x24CD
+2047	 24C9	PUSH2	24FC	 ;; _neq_after_547ace1dda7c9ad472764e5402dd8d119976ef7d8d7c42d12446141394b3481d	 
 - stack 0: 0x6BC
-2290	 2291	JUMP		 	 
+2048	 24CC	JUMP		 	 
 - stack 1: 0x6BC
-- stack 0: 0x22BF
-2291	 22BF	JUMPDEST		 ;; _neq_after_de1f4bb2e992b3a10eef66581ed5c5fed915f8cf803af991cbdc7657ea02057f	 
+- stack 0: 0x24FC
+2049	 24FC	JUMPDEST		 ;; _neq_after_547ace1dda7c9ad472764e5402dd8d119976ef7d8d7c42d12446141394b3481d	 
 - stack 0: 0x6BC
-2292	 22C0	PUSH2	0016	 ;; _pcplus4	 
+2050	 24FD	PUSH1	04	 	 
 - stack 0: 0x6BC
-2293	 22C3	JUMP		 	 
-- stack 1: 0x6BC
-- stack 0: 0x16
-2294	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x6BC
-2295	 17	PUSH1	04	 	 
-- stack 0: 0x6BC
-2296	 19	ADD		 	 
+2051	 24FF	ADD		 	 
 - stack 1: 0x6BC
 - stack 0: 0x4
-2297	 1A	JUMPDEST		 ;; _execute	 
+2052	 2500	DUP1		 	  ;; # executing pc
 - stack 0: 0x6C0
-2298	 1B	DUP1		 	 
-- stack 0: 0x6C0
-2299	 1C	MLOAD		 	 
+2053	 2501	MLOAD		 	 
 - stack 1: 0x6C0
 - stack 0: 0x6C0
-2300	 1D	PUSH1	E0	 	 
+2054	 2502	PUSH1	E0	 	 
 - stack 1: 0x6C0
-- stack 0: 0x22C40000231200002320000000FB000001090000234F0000231200002355
-2301	 1F	SHR		 	 
+- stack 0: 0x25060000255B0000256E0000010200000115000025A20000255B000025AD
+2055	 2504	SHR		 	 
 - stack 2: 0x6C0
-- stack 1: 0x22C40000231200002320000000FB000001090000234F0000231200002355
+- stack 1: 0x25060000255B0000256E0000010200000115000025A20000255B000025AD
 - stack 0: 0xE0
-2302	 20	JUMP		 	 
+2056	 2505	JUMP		 	 
 - stack 1: 0x6C0
-- stack 0: 0x22C4
-2303	 22C4	JUMPDEST		 ;; _riscv_eb13c68c7ee971cb0d2fdf2f95328e0fd8823eb261ae921855e1465656b0c0c6	  ;; # pc 0x6c0 buffer: 631cc001 decode bne zero,t3,18
+- stack 0: 0x2506
+2057	 2506	JUMPDEST		 ;; _riscv_eb13c68c7ee971cb0d2fdf2f95328e0fd8823eb261ae921855e1465656b0c0c6	  ;; # pc 0x6c0 buffer: 631cc001 decode bne zero,t3,18
 - stack 0: 0x6C0
-2304	 22C5	PUSH1	00	 	 
+2058	 2507	PUSH1	00	 	 
 - stack 0: 0x6C0
-2305	 22C7	PUSH4	FFFFFFFF	 	 
+2059	 2509	PUSH4	FFFFFFFF	 	 
 - stack 1: 0x6C0
 - stack 0: 0x0
-2306	 22CC	AND		 	  ;; # mask to 32 bits
+2060	 250E	AND		 	  ;; # mask to 32 bits
 - stack 2: 0x6C0
 - stack 1: 0x0
 - stack 0: 0xFFFFFFFF
-2307	 22CD	PUSH2	0380	 	 
+2061	 250F	PUSH2	0380	 	 
 - stack 1: 0x6C0
 - stack 0: 0x0
-2308	 22D0	MLOAD		 	  ;; # read from x28
+2062	 2512	MLOAD		 	  ;; # read from x28
 - stack 2: 0x6C0
 - stack 1: 0x0
 - stack 0: 0x380
-2309	 22D1	PUSH4	FFFFFFFF	 	 
+2063	 2513	PUSH4	FFFFFFFF	 	 
 - stack 2: 0x6C0
 - stack 1: 0x0
 - stack 0: 0x1D
-2310	 22D6	AND		 	  ;; # mask to 32 bits
+2064	 2518	AND		 	  ;; # mask to 32 bits
 - stack 3: 0x6C0
 - stack 2: 0x0
 - stack 1: 0x1D
 - stack 0: 0xFFFFFFFF
-2311	 22D7	SUB		 	 
+2065	 2519	SUB		 	 
 - stack 2: 0x6C0
 - stack 1: 0x0
 - stack 0: 0x1D
-2312	 22D8	PUSH2	22E0	 ;; _neq_84d83aa2bec0a17d24358fdcbd918a1b4148def5bb156d37492eddabfb1a803f	 
+2066	 251A	PUSH2	2522	 ;; _neq_73a47b5c83ca0de62a5f80122785b3bb64f878f6897cda572b70394fb246053a	 
 - stack 1: 0x6C0
 - stack 0: 0x1D
-2313	 22DB	JUMPI		 	 
+2067	 251D	JUMPI		 	 
 - stack 2: 0x6C0
 - stack 1: 0x1D
-- stack 0: 0x22E0
-2314	 22E0	JUMPDEST		 ;; _neq_84d83aa2bec0a17d24358fdcbd918a1b4148def5bb156d37492eddabfb1a803f	 
+- stack 0: 0x2522
+2068	 2522	JUMPDEST		 ;; _neq_73a47b5c83ca0de62a5f80122785b3bb64f878f6897cda572b70394fb246053a	 
 - stack 0: 0x6C0
-2315	 22E1	PUSH32	0000000000000000000000000000000000000000000000000000000000000018	 	  ;; # signextended 24
+2069	 2523	PUSH32	0000000000000000000000000000000000000000000000000000000000000018	 	  ;; # signextended 24
 - stack 0: 0x6C0
-2316	 2302	ADD		 	 
+2070	 2544	ADD		 	 
 - stack 1: 0x6C0
 - stack 0: 0x18
-2317	 2303	PUSH4	FFFFFFFF	 	 
+2071	 2545	PUSH4	FFFFFFFF	 	 
 - stack 0: 0x6D8
-2318	 2308	AND		 	  ;; # mask to 32 bits
+2072	 254A	AND		 	  ;; # mask to 32 bits
 - stack 1: 0x6D8
 - stack 0: 0xFFFFFFFF
-2319	 2309	PUSH2	001A	 ;; _execute	 
+2073	 254B	DUP1		 	  ;; # executing pc
 - stack 0: 0x6D8
-2320	 230C	JUMP		 	 
-- stack 1: 0x6D8
-- stack 0: 0x1A
-2321	 1A	JUMPDEST		 ;; _execute	 
-- stack 0: 0x6D8
-2322	 1B	DUP1		 	 
-- stack 0: 0x6D8
-2323	 1C	MLOAD		 	 
+2074	 254C	MLOAD		 	 
 - stack 1: 0x6D8
 - stack 0: 0x6D8
-2324	 1D	PUSH1	E0	 	 
+2075	 254D	PUSH1	E0	 	 
 - stack 1: 0x6D8
-- stack 0: 0x231200002355000000FB0000010900002384000001096574796D00007473
-2325	 1F	SHR		 	 
+- stack 0: 0x255B000025AD0000010200000115000025E1000001156574796D00007473
+2076	 254F	SHR		 	 
 - stack 2: 0x6D8
-- stack 1: 0x231200002355000000FB0000010900002384000001096574796D00007473
+- stack 1: 0x255B000025AD0000010200000115000025E1000001156574796D00007473
 - stack 0: 0xE0
-2326	 20	JUMP		 	 
+2077	 2550	JUMP		 	 
 - stack 1: 0x6D8
-- stack 0: 0x2312
-2327	 2312	JUMPDEST		 ;; _riscv_fac0d68ad983476c930617bda0d702423841ba1ab08a46e2120b813cb4e17e90	  ;; # pc 0x6c4 buffer: b7050000 decode lui a1,0x0
+- stack 0: 0x255B
+2078	 255B	JUMPDEST		 ;; _riscv_fac0d68ad983476c930617bda0d702423841ba1ab08a46e2120b813cb4e17e90	  ;; # pc 0x6c4 buffer: b7050000 decode lui a1,0x0
 - stack 0: 0x6D8
-2328	 2313	PUSH4	00000000	 	 
+2079	 255C	PUSH4	00000000	 	 
 - stack 0: 0x6D8
-2329	 2318	PUSH2	0160	 	 
+2080	 2561	PUSH2	0160	 	 
 - stack 1: 0x6D8
 - stack 0: 0x0
-2330	 231B	MSTORE		 	  ;; # store to x11
+2081	 2564	MSTORE		 	  ;; # store to x11
 - stack 2: 0x6D8
 - stack 1: 0x0
 - stack 0: 0x160
-2331	 231C	PUSH2	0016	 ;; _pcplus4	 
+2082	 2565	PUSH1	04	 	 
 - stack 0: 0x6D8
-2332	 231F	JUMP		 	 
-- stack 1: 0x6D8
-- stack 0: 0x16
-2333	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x6D8
-2334	 17	PUSH1	04	 	 
-- stack 0: 0x6D8
-2335	 19	ADD		 	 
+2083	 2567	ADD		 	 
 - stack 1: 0x6D8
 - stack 0: 0x4
-2336	 1A	JUMPDEST		 ;; _execute	 
+2084	 2568	DUP1		 	  ;; # executing pc
 - stack 0: 0x6DC
-2337	 1B	DUP1		 	 
-- stack 0: 0x6DC
-2338	 1C	MLOAD		 	 
+2085	 2569	MLOAD		 	 
 - stack 1: 0x6DC
 - stack 0: 0x6DC
-2339	 1D	PUSH1	E0	 	 
+2086	 256A	PUSH1	E0	 	 
 - stack 1: 0x6DC
-- stack 0: 0x2355000000FB0000010900002384000001096574796D0000747300525245
-2340	 1F	SHR		 	 
+- stack 0: 0x25AD0000010200000115000025E1000001156574796D0000747300525245
+2087	 256C	SHR		 	 
 - stack 2: 0x6DC
-- stack 1: 0x2355000000FB0000010900002384000001096574796D0000747300525245
+- stack 1: 0x25AD0000010200000115000025E1000001156574796D0000747300525245
 - stack 0: 0xE0
-2341	 20	JUMP		 	 
+2088	 256D	JUMP		 	 
 - stack 1: 0x6DC
-- stack 0: 0x2355
-2342	 2355	JUMPDEST		 ;; _riscv_1d34ba4aac9f1264d1b01e190fddab78dd00aa4a5e9758ba16c3adee3f859067	  ;; # pc 0x6dc buffer: 9385c56f decode addi a1,a1,1788
+- stack 0: 0x25AD
+2089	 25AD	JUMPDEST		 ;; _riscv_1d34ba4aac9f1264d1b01e190fddab78dd00aa4a5e9758ba16c3adee3f859067	  ;; # pc 0x6dc buffer: 9385c56f decode addi a1,a1,1788
 - stack 0: 0x6DC
-2343	 2356	PUSH2	0160	 	 
+2090	 25AE	PUSH2	0160	 	 
 - stack 0: 0x6DC
-2344	 2359	MLOAD		 	  ;; # read from x11
+2091	 25B1	MLOAD		 	  ;; # read from x11
 - stack 1: 0x6DC
 - stack 0: 0x160
-2345	 235A	PUSH32	00000000000000000000000000000000000000000000000000000000000006FC	 	  ;; # signextended 1788
+2092	 25B2	PUSH32	00000000000000000000000000000000000000000000000000000000000006FC	 	  ;; # signextended 1788
 - stack 1: 0x6DC
 - stack 0: 0x0
-2346	 237B	ADD		 	  ;; # ADDI
+2093	 25D3	ADD		 	  ;; # ADDI
 - stack 2: 0x6DC
 - stack 1: 0x0
 - stack 0: 0x6FC
-2347	 237C	PUSH2	0160	 	 
+2094	 25D4	PUSH2	0160	 	 
 - stack 1: 0x6DC
 - stack 0: 0x6FC
-2348	 237F	MSTORE		 	  ;; # store to x11
+2095	 25D7	MSTORE		 	  ;; # store to x11
 - stack 2: 0x6DC
 - stack 1: 0x6FC
 - stack 0: 0x160
-2349	 2380	PUSH2	0016	 ;; _pcplus4	 
+2096	 25D8	PUSH1	04	 	 
 - stack 0: 0x6DC
-2350	 2383	JUMP		 	 
-- stack 1: 0x6DC
-- stack 0: 0x16
-2351	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x6DC
-2352	 17	PUSH1	04	 	 
-- stack 0: 0x6DC
-2353	 19	ADD		 	 
+2097	 25DA	ADD		 	 
 - stack 1: 0x6DC
 - stack 0: 0x4
-2354	 1A	JUMPDEST		 ;; _execute	 
+2098	 25DB	DUP1		 	  ;; # executing pc
 - stack 0: 0x6E0
-2355	 1B	DUP1		 	 
-- stack 0: 0x6E0
-2356	 1C	MLOAD		 	 
+2099	 25DC	MLOAD		 	 
 - stack 1: 0x6E0
 - stack 0: 0x6E0
-2357	 1D	PUSH1	E0	 	 
+2100	 25DD	PUSH1	E0	 	 
 - stack 1: 0x6E0
-- stack 0: 0xFB0000010900002384000001096574796D000074730052524500004B4F
-2358	 1F	SHR		 	 
+- stack 0: 0x10200000115000025E1000001156574796D000074730052524500004B4F
+2101	 25DF	SHR		 	 
 - stack 2: 0x6E0
-- stack 1: 0xFB0000010900002384000001096574796D000074730052524500004B4F
+- stack 1: 0x10200000115000025E1000001156574796D000074730052524500004B4F
 - stack 0: 0xE0
-2359	 20	JUMP		 	 
+2102	 25E0	JUMP		 	 
 - stack 1: 0x6E0
-- stack 0: 0xFB
-2360	 FB	JUMPDEST		 ;; _riscv_fb01faf29234c89de9403361e30ac2115f0792319cca1470ecb655316cd1b7bf	  ;; # pc 0x408 buffer: 37250400 decode lui a0,0x42
+- stack 0: 0x102
+2103	 102	JUMPDEST		 ;; _riscv_fb01faf29234c89de9403361e30ac2115f0792319cca1470ecb655316cd1b7bf	  ;; # pc 0x408 buffer: 37250400 decode lui a0,0x42
 - stack 0: 0x6E0
-2361	 FC	PUSH4	00042000	 	 
+2104	 103	PUSH4	00042000	 	 
 - stack 0: 0x6E0
-2362	 101	PUSH2	0140	 	 
+2105	 108	PUSH2	0140	 	 
 - stack 1: 0x6E0
 - stack 0: 0x42000
-2363	 104	MSTORE		 	  ;; # store to x10
+2106	 10B	MSTORE		 	  ;; # store to x10
 - stack 2: 0x6E0
 - stack 1: 0x42000
 - stack 0: 0x140
-2364	 105	PUSH2	0016	 ;; _pcplus4	 
+2107	 10C	PUSH1	04	 	 
 - stack 0: 0x6E0
-2365	 108	JUMP		 	 
-- stack 1: 0x6E0
-- stack 0: 0x16
-2366	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x6E0
-2367	 17	PUSH1	04	 	 
-- stack 0: 0x6E0
-2368	 19	ADD		 	 
+2108	 10E	ADD		 	 
 - stack 1: 0x6E0
 - stack 0: 0x4
-2369	 1A	JUMPDEST		 ;; _execute	 
+2109	 10F	DUP1		 	  ;; # executing pc
 - stack 0: 0x6E4
-2370	 1B	DUP1		 	 
-- stack 0: 0x6E4
-2371	 1C	MLOAD		 	 
+2110	 110	MLOAD		 	 
 - stack 1: 0x6E4
 - stack 0: 0x6E4
-2372	 1D	PUSH1	E0	 	 
+2111	 111	PUSH1	E0	 	 
 - stack 1: 0x6E4
-- stack 0: 0x10900002384000001096574796D000074730052524500004B4F00000000
-2373	 1F	SHR		 	 
+- stack 0: 0x115000025E1000001156574796D000074730052524500004B4F00000000
+2112	 113	SHR		 	 
 - stack 2: 0x6E4
-- stack 1: 0x10900002384000001096574796D000074730052524500004B4F00000000
+- stack 1: 0x115000025E1000001156574796D000074730052524500004B4F00000000
 - stack 0: 0xE0
-2374	 20	JUMP		 	 
+2113	 114	JUMP		 	 
 - stack 1: 0x6E4
-- stack 0: 0x109
-2375	 109	JUMPDEST		 ;; _riscv_52e9e3add38bf08350e260942004423cf95fce71609ae1a46b260442db2608bb	  ;; # pc 0x40c buffer: 73000000 decode ecall
+- stack 0: 0x115
+2114	 115	JUMPDEST		 ;; _riscv_52e9e3add38bf08350e260942004423cf95fce71609ae1a46b260442db2608bb	  ;; # pc 0x40c buffer: 73000000 decode ecall
 - stack 0: 0x6E4
-2376	 10A	PUSH2	0140	 	 
+2115	 116	PUSH2	0140	 	 
 - stack 0: 0x6E4
-2377	 10D	MLOAD		 	  ;; # read from x10
+2116	 119	MLOAD		 	  ;; # read from x10
 - stack 1: 0x6E4
 - stack 0: 0x140
-2378	 10E	PUSH2	0118	 ;; _ecall_791be41e7ecc8425d229c3ef0740c611a167308df81a018e7221337d5ae4eb79	 
+2117	 11A	PUSH2	0124	 ;; _ecall_9516961492e509eb0dae5ef2b0919482bab0c89e9baf0fe7b128caf3d02eaa2a	 
 - stack 1: 0x6E4
 - stack 0: 0x42000
-2379	 111	JUMPI		 	 
+2118	 11D	JUMPI		 	 
 - stack 2: 0x6E4
 - stack 1: 0x42000
-- stack 0: 0x118
-2380	 118	JUMPDEST		 ;; _ecall_791be41e7ecc8425d229c3ef0740c611a167308df81a018e7221337d5ae4eb79	 
+- stack 0: 0x124
+2119	 124	JUMPDEST		 ;; _ecall_9516961492e509eb0dae5ef2b0919482bab0c89e9baf0fe7b128caf3d02eaa2a	 
 - stack 0: 0x6E4
-2381	 119	PUSH1	04	 	 
+2120	 125	PUSH1	04	 	 
 - stack 0: 0x6E4
-2382	 11B	PUSH2	0160	 	 
+2121	 127	PUSH2	0160	 	 
 - stack 1: 0x6E4
 - stack 0: 0x4
-2383	 11E	MLOAD		 	  ;; # read from x11
+2122	 12A	MLOAD		 	  ;; # read from x11
 - stack 2: 0x6E4
 - stack 1: 0x4
 - stack 0: 0x160
-2384	 11F	LOG0		 	 
+2123	 12B	LOG0		 	 
 *** PRINT: OK
 - stack 2: 0x6E4
 - stack 1: 0x4
 - stack 0: 0x6FC
-2385	 120	PUSH2	0016	 ;; _pcplus4	 
+2124	 12C	PUSH1	04	 	 
 - stack 0: 0x6E4
-2386	 123	JUMP		 	 
-- stack 1: 0x6E4
-- stack 0: 0x16
-2387	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x6E4
-2388	 17	PUSH1	04	 	 
-- stack 0: 0x6E4
-2389	 19	ADD		 	 
+2125	 12E	ADD		 	 
 - stack 1: 0x6E4
 - stack 0: 0x4
-2390	 1A	JUMPDEST		 ;; _execute	 
+2126	 12F	DUP1		 	  ;; # executing pc
 - stack 0: 0x6E8
-2391	 1B	DUP1		 	 
-- stack 0: 0x6E8
-2392	 1C	MLOAD		 	 
+2127	 130	MLOAD		 	 
 - stack 1: 0x6E8
 - stack 0: 0x6E8
-2393	 1D	PUSH1	E0	 	 
+2128	 131	PUSH1	E0	 	 
 - stack 1: 0x6E8
-- stack 0: 0x2384000001096574796D000074730052524500004B4F0000000000000000
-2394	 1F	SHR		 	 
+- stack 0: 0x25E1000001156574796D000074730052524500004B4F0000000000000000
+2129	 133	SHR		 	 
 - stack 2: 0x6E8
-- stack 1: 0x2384000001096574796D000074730052524500004B4F0000000000000000
+- stack 1: 0x25E1000001156574796D000074730052524500004B4F0000000000000000
 - stack 0: 0xE0
-2395	 20	JUMP		 	 
+2130	 134	JUMP		 	 
 - stack 1: 0x6E8
-- stack 0: 0x2384
-2396	 2384	JUMPDEST		 ;; _riscv_32fba4ad3298f6bb6715e940161ac523f3cccc026d50dcc5b78fede1e1b86feb	  ;; # pc 0x6e8 buffer: 37050000 decode lui a0,0x0
+- stack 0: 0x25E1
+2131	 25E1	JUMPDEST		 ;; _riscv_32fba4ad3298f6bb6715e940161ac523f3cccc026d50dcc5b78fede1e1b86feb	  ;; # pc 0x6e8 buffer: 37050000 decode lui a0,0x0
 - stack 0: 0x6E8
-2397	 2385	PUSH4	00000000	 	 
+2132	 25E2	PUSH4	00000000	 	 
 - stack 0: 0x6E8
-2398	 238A	PUSH2	0140	 	 
+2133	 25E7	PUSH2	0140	 	 
 - stack 1: 0x6E8
 - stack 0: 0x0
-2399	 238D	MSTORE		 	  ;; # store to x10
+2134	 25EA	MSTORE		 	  ;; # store to x10
 - stack 2: 0x6E8
 - stack 1: 0x0
 - stack 0: 0x140
-2400	 238E	PUSH2	0016	 ;; _pcplus4	 
+2135	 25EB	PUSH1	04	 	 
 - stack 0: 0x6E8
-2401	 2391	JUMP		 	 
-- stack 1: 0x6E8
-- stack 0: 0x16
-2402	 16	JUMPDEST		 ;; _pcplus4	 
-- stack 0: 0x6E8
-2403	 17	PUSH1	04	 	 
-- stack 0: 0x6E8
-2404	 19	ADD		 	 
+2136	 25ED	ADD		 	 
 - stack 1: 0x6E8
 - stack 0: 0x4
-2405	 1A	JUMPDEST		 ;; _execute	 
+2137	 25EE	DUP1		 	  ;; # executing pc
 - stack 0: 0x6EC
-2406	 1B	DUP1		 	 
-- stack 0: 0x6EC
-2407	 1C	MLOAD		 	 
+2138	 25EF	MLOAD		 	 
 - stack 1: 0x6EC
 - stack 0: 0x6EC
-2408	 1D	PUSH1	E0	 	 
+2139	 25F0	PUSH1	E0	 	 
 - stack 1: 0x6EC
-- stack 0: 0x1096574796D000074730052524500004B4F000000000000000000000000
-2409	 1F	SHR		 	 
+- stack 0: 0x1156574796D000074730052524500004B4F000000000000000000000000
+2140	 25F2	SHR		 	 
 - stack 2: 0x6EC
-- stack 1: 0x1096574796D000074730052524500004B4F000000000000000000000000
+- stack 1: 0x1156574796D000074730052524500004B4F000000000000000000000000
 - stack 0: 0xE0
-2410	 20	JUMP		 	 
+2141	 25F3	JUMP		 	 
 - stack 1: 0x6EC
-- stack 0: 0x109
-2411	 109	JUMPDEST		 ;; _riscv_52e9e3add38bf08350e260942004423cf95fce71609ae1a46b260442db2608bb	  ;; # pc 0x40c buffer: 73000000 decode ecall
+- stack 0: 0x115
+2142	 115	JUMPDEST		 ;; _riscv_52e9e3add38bf08350e260942004423cf95fce71609ae1a46b260442db2608bb	  ;; # pc 0x40c buffer: 73000000 decode ecall
 - stack 0: 0x6EC
-2412	 10A	PUSH2	0140	 	 
+2143	 116	PUSH2	0140	 	 
 - stack 0: 0x6EC
-2413	 10D	MLOAD		 	  ;; # read from x10
+2144	 119	MLOAD		 	  ;; # read from x10
 - stack 1: 0x6EC
 - stack 0: 0x140
-2414	 10E	PUSH2	0118	 ;; _ecall_791be41e7ecc8425d229c3ef0740c611a167308df81a018e7221337d5ae4eb79	 
+2145	 11A	PUSH2	0124	 ;; _ecall_9516961492e509eb0dae5ef2b0919482bab0c89e9baf0fe7b128caf3d02eaa2a	 
 - stack 1: 0x6EC
 - stack 0: 0x0
-2415	 111	JUMPI		 	 
+2146	 11D	JUMPI		 	 
 - stack 2: 0x6EC
 - stack 1: 0x0
-- stack 0: 0x118
-2416	 112	PUSH1	20	 	 
+- stack 0: 0x124
+2147	 11E	PUSH1	20	 	 
 - stack 0: 0x6EC
-2417	 114	PUSH2	0160	 	 
+2148	 120	PUSH2	0160	 	 
 - stack 1: 0x6EC
 - stack 0: 0x20
-2418	 117	RETURN		 	 
+2149	 123	RETURN		 	 
 - stack 2: 0x6EC
 - stack 1: 0x20
 - stack 0: 0x160
 Returned: 00000000000000000000000000000000000000000000000000000000000006fc
-gasUsed : 8660
+gasUsed : 7689
