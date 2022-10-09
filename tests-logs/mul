@@ -1,20 +1,10 @@
-[{"name":"","nameIndex":0,"type":0,"flags":0,"addr":0,"offset":0,"size":0,"link":0,"info":0,"addralign":0,"entsize":0},{"name":".text","nameIndex":1,"type":1,"flags":6,"addr":1024,"offset":128,"size":1284,"link":0,"info":0,"addralign":4,"entsize":0},{"name":".data","nameIndex":17,"type":1,"flags":3,"addr":2320,"offset":1424,"size":16,"link":0,"info":0,"addralign":16,"entsize":0},{"name":".shstrtab","nameIndex":7,"type":3,"flags":0,"addr":0,"offset":1440,"size":23,"link":0,"info":0,"addralign":1,"entsize":0}]
-Processing: b7150000
-Processing: 93850591
-Processing: 37250400
-Processing: 73000000
-Processing: b7800000
-Processing: 938000e0
-Processing: 3771dbb6
-Processing: 130171db
-Processing: b3812002
 /root/risc-to-evm/instructionParser.ts:875
   const rdString = description.rd ? CPU_REGISTER_NAMES[rd][0] : '';
                                ^
 TypeError: Cannot read properties of undefined (reading 'rd')
     at parseInstruction (/root/risc-to-evm/instructionParser.ts:875:32)
-    at convertRISCVtoFunction (/root/risc-to-evm/v2.ts:760:164)
-    at Object.<anonymous> (/root/risc-to-evm/v2.ts:1014:16)
+    at convertRISCVtoFunction (/root/risc-to-evm/v2.ts:981:34)
+    at Object.<anonymous> (/root/risc-to-evm/v2.ts:1089:18)
     at Module._compile (node:internal/modules/cjs/loader:1120:14)
     at Module.m._compile (/root/risc-to-evm/node_modules/ts-node/src/index.ts:1618:23)
     at Module._extensions..js (node:internal/modules/cjs/loader:1174:10)
