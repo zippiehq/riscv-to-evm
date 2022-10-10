@@ -171,7 +171,8 @@ emitPcPlus4();
 function emitExecute() {
   opcodes.push({ opcode: "DUP1", comment: "executing pc" });
   opcodes.push({ opcode: "MLOAD" });
-  opcodes.push({ opcode: "PUSH1", parameter: "E0" }); // to get the 32-bit value as it's all the way left
+  // we could actually make this uint16 instead, having uint16 imm
+  opcodes.push({ opcode: "PUSH1", parameter: "F0" }); // to get the 16-bit value as it's all the way left
   opcodes.push({ opcode: "SHR" });
   opcodes.push({ opcode: "JUMP" });  
 }
@@ -371,9 +372,11 @@ function emitLui(rd: number, insn: number) {
   writeRegister(rd, false);
 }
 
-function emitAuipc(rd: number, imm: number) {
+function emitAuipc(rd: number, imm: number, eatPc: boolean = false) {
   // assume PC is top of stack
-  opcodes.push({ opcode: "DUP1" });
+  if (!eatPc) {
+    opcodes.push({ opcode: "DUP1" });
+  }
   if (imm !== 0) {
     signExtendTo256(imm << 12 >> 0);
     opcodes.push({ opcode: "ADD" });
@@ -792,7 +795,7 @@ function emitEcall() {
 }
 
 // returns true if a branch
-function emitRiscv(instr: number): void {
+function emitRiscv(instr: number, eatPc: boolean = false): void {
   const parsed = parseInstruction(instr);
   if (parsed.instructionName == "SRAI" && ((parsed.imm & 0x400) == 0)) {
     parsed.instructionName = "SRLI";
@@ -835,7 +838,7 @@ function emitRiscv(instr: number): void {
       break;
     }
     case "AUIPC": {
-      emitAuipc(parsed.rd, parsed.imm);
+      emitAuipc(parsed.rd, parsed.imm, eatPc);
       break;
     }
     case "OR":
@@ -961,10 +964,15 @@ function convertMultipleRISCVtoFunction(pc: number, buf: Buffer): string {
   const branchPc = range[range.length - 2] + 4;
   const afterBranchPc = range[range.length - 1] + 4;
   for (let i = 0; i < buf.length - 4; i += 4) {
-    const instr = buf.readUInt32LE(i);
-    console.log("opt decode " + parseInstruction(instr).instructionName);
+    const instr = buf.readUInt32LE(i); 
+    const instrName = parseInstruction(instr).instructionName;
+    console.log("opt decode " + instrName);
+    if (instrName == "AUIPC") {
+      const auipcPC = (0x400) + pc + i;
+      opcodes.push({opcode: "PUSH2", parameter: auipcPC.toString(16).toUpperCase().padStart(4, "0")});
+    }
     // opcodes.push(({opcode: "JUMPDEST", comment: "DEBUG: " + parseInstruction(instr).assembly}));
-    emitRiscv(instr);
+    emitRiscv(instr, instrName == "AUIPC");
   }
   console.log("branch PC is " + branchPc.toString(16));
   opcodes.push({opcode: "PUSH2", parameter: branchPc.toString(16).toUpperCase().padStart(4, "0")});
@@ -982,7 +990,7 @@ function convertRISCVtoFunction(pc: number, buf: Buffer): string {
   }
   emittedFunctions[hash] = "_riscv_" + hash;
   const decode = parseInstruction(buf.readUInt32LE(0));
-  const branches = ["AUIPC", "JAL", "JALR", "BNE", "BEQ", "BLT", "BGE", "BLTU", "BGEU"];
+  const branches = ["JAL", "JALR", "BNE", "BEQ", "BLT", "BGE", "BLTU", "BGEU"];
   const isBranch = branches.indexOf(decode.instructionName) !== -1;
   opcodes.push({ opcode: "JUMPDEST", name: "_riscv_" + hash, comment: "pc 0x" + (0x400 + pc).toString(16) + " buffer: " + buf.toString("hex") + " decode " + decode.assembly, riscv_instr: true, is_branch: isBranch });
   
@@ -1056,7 +1064,7 @@ function performAssembly(): string {
         if (!para) {
           throw new Error("32bitptr without parameter");
         }
-        ptrAssembly = ptrAssembly + "0000" + para;
+        ptrAssembly = ptrAssembly + para + "0000";
       }
   }
   return assemble(preAssembly) + ptrAssembly;
