@@ -176,13 +176,13 @@ Running in EVM:
 60	 6A	MLOAD		 	  ;; # read from x10
 - stack 1: 0x40C
 - stack 0: 0x42000
-61	 6B	PUSH2	0075	 ;; _ecall_e64a74ad308161bde2dc8aec127776ec6ac46aa8fcc083d93023f1b60b1cc0cc	 
+61	 6B	PUSH2	0075	 ;; _ecall_f6b8ec0cb1c4c380b97e0722e4bd1a3d99d9177e56f69d208e7aadfc83486f93	 
 - stack 2: 0x40C
 - stack 1: 0x42000
 - stack 0: 0x75
 62	 6E	JUMPI		 	 
 - stack 0: 0x40C
-63	 75	JUMPDEST		 ;; _ecall_e64a74ad308161bde2dc8aec127776ec6ac46aa8fcc083d93023f1b60b1cc0cc	 
+63	 75	JUMPDEST		 ;; _ecall_f6b8ec0cb1c4c380b97e0722e4bd1a3d99d9177e56f69d208e7aadfc83486f93	 
 - stack 0: 0x40C
 64	 76	PUSH1	04	 	 
 - stack 1: 0x40C
@@ -534,18 +534,18 @@ Running in EVM:
 175	 123	SUB		 	 
 - stack 1: 0x424
 - stack 0: 0x0
-176	 124	PUSH2	012C	 ;; _neq_5c1057b4c557e55826caee7b32f5821ed027e01851f8d519f14694756bf46b01	 
+176	 124	PUSH2	012C	 ;; _neq_d7bc2a2e5c3c5bb58790b6a212d69d132692de34966a0d802e866b13d9478221	 
 - stack 2: 0x424
 - stack 1: 0x0
 - stack 0: 0x12C
 177	 127	JUMPI		 	 
 - stack 0: 0x424
-178	 128	PUSH2	0146	 ;; _neq_after_5c1057b4c557e55826caee7b32f5821ed027e01851f8d519f14694756bf46b01	 
+178	 128	PUSH2	0146	 ;; _neq_after_d7bc2a2e5c3c5bb58790b6a212d69d132692de34966a0d802e866b13d9478221	 
 - stack 1: 0x424
 - stack 0: 0x146
 179	 12B	JUMP		 	 
 - stack 0: 0x424
-180	 146	JUMPDEST		 ;; _neq_after_5c1057b4c557e55826caee7b32f5821ed027e01851f8d519f14694756bf46b01	 
+180	 146	JUMPDEST		 ;; _neq_after_d7bc2a2e5c3c5bb58790b6a212d69d132692de34966a0d802e866b13d9478221	 
 - stack 0: 0x424
 181	 147	PUSH1	04	 	 
 - stack 1: 0x424
@@ -883,13 +883,13 @@ Running in EVM:
 288	 123	SUB		 	 
 - stack 1: 0x43C
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE
-289	 124	PUSH2	012C	 ;; _neq_5c1057b4c557e55826caee7b32f5821ed027e01851f8d519f14694756bf46b01	 
+289	 124	PUSH2	012C	 ;; _neq_d7bc2a2e5c3c5bb58790b6a212d69d132692de34966a0d802e866b13d9478221	 
 - stack 2: 0x43C
 - stack 1: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE
 - stack 0: 0x12C
 290	 127	JUMPI		 	 
 - stack 0: 0x43C
-291	 12C	JUMPDEST		 ;; _neq_5c1057b4c557e55826caee7b32f5821ed027e01851f8d519f14694756bf46b01	 
+291	 12C	JUMPDEST		 ;; _neq_d7bc2a2e5c3c5bb58790b6a212d69d132692de34966a0d802e866b13d9478221	 
 - stack 0: 0x43C
 292	 12D	DUP1		 	  ;; # get IMM from PC
 - stack 1: 0x43C
@@ -1076,13 +1076,13 @@ Running in EVM:
 353	 6A	MLOAD		 	  ;; # read from x10
 - stack 1: 0x8E4
 - stack 0: 0x42000
-354	 6B	PUSH2	0075	 ;; _ecall_e64a74ad308161bde2dc8aec127776ec6ac46aa8fcc083d93023f1b60b1cc0cc	 
+354	 6B	PUSH2	0075	 ;; _ecall_f6b8ec0cb1c4c380b97e0722e4bd1a3d99d9177e56f69d208e7aadfc83486f93	 
 - stack 2: 0x8E4
 - stack 1: 0x42000
 - stack 0: 0x75
 355	 6E	JUMPI		 	 
 - stack 0: 0x8E4
-356	 75	JUMPDEST		 ;; _ecall_e64a74ad308161bde2dc8aec127776ec6ac46aa8fcc083d93023f1b60b1cc0cc	 
+356	 75	JUMPDEST		 ;; _ecall_f6b8ec0cb1c4c380b97e0722e4bd1a3d99d9177e56f69d208e7aadfc83486f93	 
 - stack 0: 0x8E4
 357	 76	PUSH1	04	 	 
 - stack 1: 0x8E4
@@ -1122,4 +1122,4 @@ Running in EVM:
 - stack 0: 0x8E8
 369	 610	INVALID		 	  ;; # EBREAK
 Error: {"error":"invalid opcode","errorType":"VmError"}
-    at invokeRiscv (/root/risc-to-evm/v2.ts:1375:11)
+    at invokeRiscv (/root/risc-to-evm/v2.ts:1371:11)

@@ -8,7 +8,6 @@ import {
   } from "@wokwi/elfist";
 import crypto from "crypto";
 import { parseInstruction } from "./instructionParser";
-import { parse } from "path";
 
 interface EVMOpCode {
   opcode: string;
@@ -1243,7 +1242,7 @@ for (let i = 0; i < text_area.length; i += 4) {
     opcodesToConvert.push({opcode: "_32bitptr", find_name: name});  
   } else {
     const name = emitRISCVimpl(text_area.slice(i, i + 4));
-    opcodesToConvert.push({opcode: "_32bitptr", find_name: name[0], imm: name[1] & 0xFFFF >>> 0});  
+    opcodesToConvert.push({opcode: "_32bitptr", find_name: name[0], imm: name[1] & 0xFFFF >>> 0});    
   }
 }
 
@@ -1259,11 +1258,8 @@ const restOfRAM = Buffer.alloc(restOfRAMpreBswap.length);
 
 // pre-byteswap the entire precompiled ram
 for (let i = 0; i < restOfRAMpreBswap.length; i += 4) {
-
   restOfRAM.writeUInt32BE(restOfRAMpreBswap.readUint32LE(i), i);
 }
-
-
 const assembled = performAssembly();
 const finalBytecode = Buffer.concat([Buffer.from(assembled, "hex"), restOfRAM]);
 
@@ -1294,7 +1290,7 @@ async function invokeRiscv() {
               if (!opcodes[l].is_branch) {
                 range.push(data.stack[data.stack.length - 1].toNumber()); // pc at jumpdest
               } else {
-                if (range.length > 1) {
+                if (range.length > 0) {
                   const hash = "" + range[0];
                   if (!ranges[hash]) {
                     ranges[hash] = range;

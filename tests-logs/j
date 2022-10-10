@@ -176,13 +176,13 @@ Running in EVM:
 60	 6A	MLOAD		 	  ;; # read from x10
 - stack 1: 0x40C
 - stack 0: 0x42000
-61	 6B	PUSH2	0075	 ;; _ecall_4824a386a57bd0d33219b6e2af81f33834226c9c27721ae515e7cb17449ac03c	 
+61	 6B	PUSH2	0075	 ;; _ecall_914cd8ef66faf1e62b52500913ed11896572624ee252767752fdb6225778956d	 
 - stack 2: 0x40C
 - stack 1: 0x42000
 - stack 0: 0x75
 62	 6E	JUMPI		 	 
 - stack 0: 0x40C
-63	 75	JUMPDEST		 ;; _ecall_4824a386a57bd0d33219b6e2af81f33834226c9c27721ae515e7cb17449ac03c	 
+63	 75	JUMPDEST		 ;; _ecall_914cd8ef66faf1e62b52500913ed11896572624ee252767752fdb6225778956d	 
 - stack 0: 0x40C
 64	 76	PUSH1	04	 	 
 - stack 1: 0x40C
@@ -759,18 +759,18 @@ Running in EVM:
 242	 131	SUB		 	 
 - stack 1: 0x444
 - stack 0: 0x0
-243	 132	PUSH2	013A	 ;; _neq_3fa88a711b8c2e107598e589e6aa3b213ffdee5daf8b8407b64d5160fe4e1641	 
+243	 132	PUSH2	013A	 ;; _neq_2492e10dfcb7475178b82dbb1479df7e0177e80ad01e3afdf0a5d723ec854b5f	 
 - stack 2: 0x444
 - stack 1: 0x0
 - stack 0: 0x13A
 244	 135	JUMPI		 	 
 - stack 0: 0x444
-245	 136	PUSH2	0154	 ;; _neq_after_3fa88a711b8c2e107598e589e6aa3b213ffdee5daf8b8407b64d5160fe4e1641	 
+245	 136	PUSH2	0154	 ;; _neq_after_2492e10dfcb7475178b82dbb1479df7e0177e80ad01e3afdf0a5d723ec854b5f	 
 - stack 1: 0x444
 - stack 0: 0x154
 246	 139	JUMP		 	 
 - stack 0: 0x444
-247	 154	JUMPDEST		 ;; _neq_after_3fa88a711b8c2e107598e589e6aa3b213ffdee5daf8b8407b64d5160fe4e1641	 
+247	 154	JUMPDEST		 ;; _neq_after_2492e10dfcb7475178b82dbb1479df7e0177e80ad01e3afdf0a5d723ec854b5f	 
 - stack 0: 0x444
 248	 155	PUSH1	04	 	 
 - stack 1: 0x444
@@ -824,13 +824,13 @@ Running in EVM:
 263	 171	SUB		 	 
 - stack 1: 0x448
 - stack 0: 0x3
-264	 172	PUSH2	017A	 ;; _neq_d3909ad2a7b37f09517030171ef22b71c403944a3aebea694ed5a5dbaa0333ba	 
+264	 172	PUSH2	017A	 ;; _neq_3e965bdbf4ea95a5d833007dc0b9701f5d8f9a5425b09232e29b4c6ce1236ea2	 
 - stack 2: 0x448
 - stack 1: 0x3
 - stack 0: 0x17A
 265	 175	JUMPI		 	 
 - stack 0: 0x448
-266	 17A	JUMPDEST		 ;; _neq_d3909ad2a7b37f09517030171ef22b71c403944a3aebea694ed5a5dbaa0333ba	 
+266	 17A	JUMPDEST		 ;; _neq_3e965bdbf4ea95a5d833007dc0b9701f5d8f9a5425b09232e29b4c6ce1236ea2	 
 - stack 0: 0x448
 267	 17B	DUP1		 	  ;; # get IMM from PC
 - stack 1: 0x448
@@ -1017,13 +1017,13 @@ Running in EVM:
 328	 6A	MLOAD		 	  ;; # read from x10
 - stack 1: 0x46C
 - stack 0: 0x42000
-329	 6B	PUSH2	0075	 ;; _ecall_4824a386a57bd0d33219b6e2af81f33834226c9c27721ae515e7cb17449ac03c	 
+329	 6B	PUSH2	0075	 ;; _ecall_914cd8ef66faf1e62b52500913ed11896572624ee252767752fdb6225778956d	 
 - stack 2: 0x46C
 - stack 1: 0x42000
 - stack 0: 0x75
 330	 6E	JUMPI		 	 
 - stack 0: 0x46C
-331	 75	JUMPDEST		 ;; _ecall_4824a386a57bd0d33219b6e2af81f33834226c9c27721ae515e7cb17449ac03c	 
+331	 75	JUMPDEST		 ;; _ecall_914cd8ef66faf1e62b52500913ed11896572624ee252767752fdb6225778956d	 
 - stack 0: 0x46C
 332	 76	PUSH1	04	 	 
 - stack 1: 0x46C
@@ -1098,7 +1098,7 @@ Running in EVM:
 356	 6A	MLOAD		 	  ;; # read from x10
 - stack 1: 0x474
 - stack 0: 0x0
-357	 6B	PUSH2	0075	 ;; _ecall_4824a386a57bd0d33219b6e2af81f33834226c9c27721ae515e7cb17449ac03c	 
+357	 6B	PUSH2	0075	 ;; _ecall_914cd8ef66faf1e62b52500913ed11896572624ee252767752fdb6225778956d	 
 - stack 2: 0x474
 - stack 1: 0x0
 - stack 0: 0x75
@@ -1116,4 +1116,5 @@ Final bytecode length; 589
 Returned: 000000000000000000000000000000000000000000000000000000000000048c
 gasUsed : 2134
 ** HOT: 400 - range: 400,404,408,40c,410,414
+** HOT: 41c - range: 41c,420
 ** HOT: 434 - range: 434,438,43c,440,444

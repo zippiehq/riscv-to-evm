@@ -176,13 +176,13 @@ Running in EVM:
 60	 6A	MLOAD		 	  ;; # read from x10
 - stack 1: 0x40C
 - stack 0: 0x42000
-61	 6B	PUSH2	0075	 ;; _ecall_7bf0382a8c0a7a32067be989767566927e6e7d95fc2f55c9a5c1c7be636b6c41	 
+61	 6B	PUSH2	0075	 ;; _ecall_dd1e85b4144fb704d65281aa04f2bf60974da7a4a8fc572dba96522ddfb98366	 
 - stack 2: 0x40C
 - stack 1: 0x42000
 - stack 0: 0x75
 62	 6E	JUMPI		 	 
 - stack 0: 0x40C
-63	 75	JUMPDEST		 ;; _ecall_7bf0382a8c0a7a32067be989767566927e6e7d95fc2f55c9a5c1c7be636b6c41	 
+63	 75	JUMPDEST		 ;; _ecall_dd1e85b4144fb704d65281aa04f2bf60974da7a4a8fc572dba96522ddfb98366	 
 - stack 0: 0x40C
 64	 76	PUSH1	04	 	 
 - stack 1: 0x40C
@@ -534,18 +534,18 @@ Running in EVM:
 175	 120	SUB		 	 
 - stack 1: 0x424
 - stack 0: 0x0
-176	 121	PUSH2	0129	 ;; _neq_336146c43bddd1b2566798c2682aac13b819828f892d7cbe39e6a68867282c89	 
+176	 121	PUSH2	0129	 ;; _neq_3de26a9f740e1162af91b4772f10a74866ddc5bc39fc1d8515e0359ea6ba96d3	 
 - stack 2: 0x424
 - stack 1: 0x0
 - stack 0: 0x129
 177	 124	JUMPI		 	 
 - stack 0: 0x424
-178	 125	PUSH2	0143	 ;; _neq_after_336146c43bddd1b2566798c2682aac13b819828f892d7cbe39e6a68867282c89	 
+178	 125	PUSH2	0143	 ;; _neq_after_3de26a9f740e1162af91b4772f10a74866ddc5bc39fc1d8515e0359ea6ba96d3	 
 - stack 1: 0x424
 - stack 0: 0x143
 179	 128	JUMP		 	 
 - stack 0: 0x424
-180	 143	JUMPDEST		 ;; _neq_after_336146c43bddd1b2566798c2682aac13b819828f892d7cbe39e6a68867282c89	 
+180	 143	JUMPDEST		 ;; _neq_after_3de26a9f740e1162af91b4772f10a74866ddc5bc39fc1d8515e0359ea6ba96d3	 
 - stack 0: 0x424
 181	 144	PUSH1	04	 	 
 - stack 1: 0x424
@@ -883,18 +883,18 @@ Running in EVM:
 288	 120	SUB		 	 
 - stack 1: 0x43C
 - stack 0: 0x0
-289	 121	PUSH2	0129	 ;; _neq_336146c43bddd1b2566798c2682aac13b819828f892d7cbe39e6a68867282c89	 
+289	 121	PUSH2	0129	 ;; _neq_3de26a9f740e1162af91b4772f10a74866ddc5bc39fc1d8515e0359ea6ba96d3	 
 - stack 2: 0x43C
 - stack 1: 0x0
 - stack 0: 0x129
 290	 124	JUMPI		 	 
 - stack 0: 0x43C
-291	 125	PUSH2	0143	 ;; _neq_after_336146c43bddd1b2566798c2682aac13b819828f892d7cbe39e6a68867282c89	 
+291	 125	PUSH2	0143	 ;; _neq_after_3de26a9f740e1162af91b4772f10a74866ddc5bc39fc1d8515e0359ea6ba96d3	 
 - stack 1: 0x43C
 - stack 0: 0x143
 292	 128	JUMP		 	 
 - stack 0: 0x43C
-293	 143	JUMPDEST		 ;; _neq_after_336146c43bddd1b2566798c2682aac13b819828f892d7cbe39e6a68867282c89	 
+293	 143	JUMPDEST		 ;; _neq_after_3de26a9f740e1162af91b4772f10a74866ddc5bc39fc1d8515e0359ea6ba96d3	 
 - stack 0: 0x43C
 294	 144	PUSH1	04	 	 
 - stack 1: 0x43C
@@ -1232,13 +1232,13 @@ Running in EVM:
 401	 120	SUB		 	 
 - stack 1: 0x454
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-402	 121	PUSH2	0129	 ;; _neq_336146c43bddd1b2566798c2682aac13b819828f892d7cbe39e6a68867282c89	 
+402	 121	PUSH2	0129	 ;; _neq_3de26a9f740e1162af91b4772f10a74866ddc5bc39fc1d8515e0359ea6ba96d3	 
 - stack 2: 0x454
 - stack 1: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 - stack 0: 0x129
 403	 124	JUMPI		 	 
 - stack 0: 0x454
-404	 129	JUMPDEST		 ;; _neq_336146c43bddd1b2566798c2682aac13b819828f892d7cbe39e6a68867282c89	 
+404	 129	JUMPDEST		 ;; _neq_3de26a9f740e1162af91b4772f10a74866ddc5bc39fc1d8515e0359ea6ba96d3	 
 - stack 0: 0x454
 405	 12A	DUP1		 	  ;; # get IMM from PC
 - stack 1: 0x454
@@ -1425,13 +1425,13 @@ Running in EVM:
 466	 6A	MLOAD		 	  ;; # read from x10
 - stack 1: 0x8E4
 - stack 0: 0x42000
-467	 6B	PUSH2	0075	 ;; _ecall_7bf0382a8c0a7a32067be989767566927e6e7d95fc2f55c9a5c1c7be636b6c41	 
+467	 6B	PUSH2	0075	 ;; _ecall_dd1e85b4144fb704d65281aa04f2bf60974da7a4a8fc572dba96522ddfb98366	 
 - stack 2: 0x8E4
 - stack 1: 0x42000
 - stack 0: 0x75
 468	 6E	JUMPI		 	 
 - stack 0: 0x8E4
-469	 75	JUMPDEST		 ;; _ecall_7bf0382a8c0a7a32067be989767566927e6e7d95fc2f55c9a5c1c7be636b6c41	 
+469	 75	JUMPDEST		 ;; _ecall_dd1e85b4144fb704d65281aa04f2bf60974da7a4a8fc572dba96522ddfb98366	 
 - stack 0: 0x8E4
 470	 76	PUSH1	04	 	 
 - stack 1: 0x8E4
@@ -1471,4 +1471,4 @@ Running in EVM:
 - stack 0: 0x8E8
 482	 60B	INVALID		 	  ;; # EBREAK
 Error: {"error":"invalid opcode","errorType":"VmError"}
-    at invokeRiscv (/root/risc-to-evm/v2.ts:1375:11)
+    at invokeRiscv (/root/risc-to-evm/v2.ts:1371:11)

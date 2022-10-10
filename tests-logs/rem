@@ -176,13 +176,13 @@ Running in EVM:
 60	 6A	MLOAD		 	  ;; # read from x10
 - stack 1: 0x40C
 - stack 0: 0x42000
-61	 6B	PUSH2	0075	 ;; _ecall_4beba5905b50ddbb7b6b3d21ea91bdbc724c655a87dae708eb4e43f2c832bf17	 
+61	 6B	PUSH2	0075	 ;; _ecall_6ef17c3aa161d5f27de7c422edfea6081cb1c6f69fcc7d1e66e1777130a95270	 
 - stack 2: 0x40C
 - stack 1: 0x42000
 - stack 0: 0x75
 62	 6E	JUMPI		 	 
 - stack 0: 0x40C
-63	 75	JUMPDEST		 ;; _ecall_4beba5905b50ddbb7b6b3d21ea91bdbc724c655a87dae708eb4e43f2c832bf17	 
+63	 75	JUMPDEST		 ;; _ecall_6ef17c3aa161d5f27de7c422edfea6081cb1c6f69fcc7d1e66e1777130a95270	 
 - stack 0: 0x40C
 64	 76	PUSH1	04	 	 
 - stack 1: 0x40C
@@ -518,13 +518,13 @@ Running in EVM:
 171	 11A	SUB		 	 
 - stack 1: 0x424
 - stack 0: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEC
-172	 11B	PUSH2	0123	 ;; _neq_bbe4f10af265fe67b9474c4039cd824f79af372efe802f3654d3c62f736ac763	 
+172	 11B	PUSH2	0123	 ;; _neq_19f68cabc5c988b7b9c63d8c75c9741671870423237cdca9ef82c3b0f64b79f6	 
 - stack 2: 0x424
 - stack 1: 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEC
 - stack 0: 0x123
 173	 11E	JUMPI		 	 
 - stack 0: 0x424
-174	 123	JUMPDEST		 ;; _neq_bbe4f10af265fe67b9474c4039cd824f79af372efe802f3654d3c62f736ac763	 
+174	 123	JUMPDEST		 ;; _neq_19f68cabc5c988b7b9c63d8c75c9741671870423237cdca9ef82c3b0f64b79f6	 
 - stack 0: 0x424
 175	 124	DUP1		 	  ;; # get IMM from PC
 - stack 1: 0x424
@@ -711,13 +711,13 @@ Running in EVM:
 236	 6A	MLOAD		 	  ;; # read from x10
 - stack 1: 0x4F8
 - stack 0: 0x42000
-237	 6B	PUSH2	0075	 ;; _ecall_4beba5905b50ddbb7b6b3d21ea91bdbc724c655a87dae708eb4e43f2c832bf17	 
+237	 6B	PUSH2	0075	 ;; _ecall_6ef17c3aa161d5f27de7c422edfea6081cb1c6f69fcc7d1e66e1777130a95270	 
 - stack 2: 0x4F8
 - stack 1: 0x42000
 - stack 0: 0x75
 238	 6E	JUMPI		 	 
 - stack 0: 0x4F8
-239	 75	JUMPDEST		 ;; _ecall_4beba5905b50ddbb7b6b3d21ea91bdbc724c655a87dae708eb4e43f2c832bf17	 
+239	 75	JUMPDEST		 ;; _ecall_6ef17c3aa161d5f27de7c422edfea6081cb1c6f69fcc7d1e66e1777130a95270	 
 - stack 0: 0x4F8
 240	 76	PUSH1	04	 	 
 - stack 1: 0x4F8
@@ -757,4 +757,4 @@ Running in EVM:
 - stack 0: 0x4FC
 252	 1AE	INVALID		 	  ;; # EBREAK
 Error: {"error":"invalid opcode","errorType":"VmError"}
-    at invokeRiscv (/root/risc-to-evm/v2.ts:1375:11)
+    at invokeRiscv (/root/risc-to-evm/v2.ts:1371:11)
