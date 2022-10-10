@@ -8,6 +8,7 @@ import {
   } from "@wokwi/elfist";
 import crypto from "crypto";
 import { parseInstruction } from "./instructionParser";
+import { parse } from "path";
 
 interface EVMOpCode {
   opcode: string;
@@ -18,6 +19,7 @@ interface EVMOpCode {
   pc?: number;
   riscv_instr?: boolean|null;
   is_branch?: boolean|null;
+  imm?: number;
 }
 
 const text_area = fs.readFileSync(process.argv[2] + ".text");
@@ -214,18 +216,41 @@ function signExtendTo256(value: number) {
   });
 }
 
-function emitAddi(rd: number, rs1: number, imm: number) {
-  if (rs1 !== 0) {
-    readRegister(rs1);
-  }
-  if (imm !== 0) {
-    signExtendTo256(imm);
+function getImmFromPC(offset: number = 1) {
+  opcodes.push({ opcode: "DUP" + offset, comment: "get IMM from PC"});
+  opcodes.push({ opcode: "MLOAD"});
+  opcodes.push({ opcode: "PUSH1", parameter: "E0" }); // to get the 16-bit value as it's all the way left
+  opcodes.push({ opcode: "SHR" });
+  opcodes.push({ opcode: "PUSH2", parameter: "FFFF"});
+  opcodes.push({ opcode: "AND" });
+}
+
+function getImmFromPCSext(offset: number = 1) {
+  getImmFromPC(offset);
+  opcodes.push({ opcode: "PUSH1", parameter: "01" });
+  opcodes.push({ opcode: "SIGNEXTEND" }); 
+}
+
+function emitAddi(rd: number, rs1: number, imm: number, immFromPC?: boolean) {
+  if (immFromPC) {
+    getImmFromPCSext();
     if (rs1 !== 0) {
-      opcodes.push({ opcode: "ADD", comment: "ADDI" });
+      readRegister(rs1);
+      opcodes.push({ opcode: "ADD", comment: "ADDI " + rs1 });
     }
-  }
-  if (rs1 == 0 && imm == 0) {
-    opcodes.push({opcode: "PUSH1", parameter: "00"});
+  } else {
+    if (imm !== 0) {
+      signExtendTo256(imm);
+    }
+    if (rs1 !== 0) {
+      readRegister(rs1);
+      if (imm !== 0) {
+        opcodes.push({ opcode: "ADD", comment: "ADDI " + rs1 });
+      }
+    } 
+    if (rs1 == 0 && imm == 0) {
+      opcodes.push({opcode: "PUSH1", parameter: "00"});
+    }  
   }
   writeRegister(rd, false);
 }
@@ -254,8 +279,12 @@ function emitAndOrXor(type: string, rd: number, rs1: number, rs2: number) {
   writeRegister(rd, false);
 }
 
-function emitAndOrXori(type: string, rd: number, rs1: number, imm: number) {
-  signExtendTo256(imm);
+function emitAndOrXori(type: string, rd: number, rs1: number, imm: number, immFromPC?: boolean) {
+  if (immFromPC) {
+    getImmFromPCSext();
+  } else {
+    signExtendTo256(imm);
+  }
   readRegister(rs1);
 
   switch (type) {
@@ -284,15 +313,19 @@ function emitSra(rd: number, rs1: number, rs2: number) {
   writeRegister(rd, false);
 }
 
-function emitSrai(rd: number, rs1: number, imm: number) {
+function emitSrai(rd: number, rs1: number, imm: number, immFromPC?: boolean) {
   readRegister(rs1);
   // this is already 32-bit
   opcodes.push({ opcode: "PUSH1", parameter: "03"});
   opcodes.push({ opcode: "SIGNEXTEND" });
-  opcodes.push({
-    opcode: "PUSH2",
-    parameter: imm.toString(16).toUpperCase().padStart(4, "0"),
-  });
+  if (immFromPC) {
+    getImmFromPC(2);    
+  } else {
+    opcodes.push({
+      opcode: "PUSH2",
+      parameter: imm.toString(16).toUpperCase().padStart(4, "0"),
+    });  
+  }
   opcodes.push({ opcode: "SAR" });
   writeRegister(rd, false);
 }
@@ -309,16 +342,20 @@ function emitSllSrl(type: string, rd: number, rs1: number, rs2: number) {
   writeRegister(rd, false);
 }
 
-function emitSlliSrli(func: string, rd: number, rs1: number, imm: number) {
+function emitSlliSrli(func: string, rd: number, rs1: number, imm: number, immFromPC?: boolean) {
   readRegister(rs1);
   if (func == "SRLI") {
     opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" });
     opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
   }
-  opcodes.push({
-    opcode: "PUSH1",
-    parameter: imm.toString(16).toUpperCase().padStart(2, "0"),
-  });
+  if (immFromPC) {
+    getImmFromPC(2);
+  } else {
+    opcodes.push({
+      opcode: "PUSH1",
+      parameter: imm.toString(16).toUpperCase().padStart(2, "0"),
+    });  
+  }
   opcodes.push({ opcode: func == "SLLI" ? "SHL" : "SHR", comment: func });
   writeRegister(rd, func == "SLLI"); // don't need to mask if shl, but we do if shr (XXX what?)
 }
@@ -347,8 +384,12 @@ function emitSltu(rd: number, rs1: number, rs2: number) {
   writeRegister(rd, false);
 }
 
-function emitSlti(rd: number, rs1: number, imm: number) {
-  signExtendTo256(imm);
+function emitSlti(rd: number, rs1: number, imm: number, immFromPC?: boolean) {
+  if (immFromPC) {
+    getImmFromPCSext();
+  } else {
+    signExtendTo256(imm);
+  }
   readRegister(rs1);
   opcodes.push({ opcode: "PUSH1", parameter: "03" });
   opcodes.push({ opcode: "SIGNEXTEND" });
@@ -357,8 +398,12 @@ function emitSlti(rd: number, rs1: number, imm: number) {
   writeRegister(rd, false);
 }
 
-function emitSltiu(rd: number, rs1: number, imm: number) {
-  signExtendTo256(imm);
+function emitSltiu(rd: number, rs1: number, imm: number, immFromPC?: boolean) {
+  if (immFromPC) {
+    getImmFromPCSext();
+  } else {
+    signExtendTo256(imm);
+  }
   readRegister(rs1);
   opcodes.push({ opcode: "PUSH1", parameter: "03" });
   opcodes.push({ opcode: "SIGNEXTEND" });
@@ -377,17 +422,23 @@ function emitAuipc(rd: number, imm: number, eatPc: boolean = false) {
   if (!eatPc) {
     opcodes.push({ opcode: "DUP1" });
   }
+
   if (imm !== 0) {
     signExtendTo256(imm << 12 >> 0);
     opcodes.push({ opcode: "ADD" });
   }
+
   writeRegister(rd, false);
 }
 
-function emitJal(rd: number, imm: number) {
+function emitJal(rd: number, imm: number, immFromPC?: boolean) {
   // XXX this may be more optimal with using SUB ..
   opcodes.push({ opcode: "DUP1" }); // pc pc
-  signExtendTo256(imm); // imm-signextended pc pc
+  if (immFromPC) {
+    getImmFromPCSext(2);
+  } else {
+    signExtendTo256(imm); // imm-signextended pc pc
+  }
   opcodes.push({ opcode: "ADD" }); // pc+imm-signextended(256 bit) pc
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended pc
   opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
@@ -399,12 +450,21 @@ function emitJal(rd: number, imm: number) {
   emitExecute();
 }
 
-function emitJalr(rd: number, rs1: number, imm: number) {
-  if (rd === 0) {
+function emitJalr(rd: number, rs1: number, imm: number, immFromPC?: boolean) {
+  if (rd === 0 && !immFromPC) {
     opcodes.push({opcode: "POP"});
   }
+  if (immFromPC) {
+    getImmFromPCSext();
+    if (rd === 0) {
+      opcodes.push({opcode: "SWAP1"});
+      opcodes.push({opcode: "POP"});
+    }
+  } else {
+    signExtendTo256(imm); // imm-signextended pc pc
+  }
   readRegister(rs1);
-  signExtendTo256(imm);
+
   opcodes.push({ opcode: "ADD" }); // rs1+imm-signextended(256 bit) pc
   opcodes.push({ opcode: "PUSH4", parameter: "0xFFFFFFFE" }); // pc+imm-signextended pc
   opcodes.push({ opcode: "AND", comment: "mask ~1" });
@@ -460,7 +520,7 @@ function bswap32() {
   opcodes.push({opcode: "POP"});
 }
 
-function emitBne(rs1: number, rs2: number, imm: number) {
+function emitBne(rs1: number, rs2: number, imm: number, immFromPC?: boolean) {
   const rando = crypto.randomBytes(32).toString("hex");
   readRegister(rs1);
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); 
@@ -475,7 +535,11 @@ function emitBne(rs1: number, rs2: number, imm: number) {
   opcodes.push({ opcode: "JUMP"});
   opcodes.push({ opcode: "JUMPDEST", name: "_neq_" + rando});
   // pc on stack
-  signExtendTo256(imm);
+  if (immFromPC) {
+    getImmFromPCSext();
+  } else {
+    signExtendTo256(imm); // imm-signextended pc pc
+  }
   opcodes.push({opcode: "ADD"});
   opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
   opcodes.push({opcode: "AND", comment: "mask to 32 bits" });
@@ -483,7 +547,7 @@ function emitBne(rs1: number, rs2: number, imm: number) {
   opcodes.push({opcode: "JUMPDEST", name: "_neq_after_" + rando});
 }
 
-function emitBeq(rs1: number, rs2: number, imm: number) {
+function emitBeq(rs1: number, rs2: number, imm: number, immFromPC?: boolean) {
   const rando = crypto.randomBytes(32).toString("hex");
   readRegister(rs1);
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); 
@@ -499,7 +563,11 @@ function emitBeq(rs1: number, rs2: number, imm: number) {
   opcodes.push({ opcode: "JUMP"});
   opcodes.push({ opcode: "JUMPDEST", name: "_beq_" + rando});
   // pc on stack
-  signExtendTo256(imm);
+  if (immFromPC) {
+    getImmFromPCSext();
+  } else {
+    signExtendTo256(imm); // imm-signextended pc pc
+  }
   opcodes.push({opcode: "ADD"});
   opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
   opcodes.push({opcode: "AND", comment: "mask to 32 bits" });
@@ -507,7 +575,7 @@ function emitBeq(rs1: number, rs2: number, imm: number) {
   opcodes.push({opcode: "JUMPDEST", name: "_beq_after_" + rando});
 }
 
-function emitBlt(rs1: number, rs2: number, imm: number) {
+function emitBlt(rs1: number, rs2: number, imm: number, immFromPC?: boolean) {
   const rando = crypto.randomBytes(32).toString("hex");
   readRegister(rs2);
   opcodes.push({opcode: "PUSH1", parameter: "03"});
@@ -522,7 +590,11 @@ function emitBlt(rs1: number, rs2: number, imm: number) {
   opcodes.push({ opcode: "JUMP"});
   opcodes.push({ opcode: "JUMPDEST", name: "_blt_" + rando});
   // pc on stack
-  signExtendTo256(imm);
+  if (immFromPC) {
+    getImmFromPCSext();
+  } else {
+    signExtendTo256(imm); // imm-signextended pc pc
+  }
   opcodes.push({opcode: "ADD"});
   opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
   opcodes.push({opcode: "AND", comment: "mask to 32 bits" });
@@ -530,7 +602,7 @@ function emitBlt(rs1: number, rs2: number, imm: number) {
   opcodes.push({opcode: "JUMPDEST", name: "_blt_after_" + rando});
 }
 
-function emitBge(rs1: number, rs2: number, imm: number) {
+function emitBge(rs1: number, rs2: number, imm: number, immFromPC?: boolean) {
   const rando = crypto.randomBytes(32).toString("hex");
   readRegister(rs2);
   opcodes.push({opcode: "PUSH1", parameter: "03"});
@@ -547,7 +619,11 @@ function emitBge(rs1: number, rs2: number, imm: number) {
   opcodes.push({ opcode: "JUMP"});
   opcodes.push({ opcode: "JUMPDEST", name: "_bge_" + rando});
   // pc on stack
-  signExtendTo256(imm);
+  if (immFromPC) {
+    getImmFromPCSext();
+  } else {
+    signExtendTo256(imm); // imm-signextended pc pc
+  }
   opcodes.push({opcode: "ADD"});
   opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
   opcodes.push({opcode: "AND", comment: "mask to 32 bits" });
@@ -555,7 +631,7 @@ function emitBge(rs1: number, rs2: number, imm: number) {
   opcodes.push({opcode: "JUMPDEST", name: "_bge_after_" + rando});
 }
 
-function emitBgeu(rs1: number, rs2: number, imm: number) {
+function emitBgeu(rs1: number, rs2: number, imm: number, immFromPC?: boolean) {
   const rando = crypto.randomBytes(32).toString("hex");
   readRegister(rs2);
   opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
@@ -572,7 +648,11 @@ function emitBgeu(rs1: number, rs2: number, imm: number) {
   opcodes.push({ opcode: "JUMP"});
   opcodes.push({ opcode: "JUMPDEST", name: "_bgeu_" + rando});
   // pc on stack
-  signExtendTo256(imm);
+  if (immFromPC) {
+    getImmFromPCSext();
+  } else {
+    signExtendTo256(imm); // imm-signextended pc pc
+  }
   opcodes.push({opcode: "ADD"});
   opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
   opcodes.push({opcode: "AND", comment: "mask to 32 bits" });
@@ -580,7 +660,7 @@ function emitBgeu(rs1: number, rs2: number, imm: number) {
   opcodes.push({opcode: "JUMPDEST", name: "_bgeu_after_" + rando});
 }
 
-function emitBltu(rs1: number, rs2: number, imm: number) {
+function emitBltu(rs1: number, rs2: number, imm: number, immFromPC?: boolean) {
   const rando = crypto.randomBytes(32).toString("hex");
   readRegister(rs2);
   opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
@@ -597,7 +677,11 @@ function emitBltu(rs1: number, rs2: number, imm: number) {
   opcodes.push({ opcode: "JUMP"});
   opcodes.push({ opcode: "JUMPDEST", name: "_bltu_" + rando});
   // pc on stack
-  signExtendTo256(imm);
+  if (immFromPC) {
+    getImmFromPCSext();
+  } else {
+    signExtendTo256(imm); // imm-signextended pc pc
+  }
   opcodes.push({opcode: "ADD"});
   opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
   opcodes.push({opcode: "AND", comment: "mask to 32 bits" });
@@ -605,11 +689,15 @@ function emitBltu(rs1: number, rs2: number, imm: number) {
   opcodes.push({opcode: "JUMPDEST", name: "_bltu_after_" + rando});
 }
 
-function emitLb(rd: number, rs1: number, imm: number) {
+function emitLb(rd: number, rs1: number, imm: number, immFromPC?: boolean) {
   readRegister(rs1);
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" });
   opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
-  signExtendTo256(imm); // add imm
+  if (immFromPC) {
+    getImmFromPCSext(2);
+  } else {
+    signExtendTo256(imm); // imm-signextended pc pc
+  }
   opcodes.push({ opcode: "ADD"});
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // narrow down to 32-bit
   opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
@@ -628,12 +716,16 @@ function emitLb(rd: number, rs1: number, imm: number) {
   writeRegister(rd, false);
 }
 
-function emitLbu(rd: number, rs1: number, imm: number) {
+function emitLbu(rd: number, rs1: number, imm: number, immFromPC?: boolean) {
   // grab 32 bit value from rs2 (value)
   readRegister(rs1);
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" });
   opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
-  signExtendTo256(imm); // add imm
+  if (immFromPC) {
+    getImmFromPCSext(2);
+  } else {
+    signExtendTo256(imm); // imm-signextended pc pc
+  }
   opcodes.push({ opcode: "ADD"});
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // narrow down to 32-bit
   opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
@@ -649,12 +741,16 @@ function emitLbu(rd: number, rs1: number, imm: number) {
   writeRegister(rd, false);
 }
 
-function emitLh(rd: number, rs1: number, imm: number) {
+function emitLh(rd: number, rs1: number, imm: number, immFromPC?: boolean) {
   // grab 32 bit value from rs2 (value)
   readRegister(rs1);
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" });
   opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
-  signExtendTo256(imm); // add imm
+  if (immFromPC) {
+    getImmFromPCSext(2);
+  } else {
+    signExtendTo256(imm); // imm-signextended pc pc
+  }
   opcodes.push({ opcode: "ADD"});
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // narrow down to 32-bit
   opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
@@ -671,12 +767,16 @@ function emitLh(rd: number, rs1: number, imm: number) {
   writeRegister(rd, false);
 }
 
-function emitLhu(rd: number, rs1: number, imm: number) {
+function emitLhu(rd: number, rs1: number, imm: number, immFromPC?: boolean) {
   // grab 32 bit value from rs2 (value)
   readRegister(rs1);
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" });
   opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
-  signExtendTo256(imm); // add imm
+  if (immFromPC) {
+    getImmFromPCSext(2);
+  } else {
+    signExtendTo256(imm); // imm-signextended pc pc
+  }
   opcodes.push({ opcode: "ADD"});
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // narrow down to 32-bit
   opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
@@ -692,12 +792,16 @@ function emitLhu(rd: number, rs1: number, imm: number) {
   writeRegister(rd, false);
 }
 
-function emitLw(rd: number, rs1: number, imm: number) {
+function emitLw(rd: number, rs1: number, imm: number, immFromPC?: boolean) {
   // grab 32 bit value from rs2 (value)
   readRegister(rs1);
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" });
   opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
-  signExtendTo256(imm); // add imm
+  if (immFromPC) {
+    getImmFromPCSext(2);
+  } else {
+    signExtendTo256(imm); // imm-signextended pc pc
+  }
   opcodes.push({ opcode: "ADD"});
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // narrow down to 32-bit
   opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
@@ -708,12 +812,16 @@ function emitLw(rd: number, rs1: number, imm: number) {
   writeRegister(rd, false);
 }
 
-function emitSb(rs1: number, rs2: number, imm: number) {
+function emitSb(rs1: number, rs2: number, imm: number, immFromPC?: boolean) {
   // grab 32 bit value from rs2 (value)
   readRegister(rs2);
 
   readRegister(rs1); // read rs1 (addr)
-  signExtendTo256(imm); // add imm
+  if (immFromPC) {
+    getImmFromPCSext(3);
+  } else {
+    signExtendTo256(imm); // imm-signextended pc pc
+  }
 
   opcodes.push({ opcode: "ADD" });
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // narrow down to 32-bit
@@ -724,10 +832,15 @@ function emitSb(rs1: number, rs2: number, imm: number) {
   opcodes.push({ opcode: "MSTORE8" });
 }
 
-function emitSh(rs1: number, rs2: number, imm: number) {
+function emitSh(rs1: number, rs2: number, imm: number, immFromPC?: boolean) {
 
   readRegister(rs1); // read rs1 (addr)
-  signExtendTo256(imm); // add imm
+  if (immFromPC) {
+    getImmFromPCSext(2);
+  } else {
+    signExtendTo256(imm); // imm-signextended pc pc
+  }
+
 
   opcodes.push({ opcode: "ADD" });
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // narrow down to 32-bit
@@ -752,10 +865,14 @@ function emitSh(rs1: number, rs2: number, imm: number) {
   opcodes.push({ opcode: "MSTORE" });
 }
 
-function emitSw(rs1: number, rs2: number, imm: number) {
+function emitSw(rs1: number, rs2: number, imm: number, immFromPC?: boolean) {
 
   readRegister(rs1); // read rs1 (addr)
-  signExtendTo256(imm); // add imm
+  if (immFromPC) {
+    getImmFromPCSext(2);
+  } else {
+    signExtendTo256(imm); // imm-signextended pc pc
+  }
 
   opcodes.push({ opcode: "ADD" });
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // narrow down to 32-bit
@@ -794,8 +911,14 @@ function emitEcall() {
   opcodes.push({ opcode: "LOG0"});
 }
 
+interface EmitOptions {
+  eatPc?: boolean;
+  immFromPC?: boolean;
+}
 // returns true if a branch
-function emitRiscv(instr: number, eatPc: boolean = false): void {
+function emitRiscv(instr: number, opts: EmitOptions|null = null): void {
+  const eatPc = opts && opts.eatPc;
+  const immFromPC = opts && opts.immFromPC;
   const parsed = parseInstruction(instr);
   if (parsed.instructionName == "SRAI" && ((parsed.imm & 0x400) == 0)) {
     parsed.instructionName = "SRLI";
@@ -809,7 +932,7 @@ function emitRiscv(instr: number, eatPc: boolean = false): void {
     }
     case "SLLI":
     case "SRLI": {
-      emitSlliSrli(parsed.instructionName, parsed.rd, parsed.rs1, parsed.imm & 0x1F);
+      emitSlliSrli(parsed.instructionName, parsed.rd, parsed.rs1, parsed.imm & 0x1F, !!immFromPC);
       break;
     }
     case "SRA": {
@@ -817,7 +940,7 @@ function emitRiscv(instr: number, eatPc: boolean = false): void {
       break;
     }
     case "SRAI": {
-      emitSrai(parsed.rd, parsed.rs1, parsed.imm & 0x1F);
+      emitSrai(parsed.rd, parsed.rs1, parsed.imm & 0x1F, !!immFromPC);
       break;
     }
     // arithmetic
@@ -826,7 +949,7 @@ function emitRiscv(instr: number, eatPc: boolean = false): void {
       break;
     }
     case "ADDI": {
-      emitAddi(parsed.rd, parsed.rs1, parsed.imm);
+      emitAddi(parsed.rd, parsed.rs1, parsed.imm, !!immFromPC);
       break;
     }
     case "SUB": {
@@ -838,7 +961,7 @@ function emitRiscv(instr: number, eatPc: boolean = false): void {
       break;
     }
     case "AUIPC": {
-      emitAuipc(parsed.rd, parsed.imm, eatPc);
+      emitAuipc(parsed.rd, parsed.imm, !!eatPc);
       break;
     }
     case "OR":
@@ -854,7 +977,8 @@ function emitRiscv(instr: number, eatPc: boolean = false): void {
         parsed.instructionName,
         parsed.rd,
         parsed.rs1,
-        parsed.imm
+        parsed.imm,
+        !!immFromPC
       );
       break;
     }
@@ -870,40 +994,40 @@ function emitRiscv(instr: number, eatPc: boolean = false): void {
     }
 
     case "SLTI": {
-      emitSlti(parsed.rd, parsed.rs1, parsed.imm);
+      emitSlti(parsed.rd, parsed.rs1, parsed.imm, !!immFromPC);
       break;
     }
 
     case "SLTIU": {
-      emitSltiu(parsed.rd, parsed.rs1, parsed.imm);
+      emitSltiu(parsed.rd, parsed.rs1, parsed.imm, !!immFromPC);
       break;
     }     
     // branches
     case "BNE":
-      emitBne(parsed.rs1, parsed.rs2, parsed.imm);
+      emitBne(parsed.rs1, parsed.rs2, parsed.imm, !!immFromPC);
       break;
     case "BEQ":
-      emitBeq(parsed.rs1, parsed.rs2, parsed.imm);
+      emitBeq(parsed.rs1, parsed.rs2, parsed.imm, !!immFromPC);
       break;
     case "BLT":
-      emitBlt(parsed.rs1, parsed.rs2, parsed.imm);
+      emitBlt(parsed.rs1, parsed.rs2, parsed.imm, !!immFromPC);
       break;
     case "BGE":
-      emitBge(parsed.rs1, parsed.rs2, parsed.imm);
+      emitBge(parsed.rs1, parsed.rs2, parsed.imm, !!immFromPC);
       break;
     case "BLTU":
-      emitBltu(parsed.rs1, parsed.rs2, parsed.imm);
+      emitBltu(parsed.rs1, parsed.rs2, parsed.imm, !!immFromPC);
       break;
     case "BGEU":
-      emitBgeu(parsed.rs1, parsed.rs2, parsed.imm);
+      emitBgeu(parsed.rs1, parsed.rs2, parsed.imm, !!immFromPC);
       break;
     // jump & link
     case "JAL": {
-      emitJal(parsed.rd, parsed.imm);
+      emitJal(parsed.rd, parsed.imm, !!immFromPC);
       break;
     }
     case "JALR": {
-      emitJalr(parsed.rd, parsed.rs1, parsed.imm);
+      emitJalr(parsed.rd, parsed.rs1, parsed.imm, !!immFromPC);
       break;
     }
     // Synch (do nothing, single-thread)
@@ -919,29 +1043,29 @@ function emitRiscv(instr: number, eatPc: boolean = false): void {
       break;
     // loads
     case "LB":
-      emitLb(parsed.rd, parsed.rs1, parsed.imm);
+      emitLb(parsed.rd, parsed.rs1, parsed.imm, !!immFromPC);
       break;
     case "LH":
-      emitLh(parsed.rd, parsed.rs1, parsed.imm);
+      emitLh(parsed.rd, parsed.rs1, parsed.imm, !!immFromPC);
       break;
     case "LBU":
-      emitLbu(parsed.rd, parsed.rs1, parsed.imm);
+      emitLbu(parsed.rd, parsed.rs1, parsed.imm, !!immFromPC);
       break;
     case "LHU":
-      emitLhu(parsed.rd, parsed.rs1, parsed.imm);
+      emitLhu(parsed.rd, parsed.rs1, parsed.imm, !!immFromPC);
       break;
     case "LW":
-      emitLw(parsed.rd, parsed.rs1, parsed.imm);
+      emitLw(parsed.rd, parsed.rs1, parsed.imm, !!immFromPC);
       break;
     // stores
     case "SB":
-      emitSb(parsed.rs1, parsed.rs2, parsed.imm); 
+      emitSb(parsed.rs1, parsed.rs2, parsed.imm, !!immFromPC); 
       break;
     case "SH":
-      emitSh(parsed.rs1, parsed.rs2, parsed.imm);
+      emitSh(parsed.rs1, parsed.rs2, parsed.imm, !!immFromPC);
       break;
     case "SW":
-      emitSw(parsed.rs1, parsed.rs2, parsed.imm);
+      emitSw(parsed.rs1, parsed.rs2, parsed.imm, !!immFromPC);
       break;
     default:
       throw new Error("Unknown instruction: " + parsed.instructionName);
@@ -971,8 +1095,8 @@ function convertMultipleRISCVtoFunction(pc: number, buf: Buffer): string {
       const auipcPC = (0x400) + pc + i;
       opcodes.push({opcode: "PUSH2", parameter: auipcPC.toString(16).toUpperCase().padStart(4, "0")});
     }
-    // opcodes.push(({opcode: "JUMPDEST", comment: "DEBUG: " + parseInstruction(instr).assembly}));
-    emitRiscv(instr, instrName == "AUIPC");
+    //opcodes.push(({opcode: "JUMPDEST", comment: "DEBUG: " + parseInstruction(instr).assembly}));
+    emitRiscv(instr, {eatPc: instrName == "AUIPC"});
   }
   console.log("branch PC is " + branchPc.toString(16));
   opcodes.push({opcode: "PUSH2", parameter: branchPc.toString(16).toUpperCase().padStart(4, "0")});
@@ -983,22 +1107,38 @@ function convertMultipleRISCVtoFunction(pc: number, buf: Buffer): string {
 
 }
 
-function convertRISCVtoFunction(pc: number, buf: Buffer): string {
-  const hash = crypto.createHash("sha256").update(buf).digest("hex");
-  if (emittedFunctions[hash]) {
-    return "_riscv_" + hash;
+function emitRISCVimpl(buf: Buffer): [string, number] {
+  const parsed = parseInstruction(buf.readUInt32LE(0));
+  if (parsed.instructionName == "SRAI" && ((parsed.imm & 0x400) == 0)) {
+    parsed.instructionName = "SRLI";
   }
-  emittedFunctions[hash] = "_riscv_" + hash;
-  const decode = parseInstruction(buf.readUInt32LE(0));
+  let name = "__riscvimpl_" + parsed.instructionName + "_" + parsed.rd + "_" + parsed.rs1 + "_" + parsed.rs2;
+  let imm = parsed.imm;
+
+  if (parsed.instructionName == "SRAI" || parsed.instructionName == "SRAI") {
+    imm = imm & 0x1F;    
+  }
+  if (parsed.instructionName == "LUI") {
+    name = "__riscvimpl_" + parsed.instructionName + "_" + parsed.unparsedInstruction.toString(16);
+  }
+  if (parsed.instructionName == "AUIPC") {
+    name = "__riscvimpl_" + parsed.instructionName + "_" + buf.toString("hex");
+  }
+
+  if (emittedFunctions[name]) {
+    return [name, imm];
+  }
+  emittedFunctions[name] = name;
   const branches = ["JAL", "JALR", "BNE", "BEQ", "BLT", "BGE", "BLTU", "BGEU"];
-  const isBranch = branches.indexOf(decode.instructionName) !== -1;
-  opcodes.push({ opcode: "JUMPDEST", name: "_riscv_" + hash, comment: "pc 0x" + (0x400 + pc).toString(16) + " buffer: " + buf.toString("hex") + " decode " + decode.assembly, riscv_instr: true, is_branch: isBranch });
+  const isBranch = branches.indexOf(parsed.instructionName) !== -1;
+  opcodes.push({ opcode: "JUMPDEST", name: name, comment: "instr: " + parsed.assembly + "(ignore imm)", riscv_instr: true, is_branch: isBranch });
   
   const instr = buf.readUInt32LE(0);
-  emitRiscv(instr);
+  emitRiscv(instr, { immFromPC: true });
 
   goNextInst();
-  return "_riscv_" + hash;
+  return [name, imm];
+
 }
 
 function addProgramCounters(): number {
@@ -1064,7 +1204,12 @@ function performAssembly(): string {
         if (!para) {
           throw new Error("32bitptr without parameter");
         }
-        ptrAssembly = ptrAssembly + para + "0000";
+        const imm = result[i].imm;
+        if (imm !== undefined) {
+          ptrAssembly = ptrAssembly + para + imm.toString(16).padStart(4, "0");
+        } else {
+          ptrAssembly = ptrAssembly + para + "0000";
+        }
       }
   }
   return assemble(preAssembly) + ptrAssembly;
@@ -1097,8 +1242,8 @@ for (let i = 0; i < text_area.length; i += 4) {
     const name = convertMultipleRISCVtoFunction(i, text_area.slice(i, i+(range.length * 4)));
     opcodesToConvert.push({opcode: "_32bitptr", find_name: name});  
   } else {
-    const name = convertRISCVtoFunction(i, text_area.slice(i, i + 4));
-    opcodesToConvert.push({opcode: "_32bitptr", find_name: name});  
+    const name = emitRISCVimpl(text_area.slice(i, i + 4));
+    opcodesToConvert.push({opcode: "_32bitptr", find_name: name[0], imm: name[1] & 0xFFFF >>> 0});  
   }
 }
 
@@ -1121,7 +1266,6 @@ for (let i = 0; i < restOfRAMpreBswap.length; i += 4) {
 
 const assembled = performAssembly();
 const finalBytecode = Buffer.concat([Buffer.from(assembled, "hex"), restOfRAM]);
-console.log("Final bytecode length; " + finalBytecode.length);
 
 async function invokeRiscv() {
   let cycle = 0;
@@ -1133,7 +1277,12 @@ async function invokeRiscv() {
 
   vm.on('step', function (data: any) {
     // console.log(`pc: ${data.pc.toString(16).toUpperCase()} - Opcode: ${JSON.stringify(data.opcode.name)}- mem length: ${data.memory.length} - ${data.opcode.dynamicFee}`)
-    for (let l = 0; l < opcodes.length; l++) {
+
+    for (let l = 0; l < data.stack.length; l++) {
+      console.log("- stack " + (data.stack.length - 1 - l) + ": 0x" + data.stack[l].toString(16).toUpperCase());
+    }  
+
+   for (let l = 0; l < opcodes.length; l++) {
       if (opcodes[l].pc == data.pc) {
           printO(cycle, opcodes[l]);
       }
@@ -1177,9 +1326,6 @@ async function invokeRiscv() {
       console.log("*** PRINT: " + str);
     }
     
-    for (let l = 0; l < data.stack.length; l++) {
-       console.log("- stack " + (data.stack.length - 1 - l) + ": 0x" + data.stack[l].toString(16).toUpperCase());
-    }  
 
     /*
     const regs = Object.keys(reg2mem);
@@ -1228,6 +1374,7 @@ async function invokeRiscv() {
   if (results.exceptionError) {
     throw new Error(JSON.stringify(results.exceptionError));
   }
+  console.log("Final bytecode length; " + finalBytecode.length);
   console.log(`Returned: ${results.returnValue.toString('hex')}`)
   console.log(`gasUsed : ${results.gasUsed.toString()}`);
   for (let i = 0; i < Object.keys(hotness).length; i++) {
