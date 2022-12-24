@@ -86,10 +86,9 @@ export function emitPcPlus4(opcodes: EVMOpCode[]) {
 // main loop
 
 export function emitExecute(opcodes: EVMOpCode[]) {
+  opcodes.push({ opcode: "PUSH1", parameter: "08"});
+  opcodes.push({ opcode: "MUL"}); // could probably be a shift
   opcodes.push({ opcode: "MLOAD" });
-  // we could actually make this uint16 instead, having uint16 imm
-  opcodes.push({ opcode: "PUSH1", parameter: "F0" }); // to get the 16-bit value as it's all the way left
-  opcodes.push({ opcode: "SHR" });
   opcodes.push({ opcode: "JUMP" });
 }
 
@@ -818,11 +817,12 @@ export function emitLw(
 
   signExtendTo256(opcodes, imm); // imm-signextended pc pc
   opcodes.push({ opcode: "ADD" });
+
+  opcodes.push({ opcode: "PUSH1", parameter: "08"});
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // narrow down to 32-bit
-  opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
+  opcodes.push({ opcode: "MULMOD" });
+
   opcodes.push({ opcode: "MLOAD" });
-  opcodes.push({ opcode: "PUSH1", parameter: "E0" }); // to get the 32-bit value as it's all the way left
-  opcodes.push({ opcode: "SHR" });
 
   writeRegister(opcodes, rd, false);
 }
@@ -888,28 +888,17 @@ export function emitSw(
   rs2: number,
   imm: number
 ) {
-  readRegister(opcodes, rs1); // read rs1 (addr)
-
-  signExtendTo256(opcodes, imm); // imm-signextended pc pc
-
-  opcodes.push({ opcode: "ADD" });
-  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // narrow down to 32-bit
-  opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
-
-  opcodes.push({ opcode: "DUP1" });
-  opcodes.push({ opcode: "MLOAD", comment: "fetch" });
-  opcodes.push({ opcode: "PUSH32", parameter: WORD_REPLACE_MASK });
-  opcodes.push({ opcode: "AND" });
-
-  // grab 32 bit value from rs2 (value)
+    // grab 32 bit value from rs2 (value)
   readRegister(opcodes, rs2);
-
-  opcodes.push({ opcode: "PUSH1", parameter: "E0" });
-  opcodes.push({ opcode: "SHL" });
-
-  opcodes.push({ opcode: "ADD" });
-
-  opcodes.push({ opcode: "SWAP1" });
+  readRegister(opcodes, rs1); // read rs1 (addr)
+  // XXX maybe a imm-check-if-zero-and-if-yes-no-add  
+  if (imm !== 0) {
+    signExtendTo256(opcodes, imm); // imm-signextended pc pc
+    opcodes.push({ opcode: "ADD" });
+  }
+  opcodes.push({ opcode: "PUSH1", parameter: "08"});
+  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // narrow down to 32-bit
+  opcodes.push({ opcode: "MULMOD" });
   opcodes.push({ opcode: "MSTORE" });
 }
 
