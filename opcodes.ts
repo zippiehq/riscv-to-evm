@@ -8,38 +8,43 @@ const HALFWORD_REPLACE_MASK =
   "0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff".toUpperCase();
 
 export const reg2mem: Record<string, number> = {
-  ra: 32 * 1,
-  sp: 32 * 2,
-  gp: 32 * 3,
-  tp: 32 * 4,
-  t0: 32 * 5,
-  t1: 32 * 6,
-  t2: 32 * 7,
-  s0: 32 * 8,
-  s1: 32 * 9,
-  a0: 32 * 10,
-  a1: 32 * 11,
-  a2: 32 * 12,
-  a3: 32 * 13,
-  a4: 32 * 14,
-  a5: 32 * 15,
-  a6: 32 * 16,
-  a7: 32 * 17,
-  s2: 32 * 18,
-  s3: 32 * 19,
-  s4: 32 * 20,
-  s5: 32 * 21,
-  s6: 32 * 22,
-  s7: 32 * 23,
-  s8: 32 * 24,
-  s9: 32 * 25,
-  s10: 32 * 26,
-  s11: 32 * 27,
-  t3: 32 * 28,
-  t4: 32 * 29,
-  t5: 32 * 30,
-  t6: 32 * 31,
+  ra: 0x1000 + (32 * 1),
+  sp: 0x1000 + (32 * 2),
+  gp: 0x1000 + (32 * 3),
+  tp: 0x1000 + (32 * 4),
+  t0: 0x1000 + (32 * 5),
+  t1: 0x1000 + (32 * 6),
+  t2: 0x1000 + (32 * 7),
+  s0: 0x1000 + (32 * 8),
+  s1: 0x1000 + (32 * 9),
+  a0: 0x1000 + (32 * 10),
+  a1: 0x1000 + (32 * 11),
+  a2: 0x1000 + (32 * 12),
+  a3: 0x1000 + (32 * 13),
+  a4: 0x1000 + (32 * 14),
+  a5: 0x1000 + (32 * 15),
+  a6: 0x1000 + (32 * 16),
+  a7: 0x1000 + (32 * 17),
+  s2: 0x1000 + (32 * 18),
+  s3: 0x1000 + (32 * 19),
+  s4: 0x1000 + (32 * 20),
+  s5: 0x1000 + (32 * 21),
+  s6: 0x1000 + (32 * 22),
+  s7: 0x1000 + (32 * 23),
+  s8: 0x1000 + (32 * 24),
+  s9: 0x1000 + (32 * 25),
+  s10: 0x1000 + (32 * 26),
+  s11: 0x1000 + (32 * 27),
+  t3: 0x1000 + (32 * 28),
+  t4: 0x1000 + (32 * 29),
+  t5: 0x1000 + (32 * 30),
+  t6: 0x1000 + (32 * 31),
 };
+
+export function jumpPC(opcodes: EVMOpCode[]) {
+  opcodes.push({opcode: "PUSH2", find_name: "_jumppc"});
+  opcodes.push({opcode: "JUMP"});
+}
 
 export function readRegister(opcodes: EVMOpCode[], regId: number) {
   if (regId === 0) {
@@ -78,60 +83,6 @@ export function writeRegister(
   }
 }
 
-export function emitPcPlus4(opcodes: EVMOpCode[]) {
-  opcodes.push({ opcode: "PUSH1", parameter: "04" });
-  opcodes.push({ opcode: "ADD" });
-}
-
-// main loop
-
-export function emitExecute(opcodes: EVMOpCode[]) {
-  opcodes.push({ opcode: "PUSH1", parameter: "08"});
-  opcodes.push({ opcode: "MUL"}); // could probably be a shift
-  opcodes.push({ opcode: "MLOAD" });
-  opcodes.push({ opcode: "JUMP" });
-}
-
-export function startMainProgram(
-  opcodes: EVMOpCode[],
-  full_ram: Buffer,
-  entryPoint: number
-) {
-  opcodes.push({
-    opcode: "PUSH4",
-    parameter: (full_ram.length + (full_ram.length % 4))
-      .toString(16)
-      .toUpperCase()
-      .padStart(4, "0"),
-  });
-
-  opcodes.push({ opcode: "PUSH2", find_name: "_rambegin" });
-  opcodes.push({ opcode: "PUSH1", parameter: "01" });
-  opcodes.push({ opcode: "ADD" }); //
-
-  opcodes.push({
-    opcode: "PUSH2",
-    parameter: (0x400).toString(16).toUpperCase().padStart(4, "0"), // start of .text
-  });
-
-  opcodes.push({ opcode: "CODECOPY" });
-
-  opcodes.push({
-    opcode: "PUSH2",
-    parameter: entryPoint.toString(16).toUpperCase().padStart(4, "0"),
-  }); // _start
-  opcodes.push({ opcode: "PUSH2", find_name: "_execute" });
-  opcodes.push({ opcode: "JUMP" });
-  opcodes.push({ opcode: "JUMPDEST", name: "_pcplus4" });
-  emitPcPlus4(opcodes);
-  opcodes.push({ opcode: "JUMPDEST", name: "_execute" });
-  emitExecute(opcodes);
-}
-
-export function goNextInst(opcodes: EVMOpCode[]) {
-  emitPcPlus4(opcodes);
-  emitExecute(opcodes);
-}
 
 export function emitAdd(
   opcodes: EVMOpCode[],
@@ -146,6 +97,14 @@ export function emitAdd(
 }
 
 export function signExtendTo256(opcodes: EVMOpCode[], value: number) {
+  if (value == 0) {
+    opcodes.push({
+      opcode: "PUSH1",
+      parameter: "00",
+      comment: "signextended " + 0,
+    });
+    return;
+  }
   const buf = Buffer.alloc(4);
   buf.writeInt32BE(value);
   let val = BigInt("0x" + buf.toString("hex"));
@@ -429,7 +388,7 @@ export function emitJal(opcodes: EVMOpCode[], rd: number, imm: number) {
   opcodes.push({ opcode: "ADD" }); // pc+4 pc+imm-signextended
   writeRegister(opcodes, rd, false);
   // pc+mm-signextended
-  emitExecute(opcodes);
+  jumpPC(opcodes);
 }
 
 export function emitJalr(
@@ -454,7 +413,7 @@ export function emitJalr(
     opcodes.push({ opcode: "ADD" }); // pc+4 pc+imm-signextended
     writeRegister(opcodes, rd, false);
   }
-  emitExecute(opcodes);
+  jumpPC(opcodes);
 }
 
 export function bswap16(opcodes: EVMOpCode[]) {
@@ -523,7 +482,7 @@ export function emitBne(
   opcodes.push({ opcode: "ADD" });
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
   opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
-  emitExecute(opcodes);
+  jumpPC(opcodes);
   opcodes.push({ opcode: "JUMPDEST", name: "_neq_after_" + rando });
   opcodes.push({ opcode: "POP"});
 }
@@ -554,7 +513,7 @@ export function emitBeq(
   opcodes.push({ opcode: "ADD" });
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
   opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
-  emitExecute(opcodes);
+  jumpPC(opcodes);
   opcodes.push({ opcode: "JUMPDEST", name: "_beq_after_" + rando });
   opcodes.push({ opcode: "POP"});
 }
@@ -584,7 +543,7 @@ export function emitBlt(
   opcodes.push({ opcode: "ADD" });
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
   opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
-  emitExecute(opcodes);
+  jumpPC(opcodes);
   opcodes.push({ opcode: "JUMPDEST", name: "_blt_after_" + rando });
   opcodes.push({ opcode: "POP"});
 }
@@ -617,7 +576,7 @@ export function emitBge(
   opcodes.push({ opcode: "ADD" });
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
   opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
-  emitExecute(opcodes);
+  jumpPC(opcodes);
   opcodes.push({ opcode: "JUMPDEST", name: "_bge_after_" + rando });
   opcodes.push({ opcode: "POP"});
 }
@@ -649,7 +608,7 @@ export function emitBgeu(
   opcodes.push({ opcode: "ADD" });
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
   opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
-  emitExecute(opcodes);
+  jumpPC(opcodes);
   opcodes.push({ opcode: "JUMPDEST", name: "_bgeu_after_" + rando });
   opcodes.push({ opcode: "POP"});
 }
@@ -680,7 +639,7 @@ export function emitBltu(
   opcodes.push({ opcode: "ADD" });
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // pc+imm-signextended
   opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
-  emitExecute(opcodes);
+  jumpPC(opcodes);
   opcodes.push({ opcode: "JUMPDEST", name: "_bltu_after_" + rando });
   opcodes.push({ opcode: "POP"});
 }
