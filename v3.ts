@@ -220,7 +220,7 @@ async function makePageCode(startPc: number, page: Buffer): Promise<Buffer> {
     // left the contract
    
     // 39 gas
-    opcodes.push({opcode: "JUMPDEST", name: "_localjump"}); // can jump straight here if we're sure it's same page like for example an internal jump
+    opcodes.push({opcode: "JUMPDEST", name:  "_localjump"}); // can jump straight here if we're sure it's same page like for example an internal jump
     opcodes.push({opcode: "PUSH2", parameter: "03FF"}); // 1024
     opcodes.push({opcode: "AND"});
     opcodes.push({opcode: "MLOAD"})
@@ -249,7 +249,13 @@ async function makePageCode(startPc: number, page: Buffer): Promise<Buffer> {
     const assembled = performAssembly(opcodes);
     return Buffer.from(assembled, "hex");
 }
- 
+
+async function makeDispatcher(context) {
+    const opcodes: EVMOpCode[] = [];
+
+    // copy in data pages to memory so they become calldata in the code page
+}
+
 async function transpile(fileContents: Buffer) {
     const elfInfo = await elfinfo.open(fileContents);
     if (!elfInfo || !elfInfo.elf) { 
@@ -263,6 +269,7 @@ async function transpile(fileContents: Buffer) {
     }
     const context = {
         pages: [] as PageInfo[],
+        dataPages: [] as PageInfo[],
     };
 
     for (let i = 0; i < elfInfo.elf.segments.length; i++) {
@@ -279,9 +286,7 @@ async function transpile(fileContents: Buffer) {
         }
     }
 
-
-
-
+    const dispatcherBytecode = makeDispatcher(context);
 
     let cycle = 0;
     const common = new Common({ chain: Chain.Mainnet, hardfork: Hardfork.London });
