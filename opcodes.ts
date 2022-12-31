@@ -863,18 +863,21 @@ export function emitSw(
   opcodes.push({ opcode: "MSTORE" });
 }
 
-export function emitEcall(opcodes: EVMOpCode[]) {
+export function emitEcall(opcodes: EVMOpCode[], pc: number) {
   const rando = crypto.randomBytes(32).toString("hex");
   readRegister(opcodes, 10); // a0
   opcodes.push({ opcode: "PUSH2", find_name: "_ecall_" + rando });
   opcodes.push({ opcode: "JUMPI" });
   // if a0 == 0, return
-  opcodes.push({ opcode: "PUSH1", parameter: "20" });
-  opcodes.push({
-    opcode: "PUSH2",
-    parameter: reg2mem["a1"].toString(16).padStart(4, "0"),
-  });
-  opcodes.push({ opcode: "INVALID", comment: "no exit yet" });
+  // write 'ok exit' opcode
+  opcodes.push({opcode: "PUSH1", parameter: "02"}); // 02 == intentional exit
+  opcodes.push({opcode: "MSIZE"});
+  opcodes.push({opcode: "MSTORE"});
+  opcodes.push({opcode: "PUSH2", parameter: pc.toString(16).toUpperCase().padStart(4, "0")});
+  opcodes.push({opcode: "PUSH2", find_name: "_exit"});
+  opcodes.push({opcode: "JUMP"}); // leave code page
+
+  opcodes.push({ opcode: "JUMPDEST", name: "_ecall_" + rando });
 
   opcodes.push({ opcode: "JUMPDEST", name: "_ecall_" + rando });
   opcodes.push({ opcode: "PUSH1", parameter: "04" });

@@ -154,7 +154,7 @@ function emitRiscv(opcodes: EVMOpCode[], parsed: Instruction, startPc: number, p
         opcodes.push({opcode: "INVALID", comment: "EBREAK"});
         break;
       case "ECALL":
-        Opcodes.emitEcall(opcodes);
+        Opcodes.emitEcall(opcodes, pc);
         break;
       // loads
       case "LB":
@@ -237,6 +237,10 @@ async function makePageCode(startPc: number, page: Buffer): Promise<[Buffer, EVM
     opcodes.push({opcode: "PUSH2", parameter: "1000"});
     opcodes.push({opcode: "MSTORE"}); // write pc 
 
+    opcodes.push({opcode: "PUSH1", parameter: "00"}); // add 00 == end of delta to delta log
+    opcodes.push({opcode: "MSIZE"});
+    opcodes.push({opcode: "MSTORE"});
+
     opcodes.push({opcode: "MSIZE"});
     opcodes.push({opcode: "PUSH2", parameter: "1000"});
     opcodes.push({opcode: "SUB"});
@@ -293,6 +297,7 @@ async function makePageCode(startPc: number, page: Buffer): Promise<[Buffer, EVM
 */
 
 const DISPATCHER_REG_START = 0x8000;
+const DISPATCHER_DELTA_START = 0x8000 + 0x400;
 
 async function makeDispatcher(context: Context, dispatcherTableAddress: Address, dispatcherTable: Buffer): Promise<[Buffer, EVMOpCode[]]> {
     const opcodes: EVMOpCode[] = [];
@@ -302,6 +307,15 @@ async function makeDispatcher(context: Context, dispatcherTableAddress: Address,
     opcodes.push({opcode: "PUSH1", parameter: "00"}); // destOffset
     opcodes.push({opcode: "PUSH20", parameter: dispatcherTableAddress.toBuffer().toString("hex")})
     opcodes.push({opcode: "EXTCODECOPY", comment: "Copy in dispatcher table"});
+
+    for (let i = 0; i < context.dataPages.length; i++) {
+      const dp = context.dataPages[i];
+      opcodes.push({opcode: "PUSH4", parameter: dp.code.length.toString(16).padStart(8, "0")}); // offset
+      opcodes.push({opcode: "PUSH1", parameter: "00"}); // offset
+      opcodes.push({opcode: "PUSH4", parameter: dp.addr.toString(16).padStart(8, "0")}); // destOffset
+      opcodes.push({opcode: "PUSH20", parameter: dp.ethAddress.toBuffer().toString("hex")})
+      opcodes.push({opcode: "EXTCODECOPY", comment: "Copy in addr " + dp.addr.toString(16).padStart(8, "0")});  
+    }
 
     opcodes.push({opcode: "PUSH4", parameter: context.entryPoint.toString(16).padStart(8, "0")}); // PC
     opcodes.push({opcode: "PUSH4", parameter: DISPATCHER_REG_START.toString(16).padStart(8, "0")}); // PC reg
@@ -321,6 +335,7 @@ async function makeDispatcher(context: Context, dispatcherTableAddress: Address,
     opcodes.push({opcode: "PUSH4", parameter: DISPATCHER_REG_START.toString(16).padStart(8, "0")});
     opcodes.push({opcode: "MLOAD", comment: "retrieve pc from register"}); // get pc on stack
     opcodes.push({opcode: "SUB"});
+
     // >> 10
     opcodes.push({opcode: "PUSH1", parameter: "0A"});
     opcodes.push({opcode: "SHR"});
@@ -336,18 +351,30 @@ async function makeDispatcher(context: Context, dispatcherTableAddress: Address,
     opcodes.push({opcode: "PUSH2", find_name: "_callok"});
     opcodes.push({opcode: "JUMPI"}); // if the code failed somehow we should bail
     opcodes.push({opcode: "INVALID", comment: "subpage failed"});
+
+
     opcodes.push({opcode: "JUMPDEST", name: "_callok"});
     // copy resulting registers & deltas
     // XXX should check return data size not too big (like, beyond delta size)
+    opcodes.push({opcode: "MSIZE"}); // memory -before- the call (our starting point) 
     opcodes.push({opcode: "RETURNDATASIZE"})
     opcodes.push({opcode: "PUSH1", parameter: "00"});
     opcodes.push({opcode: "PUSH2", parameter: "8000"}); // XXX destination: this should be dynamic, location of registers, 1024 after that is deltas
     opcodes.push({opcode: "RETURNDATACOPY"});
 
+    // delta loop, initially takes just one op
+    opcodes.push({opcode: "PUSH4", parameter: DISPATCHER_REG_START.toString(16).padStart(8, "0")});
+    opcodes.push({opcode: "MLOAD"});
+    opcodes.push({opcode: "PUSH2", find_name: "_fullexit"});
+    opcodes.push({opcode: "JUMPI"})
     opcodes.push({opcode: "PUSH2", find_name: "_executeloop"});
     opcodes.push({opcode: "JUMP"});
-    // die path
-
+  
+    opcodes.push({opcode: "JUMPDEST", name: "_fullexit"});
+    opcodes.push({opcode: "PUSH1", parameter: "00"});
+    opcodes.push({opcode: "PUSH1", parameter: "00"});
+    opcodes.push({opcode: "RETURN"});
+    
     addProgramCounters(opcodes);
     resolveNamesAndOffsets(opcodes);
     const assembled = performAssembly(opcodes);
@@ -483,7 +510,11 @@ async function transpile(fileContents: Buffer) {
       gasPrice: new BN(1 * 1024 * 1024 * 1024),
       value: new BN(0),
     });
-    console.log(execResult);
+    if (execResult.exceptionError == undefined) {
+      console.log("SUCCESS RUN")
+    } else {
+      console.log("FAILURE")
+    }
 }
 
 transpile(fs.readFileSync(process.argv[2])).catch((err) => {
