@@ -7,38 +7,40 @@ const WORD_REPLACE_MASK =
 const HALFWORD_REPLACE_MASK =
   "0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff".toUpperCase();
 
+const REG_OFFSET = 0x1000;
+
 export const reg2mem: Record<string, number> = {
-  ra: 0x1000 + (32 * 1),
-  sp: 0x1000 + (32 * 2),
-  gp: 0x1000 + (32 * 3),
-  tp: 0x1000 + (32 * 4),
-  t0: 0x1000 + (32 * 5),
-  t1: 0x1000 + (32 * 6),
-  t2: 0x1000 + (32 * 7),
-  s0: 0x1000 + (32 * 8),
-  s1: 0x1000 + (32 * 9),
-  a0: 0x1000 + (32 * 10),
-  a1: 0x1000 + (32 * 11),
-  a2: 0x1000 + (32 * 12),
-  a3: 0x1000 + (32 * 13),
-  a4: 0x1000 + (32 * 14),
-  a5: 0x1000 + (32 * 15),
-  a6: 0x1000 + (32 * 16),
-  a7: 0x1000 + (32 * 17),
-  s2: 0x1000 + (32 * 18),
-  s3: 0x1000 + (32 * 19),
-  s4: 0x1000 + (32 * 20),
-  s5: 0x1000 + (32 * 21),
-  s6: 0x1000 + (32 * 22),
-  s7: 0x1000 + (32 * 23),
-  s8: 0x1000 + (32 * 24),
-  s9: 0x1000 + (32 * 25),
-  s10: 0x1000 + (32 * 26),
-  s11: 0x1000 + (32 * 27),
-  t3: 0x1000 + (32 * 28),
-  t4: 0x1000 + (32 * 29),
-  t5: 0x1000 + (32 * 30),
-  t6: 0x1000 + (32 * 31),
+  ra: REG_OFFSET + (32 * 1),
+  sp: REG_OFFSET + (32 * 2),
+  gp: REG_OFFSET + (32 * 3),
+  tp: REG_OFFSET + (32 * 4),
+  t0: REG_OFFSET + (32 * 5),
+  t1: REG_OFFSET + (32 * 6),
+  t2: REG_OFFSET + (32 * 7),
+  s0: REG_OFFSET + (32 * 8),
+  s1: REG_OFFSET + (32 * 9),
+  a0: REG_OFFSET + (32 * 10),
+  a1: REG_OFFSET + (32 * 11),
+  a2: REG_OFFSET + (32 * 12),
+  a3: REG_OFFSET + (32 * 13),
+  a4: REG_OFFSET + (32 * 14),
+  a5: REG_OFFSET + (32 * 15),
+  a6: REG_OFFSET + (32 * 16),
+  a7: REG_OFFSET + (32 * 17),
+  s2: REG_OFFSET + (32 * 18),
+  s3: REG_OFFSET + (32 * 19),
+  s4: REG_OFFSET + (32 * 20),
+  s5: REG_OFFSET + (32 * 21),
+  s6: REG_OFFSET + (32 * 22),
+  s7: REG_OFFSET + (32 * 23),
+  s8: REG_OFFSET + (32 * 24),
+  s9: REG_OFFSET + (32 * 25),
+  s10: REG_OFFSET + (32 * 26),
+  s11: REG_OFFSET + (32 * 27),
+  t3: REG_OFFSET + (32 * 28),
+  t4: REG_OFFSET + (32 * 29),
+  t5: REG_OFFSET + (32 * 30),
+  t6: REG_OFFSET + (32 * 31),
 };
 
 export function jumpPC(opcodes: EVMOpCode[]) {
@@ -50,7 +52,7 @@ export function readRegister(opcodes: EVMOpCode[], regId: number) {
   if (regId === 0) {
     opcodes.push({ opcode: "PUSH1", parameter: "00" });
   } else {
-    const address = regId * 32;
+    const address = REG_OFFSET + regId * 32;
     opcodes.push({
       opcode: "PUSH2",
       parameter: address.toString(16).toUpperCase().padStart(4, "0"),
@@ -74,7 +76,7 @@ export function writeRegister(
       opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" });
       opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
     }
-    const address = regId * 32;
+    const address = REG_OFFSET + regId * 32;
     opcodes.push({
       opcode: "PUSH2",
       parameter: address.toString(16).toUpperCase().padStart(4, "0"),

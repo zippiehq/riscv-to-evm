@@ -7,8 +7,23 @@ import * as elfinfo from "elfinfo";
 import crypto from "crypto";
 import fs from "fs";
 import Common, { Chain, Hardfork } from "@ethereumjs/common";
+import { AccessListEIP2930Transaction } from "@ethereumjs/tx";
+import { InterpreterStep } from "@ethereumjs/evm";
 import VM from "@ethereumjs/vm";
-import { Address } from "ethereumjs-util";
+import { Address, BN } from "ethereumjs-util";
+
+interface PageInfo {
+    ethAddress: Address;
+    addr: number;
+    code: Buffer;
+    opcodes: EVMOpCode[];
+}
+
+interface Context {
+    pages: PageInfo[];
+    dataPages: PageInfo[];
+    entryPoint: number;
+}
 
 function emitRiscv(opcodes: EVMOpCode[], parsed: Instruction, startPc: number, pc: number): void {
     if (parsed.instructionName == "SRAI" && ((parsed.imm & 0x400) == 0)) {
@@ -175,20 +190,30 @@ function emitRiscv(opcodes: EVMOpCode[], parsed: Instruction, startPc: number, p
     }
   }
 
+/* 
+ * memory layout while in a code page contract:
+ * 0x0000..0x1000 is jump table (1024) for the page
+ * 0x1000..0x1400 is registers
+ * 0x1400+ is write log in form of (op) (addr) (value) in 32 bytes slots
+ * on return we return 0x1000 upwards w/ size msize-0x1000
+*/
 
-async function makePageCode(startPc: number, page: Buffer): Promise<Buffer> {
+async function makePageCode(startPc: number, page: Buffer): Promise<[Buffer, EVMOpCode[]]> {
     const opcodes: EVMOpCode[] = [];
     // copy in jump table ~803 gas into first part of memory, w/ expansion
     // this could also be coming as calldata, extcodecopy'ed by dispatcher
+
     opcodes.push({opcode: "PUSH2", parameter: "1000"});
-    opcodes.push({opcode: "PUSH2", parameter: "0000"}); // XXX should be the code offset of jump table
+    opcodes.push({opcode: "PUSH2", find_name: "_jumptable_begin"}); // should find a better way
+    opcodes.push({opcode: "PUSH1", parameter: "01"});
+    opcodes.push({opcode: "ADD"});
     opcodes.push({opcode: "PUSH1", parameter: "00"});
     opcodes.push({opcode: "CODECOPY"});
  
     // copy in registers to 0x1000 ~213 gas w/ expansion
     opcodes.push({opcode: "PUSH2", parameter: "0400"}); 
-    opcodes.push({opcode: "PUSH1", parameter: "00"});
-    opcodes.push({opcode: "PUSH1", parameter: "00"});
+    opcodes.push({opcode: "PUSH2", parameter: "8000"});
+    opcodes.push({opcode: "PUSH2", parameter: "1000"});
     opcodes.push({opcode: "CALLDATACOPY"});
 
     // now MSIZE == where we can write
@@ -229,7 +254,6 @@ async function makePageCode(startPc: number, page: Buffer): Promise<Buffer> {
     opcodes.push({opcode: "JUMP"}); // go to PC impl
 
     for (let localPc = 0; localPc < page.length; localPc += 4) {
-        opcodes.push({opcode: "JUMPDEST", name: "_pc_" + localPc});
         let instr = page.readUInt32LE(localPc);
         if (instr === 0xc0001073) {
             instr = 0x00100073;
@@ -237,23 +261,123 @@ async function makePageCode(startPc: number, page: Buffer): Promise<Buffer> {
         try {
             const parsed = parseInstruction(instr);
             const instrName = parsed.instructionName;
+            opcodes.push({opcode: "JUMPDEST", name: "_pc_" + localPc, comment: "RISC-V: " + parsed.assembly});
             emitRiscv(opcodes, parsed, startPc, startPc+localPc);    
-        } catch (err) {
+          } catch (err) {
             console.log("Error parsing instr " + instr.toString(16) + " " + err);
             throw new Error("Failed");
         }
     }
+    opcodes.push({opcode: "INVALID", comment: "overrun"}); // never overrun into here
+    opcodes.push({opcode: "JUMPDEST", name: "_jumptable_begin"});
+    for (let i = 0; i < page.length; i += 4) {
+      opcodes.push({opcode: "_32bitptr", find_name: "_pc_" + i});
+    }
+
     addProgramCounters(opcodes);
     resolveNamesAndOffsets(opcodes);
     console.log(opcodes);
     const assembled = performAssembly(opcodes);
-    return Buffer.from(assembled, "hex");
+    return [Buffer.from(assembled, "hex"), opcodes];
 }
 
-async function makeDispatcher(context) {
-    const opcodes: EVMOpCode[] = [];
+/*
+ * dispatcher memory layout:
+ * code page table (1024 x 32)
+ * registers (32 * 32)
+ * deltas (max 64k)
+ * rodata
+ * data
+ * 
+ * code starts at 0x80000000 virtually but is all transpiled
+*/
 
+const DISPATCHER_REG_START = 0x8000;
+
+async function makeDispatcher(context: Context, dispatcherTableAddress: Address, dispatcherTable: Buffer): Promise<[Buffer, EVMOpCode[]]> {
+    const opcodes: EVMOpCode[] = [];
     // copy in data pages to memory so they become calldata in the code page
+    opcodes.push({opcode: "PUSH4", parameter: dispatcherTable.length.toString(16).padStart(8, "0")}); // offset
+    opcodes.push({opcode: "PUSH1", parameter: "00"}); // offset
+    opcodes.push({opcode: "PUSH1", parameter: "00"}); // destOffset
+    opcodes.push({opcode: "PUSH20", parameter: dispatcherTableAddress.toBuffer().toString("hex")})
+    opcodes.push({opcode: "EXTCODECOPY"});
+
+    opcodes.push({opcode: "PUSH4", parameter: context.entryPoint.toString(16).padStart(8, "0")}); // PC
+    opcodes.push({opcode: "PUSH4", parameter: DISPATCHER_REG_START.toString(16).padStart(8, "0")}); // PC reg
+    opcodes.push({opcode: "MSTORE"}); // write pc
+
+    opcodes.push({opcode: "JUMPDEST", name: "_executeloop"});
+
+    // code starts at 0x80000000
+    opcodes.push({opcode: "PUSH1", parameter: "00"}); // retSize -- we do this manually after call
+    opcodes.push({opcode: "PUSH1", parameter: "00"}); // retOffset
+    
+    opcodes.push({opcode: "MSIZE"}); // argsSize
+    opcodes.push({opcode: "PUSH1", parameter: "00"}); // argsOffset
+
+    opcodes.push({opcode: "PUSH4", parameter: "80000000"});
+
+    opcodes.push({opcode: "PUSH4", parameter: DISPATCHER_REG_START.toString(16).padStart(8, "0")});
+    opcodes.push({opcode: "MLOAD"}); // get pc on stack
+    opcodes.push({opcode: "SUB"});
+    // >> 10
+    opcodes.push({opcode: "PUSH1", parameter: "0A"});
+    opcodes.push({opcode: "SHR"});
+    // << 5 (32)
+    opcodes.push({opcode: "PUSH1", parameter: "05"});
+    opcodes.push({opcode: "SHL"});
+    opcodes.push({opcode: "MLOAD"}); // address
+
+    opcodes.push({opcode: "PUSH1", parameter: "0"}); // gas, should really be ~0 in 256 bit
+    opcodes.push({opcode: "NOT"});
+
+    opcodes.push({opcode: "DELEGATECALL"})
+    opcodes.push({opcode: "PUSH2", find_name: "_die"});
+    opcodes.push({opcode: "JUMPI"}); // if the code failed somehow we should bail
+
+    // copy resulting registers & deltas
+    // XXX should check return data size not too big (like, beyond delta size)
+    opcodes.push({opcode: "RETURNDATASIZE"})
+    opcodes.push({opcode: "PUSH1", parameter: "00"});
+    opcodes.push({opcode: "PUSH2", parameter: "8000"}); // XXX destination: this should be dynamic, location of registers, 1024 after that is deltas
+    opcodes.push({opcode: "RETURNDATACOPY"});
+
+    // die path
+    opcodes.push({opcode: "JUMPDEST", name: "_die"});
+    opcodes.push({opcode: "INVALID"});
+
+    addProgramCounters(opcodes);
+    resolveNamesAndOffsets(opcodes);
+    const assembled = performAssembly(opcodes);
+    return [Buffer.from(assembled, "hex"), opcodes];
+}
+
+function bswap32buf(buf: Buffer): Buffer {
+  for (let i = 0; i < buf.length; i += 4) {
+    buf.writeUint32BE(buf.readUint32LE(i));
+  }
+  return buf;
+}
+
+
+function printO(cycle: number, op: EVMOpCode) {
+  const pc = op.pc;
+  if (pc == undefined) {
+      throw new Error("Missing pc");
+  }
+  console.log(cycle + "\t",
+    pc.toString(16).toUpperCase() +
+      "\t" +
+      op.opcode +
+      "\t" +
+      (op.parameter ? op.parameter : "") +
+      "\t " +
+      (op.name ? ";; " + op.name : "") +
+      (op.find_name ? ";; " + op.find_name : "") +
+      "\t " +
+      (op.comment ? " ;; # " + op.comment : "")
+  );
 }
 
 async function transpile(fileContents: Buffer) {
@@ -262,14 +386,10 @@ async function transpile(fileContents: Buffer) {
         throw new Error("No ELF");
     }
 
-    interface PageInfo {
-        ethAddress: Address,
-        addr: number;
-        code: Buffer;
-    }
-    const context = {
-        pages: [] as PageInfo[],
-        dataPages: [] as PageInfo[],
+    const context: Context = {
+        pages: [],
+        dataPages: [],
+        entryPoint: Number(elfInfo.elf.entryPoint),
     };
 
     for (let i = 0; i < elfInfo.elf.segments.length; i++) {
@@ -279,26 +399,91 @@ async function transpile(fileContents: Buffer) {
             if (Number(seg.vaddr) % 4096 !== 0) {
                 throw new Error("Segment should be 4K-aligned");
             }
+            if (seg.vaddr !== 0x80000000) {
+              throw new Error("Code segment should start at 0x80000000");
+            }
             const data = fileContents.slice(seg.offset, seg.offset + seg.filesz);            
             for (let page = 0; page < data.length; page += 1024) {
-                context.pages.push({ethAddress: Address.fromString("0x" + crypto.randomBytes(20).toString("hex")), addr: Number(seg.vaddr) + page, code: await makePageCode(Number(seg.vaddr), data.slice(page, page + 1024))});
+                const [ code, opcodes ] = await makePageCode(Number(seg.vaddr), data.slice(page, page + 1024));
+                context.pages.push({ethAddress: Address.fromString("0x" + crypto.randomBytes(20).toString("hex")), addr: Number(seg.vaddr) + page, code: code, opcodes: opcodes});
             }
+        } else if (seg.vaddr !== 0 && seg.typeDescription == "Load" && seg.flagsDescription == "Read | Write") {
+          if (Number(seg.vaddr) % 4096 !== 0) {
+            throw new Error("Segment should be 4K-aligned");
+          }
+          const data = fileContents.slice(seg.offset, seg.offset + seg.filesz);            
+          for (let page = 0; page < data.length; page += 16384) {
+            context.dataPages.push({ethAddress: Address.fromString("0x" + crypto.randomBytes(20).toString("hex")), addr: Number(seg.vaddr) + page, code: bswap32buf(data.slice(page, page + 1024)), opcodes: []});
+          }
         }
     }
 
-    const dispatcherBytecode = makeDispatcher(context);
+    console.log(context);
 
+    const dispatcherTable = Buffer.alloc(context.dataPages.length * 32);
+    for (let i = 0; i < context.pages.length; i++) {
+      context.pages[i].ethAddress.toBuffer().copy(dispatcherTable, i * 32 + 12);
+    }
+    const dispatcherTableAddress = Address.fromString("0x" + crypto.randomBytes(20).toString("hex"));
+
+    console.log(dispatcherTable.toString("hex"));
+
+    const [ dispatcherBytecode, dispatcherOpcodes ] = await makeDispatcher(context, dispatcherTableAddress, dispatcherTable);
+    const dispatcherAddress = Address.fromString("0x" + crypto.randomBytes(20).toString("hex"));
     let cycle = 0;
     const common = new Common({ chain: Chain.Mainnet, hardfork: Hardfork.London });
     const vm = new VM({ common });
-
+    vm.stateManager.putContractCode(dispatcherTableAddress, dispatcherTable);
+    vm.stateManager.putContractCode(dispatcherAddress, dispatcherBytecode);
     for (let i = 0; i < context.pages.length; i++) {
         console.log(context.pages[i].code.length);
         vm.stateManager.putContractCode(context.pages[i].ethAddress, context.pages[i].code);
     }
+    
+    vm.on('step', function (data: InterpreterStep) {
+      console.log(`address: ${data.codeAddress} pc: ${data.pc.toString(16).toUpperCase()} - Opcode: ${JSON.stringify(data.opcode.name)}- mem length: ${data.memory.length} - ${data.opcode.dynamicFee}`)
+      let opcodes;
 
+      if (data.codeAddress === dispatcherAddress) {
+        opcodes = dispatcherOpcodes;
+      } else {
+        for (let p = 0; p < context.pages.length; p++) {
+          console.log(data.codeAddress + " " + context.pages[p].ethAddress);
+          if (context.pages[p].ethAddress.equals(data.codeAddress)) {
+            opcodes = context.pages[p].opcodes;
+          }
+        }
+      }
+      if (!opcodes) {
+        throw new Error("No opcodes");
+      }
+      for (let l = 0; l < opcodes.length; l++) {
+        if (opcodes[l].pc == data.pc) {
+            printO(cycle, opcodes[l]);
+        }
+      }
+      for (let l = 0; l < data.stack.length; l++) {
+        console.log("- stack " + (data.stack.length - 1 - l) + ": 0x" + data.stack[l].toString(16).toUpperCase());
+      }  
+      let mem = data.memory.toString("hex");
+      let l = 0;
+      for (let l = 0; l < mem.length; l += 64) {   
+        if (mem.substring(l, l+64) !== "0000000000000000000000000000000000000000000000000000000000000000") {
+          console.log("- mem " + (l/2).toString(16).toUpperCase().padStart(64, "0") + " - " + mem.substring(l, l+64));
+        }
+      }
+    });
+
+    const { execResult } = await vm.runCall({
+      caller: Address.fromString("0xf4eb9bb30a8f61991220cb31762bf2f456bc7fee"),
+      to: dispatcherAddress,
+      gasLimit: new BN(30 * 1024 * 1024),
+      gasPrice: new BN(1 * 1024 * 1024 * 1024),
+      value: new BN(0),
+    });
+    console.log(execResult);
 }
 
 transpile(fs.readFileSync(process.argv[2])).catch((err) => {
     console.log(err);
-})
+});

@@ -17,12 +17,7 @@ export function performAssembly(opcodes: EVMOpCode[]): string {
       if (!para) {
         throw new Error("32bitptr without parameter");
       }
-      const imm = result[i].imm;
-      if (imm !== undefined) {
-        ptrAssembly = ptrAssembly + para + imm.toString(16).padStart(4, "0");
-      } else {
-        ptrAssembly = ptrAssembly + para + "0000";
-      }
+      ptrAssembly = ptrAssembly + "0000" + para;
     }
   }
   return assemble(preAssembly) + ptrAssembly;
