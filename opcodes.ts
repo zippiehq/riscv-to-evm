@@ -874,7 +874,7 @@ export function emitEcall(opcodes: EVMOpCode[]) {
     opcode: "PUSH2",
     parameter: reg2mem["a1"].toString(16).padStart(4, "0"),
   });
-  opcodes.push({ opcode: "RETURN" });
+  opcodes.push({ opcode: "INVALID", comment: "no exit yet" });
 
   opcodes.push({ opcode: "JUMPDEST", name: "_ecall_" + rando });
   opcodes.push({ opcode: "PUSH1", parameter: "04" });

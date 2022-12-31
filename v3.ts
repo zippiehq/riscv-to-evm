@@ -301,11 +301,11 @@ async function makeDispatcher(context: Context, dispatcherTableAddress: Address,
     opcodes.push({opcode: "PUSH1", parameter: "00"}); // offset
     opcodes.push({opcode: "PUSH1", parameter: "00"}); // destOffset
     opcodes.push({opcode: "PUSH20", parameter: dispatcherTableAddress.toBuffer().toString("hex")})
-    opcodes.push({opcode: "EXTCODECOPY"});
+    opcodes.push({opcode: "EXTCODECOPY", comment: "Copy in dispatcher table"});
 
     opcodes.push({opcode: "PUSH4", parameter: context.entryPoint.toString(16).padStart(8, "0")}); // PC
     opcodes.push({opcode: "PUSH4", parameter: DISPATCHER_REG_START.toString(16).padStart(8, "0")}); // PC reg
-    opcodes.push({opcode: "MSTORE"}); // write pc
+    opcodes.push({opcode: "MSTORE", comment: "write entry point to pc"}); // write pc
 
     opcodes.push({opcode: "JUMPDEST", name: "_executeloop"});
 
@@ -319,7 +319,7 @@ async function makeDispatcher(context: Context, dispatcherTableAddress: Address,
     opcodes.push({opcode: "PUSH4", parameter: "80000000"});
 
     opcodes.push({opcode: "PUSH4", parameter: DISPATCHER_REG_START.toString(16).padStart(8, "0")});
-    opcodes.push({opcode: "MLOAD"}); // get pc on stack
+    opcodes.push({opcode: "MLOAD", comment: "retrieve pc from register"}); // get pc on stack
     opcodes.push({opcode: "SUB"});
     // >> 10
     opcodes.push({opcode: "PUSH1", parameter: "0A"});
@@ -332,10 +332,11 @@ async function makeDispatcher(context: Context, dispatcherTableAddress: Address,
     opcodes.push({opcode: "PUSH1", parameter: "0"}); // gas, should really be ~0 in 256 bit
     opcodes.push({opcode: "NOT"});
 
-    opcodes.push({opcode: "DELEGATECALL"})
-    opcodes.push({opcode: "PUSH2", find_name: "_die"});
+    opcodes.push({opcode: "DELEGATECALL", comment: "call sub-code page"});
+    opcodes.push({opcode: "PUSH2", find_name: "_callok"});
     opcodes.push({opcode: "JUMPI"}); // if the code failed somehow we should bail
-
+    opcodes.push({opcode: "INVALID", comment: "subpage failed"});
+    opcodes.push({opcode: "JUMPDEST", name: "_callok"});
     // copy resulting registers & deltas
     // XXX should check return data size not too big (like, beyond delta size)
     opcodes.push({opcode: "RETURNDATASIZE"})
@@ -343,9 +344,9 @@ async function makeDispatcher(context: Context, dispatcherTableAddress: Address,
     opcodes.push({opcode: "PUSH2", parameter: "8000"}); // XXX destination: this should be dynamic, location of registers, 1024 after that is deltas
     opcodes.push({opcode: "RETURNDATACOPY"});
 
+    opcodes.push({opcode: "PUSH2", find_name: "_executeloop"});
+    opcodes.push({opcode: "JUMP"});
     // die path
-    opcodes.push({opcode: "JUMPDEST", name: "_die"});
-    opcodes.push({opcode: "INVALID"});
 
     addProgramCounters(opcodes);
     resolveNamesAndOffsets(opcodes);
@@ -441,7 +442,8 @@ async function transpile(fileContents: Buffer) {
     }
     
     vm.on('step', function (data: InterpreterStep) {
-      console.log(`address: ${data.codeAddress} pc: ${data.pc.toString(16).toUpperCase()} - Opcode: ${JSON.stringify(data.opcode.name)}- mem length: ${data.memory.length} - ${data.opcode.dynamicFee}`)
+      const addressName = data.codeAddress === dispatcherAddress ? "DISPATCHER" : data.codeAddress.toString();
+      console.log(`=== STEP === address: ${addressName} pc: ${data.pc.toString(16).toUpperCase()} - Opcode: ${JSON.stringify(data.opcode.name)}- mem length: ${data.memory.length} - ${data.opcode.dynamicFee} - ${data.gasLeft}`)
       let opcodes;
 
       if (data.codeAddress === dispatcherAddress) {
