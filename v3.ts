@@ -7,7 +7,6 @@ import * as elfinfo from "elfinfo";
 import crypto from "crypto";
 import fs from "fs";
 import Common, { Chain, Hardfork } from "@ethereumjs/common";
-import { AccessListEIP2930Transaction } from "@ethereumjs/tx";
 import { InterpreterStep } from "@ethereumjs/evm";
 import VM from "@ethereumjs/vm";
 import { Address, BN } from "ethereumjs-util";
@@ -67,7 +66,7 @@ function emitRiscv(opcodes: EVMOpCode[], parsed: Instruction, startPc: number, p
         break;
       }
       case "AUIPC": {
-        opcodes.push({opcode: "PUSH2", parameter: pc.toString(16).toUpperCase().padStart(4, "0")});
+        opcodes.push({opcode: "PUSH4", parameter: pc.toString(16).toUpperCase().padStart(4, "0")});
         Opcodes.emitAuipc(opcodes, parsed.rd, parsed.imm, true);
         break;
       }
@@ -111,37 +110,37 @@ function emitRiscv(opcodes: EVMOpCode[], parsed: Instruction, startPc: number, p
       }     
       // branches
       case "BNE":
-        opcodes.push({opcode: "PUSH2", parameter: pc.toString(16).toUpperCase().padStart(4, "0")});
+        opcodes.push({opcode: "PUSH4", parameter: pc.toString(16).toUpperCase().padStart(8, "0")});
         Opcodes.emitBne(opcodes, parsed.rs1, parsed.rs2, parsed.imm);
         break;
       case "BEQ":
-        opcodes.push({opcode: "PUSH2", parameter: pc.toString(16).toUpperCase().padStart(4, "0")});
+        opcodes.push({opcode: "PUSH4", parameter: pc.toString(16).toUpperCase().padStart(8, "0")});
         Opcodes.emitBeq(opcodes, parsed.rs1, parsed.rs2, parsed.imm);
         break;
       case "BLT":
-        opcodes.push({opcode: "PUSH2", parameter: pc.toString(16).toUpperCase().padStart(4, "0")});
+        opcodes.push({opcode: "PUSH4", parameter: pc.toString(16).toUpperCase().padStart(8, "0")});
         Opcodes.emitBlt(opcodes, parsed.rs1, parsed.rs2, parsed.imm);
         break;
       case "BGE":
-        opcodes.push({opcode: "PUSH2", parameter: pc.toString(16).toUpperCase().padStart(4, "0")});
+        opcodes.push({opcode: "PUSH4", parameter: pc.toString(16).toUpperCase().padStart(8, "0")});
         Opcodes.emitBge(opcodes, parsed.rs1, parsed.rs2, parsed.imm);
         break;
       case "BLTU":
-        opcodes.push({opcode: "PUSH2", parameter: pc.toString(16).toUpperCase().padStart(4, "0")});
+        opcodes.push({opcode: "PUSH4", parameter: pc.toString(16).toUpperCase().padStart(8, "0")});
         Opcodes.emitBltu(opcodes, parsed.rs1, parsed.rs2, parsed.imm);
         break;
       case "BGEU":
-        opcodes.push({opcode: "PUSH2", parameter: pc.toString(16).toUpperCase().padStart(4, "0")});
+        opcodes.push({opcode: "PUSH4", parameter: pc.toString(16).toUpperCase().padStart(8, "0")});
         Opcodes.emitBgeu(opcodes, parsed.rs1, parsed.rs2, parsed.imm);
         break;
       // jump & link
       case "JAL": {
-        opcodes.push({opcode: "PUSH2", parameter: pc.toString(16).toUpperCase().padStart(4, "0")});
+        opcodes.push({opcode: "PUSH4", parameter: pc.toString(16).toUpperCase().padStart(8, "0")});
         Opcodes.emitJal(opcodes, parsed.rd, parsed.imm);
         break;
       }
       case "JALR": {
-        opcodes.push({opcode: "PUSH2", parameter: pc.toString(16).toUpperCase().padStart(4, "0")});
+        opcodes.push({opcode: "PUSH4", parameter: pc.toString(16).toUpperCase().padStart(8, "0")});
         Opcodes.emitJalr(opcodes, parsed.rd, parsed.rs1, parsed.imm);
         break;
       }
@@ -158,25 +157,39 @@ function emitRiscv(opcodes: EVMOpCode[], parsed: Instruction, startPc: number, p
         break;
       // loads
       case "LB":
+        throw new Error("unimplemented");
+
+        Opcodes.emitDirtyCheck(opcodes, pc);
         Opcodes.emitLb(opcodes, parsed.rd, parsed.rs1, parsed.imm);
         break;
       case "LH":
+        throw new Error("unimplemented");
+
+        Opcodes.emitDirtyCheck(opcodes, pc);
         Opcodes.emitLh(opcodes, parsed.rd, parsed.rs1, parsed.imm);
         break;
       case "LBU":
+        throw new Error("unimplemented");
+
+        Opcodes.emitDirtyCheck(opcodes, pc);
         Opcodes.emitLbu(opcodes, parsed.rd, parsed.rs1, parsed.imm);
         break;
       case "LHU":
+        throw new Error("unimplemented");
+        Opcodes.emitDirtyCheck(opcodes, pc);
         Opcodes.emitLhu(opcodes, parsed.rd, parsed.rs1, parsed.imm);
         break;
       case "LW":
+        Opcodes.emitDirtyCheck(opcodes, pc);
         Opcodes.emitLw(opcodes, parsed.rd, parsed.rs1, parsed.imm);
         break;
       // stores
       case "SB":
+        throw new Error("unimplemented");
         Opcodes.emitSb(opcodes, parsed.rs1, parsed.rs2, parsed.imm); 
         break;
       case "SH":
+        throw new Error("unimplemented");
         Opcodes.emitSh(opcodes, parsed.rs1, parsed.rs2, parsed.imm);
         break;
       case "SW":
@@ -193,8 +206,8 @@ function emitRiscv(opcodes: EVMOpCode[], parsed: Instruction, startPc: number, p
 /* 
  * memory layout while in a code page contract:
  * 0x0000..0x1000 is jump table (1024) for the page
- * 0x1000..0x1400 is registers
- * 0x1400+ is write log in form of (op) (addr) (value) in 32 bytes slots
+ * 0x1000..0x1420 is 'registers'
+ * 0x1420+ is write log in form of (op) (addr) (value) in 32 bytes slots
  * on return we return 0x1000 upwards w/ size msize-0x1000
 */
 
@@ -216,17 +229,24 @@ async function makePageCode(startPc: number, page: Buffer): Promise<[Buffer, EVM
     opcodes.push({opcode: "PUSH2", parameter: "1000"});
     opcodes.push({opcode: "CALLDATACOPY"});
 
-    // now MSIZE == where we can write
+    opcodes.push({opcode: "PUSH2", parameter: "00"});
+    opcodes.push({opcode: "MSIZE" });
+    opcodes.push({opcode: "MSTORE" }); // "willExit" register
+
+    opcodes.push({opcode: "PUSH2", parameter: "00"});
+    opcodes.push({opcode: "MSIZE" });
+    opcodes.push({opcode: "MSTORE" }); // "isDirty" register
+
     
     // load PC (mem 0x1000)
-    opcodes.push({opcode: "JUMPDEST", name: "_jumppc"})
     opcodes.push({opcode: "PUSH2", parameter: "1000"});
     opcodes.push({opcode: "MLOAD"}); 
 
+    opcodes.push({opcode: "JUMPDEST", name: "_jumppc"})
     opcodes.push({opcode: "DUP1"});
     opcodes.push({opcode: "PUSH4", parameter: "FFFFFC00"});
     opcodes.push({opcode: "AND"});
-    opcodes.push({opcode: "PUSH4", parameter: startPc.toString(16).toUpperCase().padStart(8, '0')});
+    opcodes.push({opcode: "PUSH4", parameter: startPc.toString(16).toUpperCase().padStart(8, '0'), comment: "correct pc here"});
     opcodes.push({opcode: "EQ"});
 
     opcodes.push({opcode: "PUSH4", find_name: "_localjump"}); // is it this page?
@@ -237,12 +257,13 @@ async function makePageCode(startPc: number, page: Buffer): Promise<[Buffer, EVM
     opcodes.push({opcode: "PUSH2", parameter: "1000"});
     opcodes.push({opcode: "MSTORE"}); // write pc 
 
-    opcodes.push({opcode: "PUSH1", parameter: "00"}); // add 00 == end of delta to delta log
+    // make an end of tape
+    opcodes.push({opcode: "PUSH1", parameter: "00"});
     opcodes.push({opcode: "MSIZE"});
     opcodes.push({opcode: "MSTORE"});
-
-    opcodes.push({opcode: "MSIZE"});
+        
     opcodes.push({opcode: "PUSH2", parameter: "1000"});
+    opcodes.push({opcode: "MSIZE"});
     opcodes.push({opcode: "SUB"});
     opcodes.push({opcode: "PUSH2", parameter: "1000"});
     opcodes.push({opcode: "RETURN"});
@@ -257,7 +278,11 @@ async function makePageCode(startPc: number, page: Buffer): Promise<[Buffer, EVM
     opcodes.push({opcode: "SHR"});
     opcodes.push({opcode: "JUMP"}); // go to PC impl
 
-    for (let localPc = 0; localPc < page.length; localPc += 4) {
+    opcodes.push({opcode: "JUMPDEST", name: "_die"});
+    opcodes.push({opcode: "INVALID", comment: "dead"});
+    
+    let localPc = 0;
+    for (; localPc < page.length; localPc += 4) {
         let instr = page.readUInt32LE(localPc);
         if (instr === 0xc0001073) {
             instr = 0x00100073;
@@ -265,14 +290,16 @@ async function makePageCode(startPc: number, page: Buffer): Promise<[Buffer, EVM
         try {
             const parsed = parseInstruction(instr);
             const instrName = parsed.instructionName;
-            opcodes.push({opcode: "JUMPDEST", name: "_pc_" + localPc, comment: "RISC-V: " + parsed.assembly});
+            opcodes.push({opcode: "JUMPDEST", name: "_pc_" + localPc, comment: "( " + (startPc+localPc).toString(16).padStart(8, "0") + ") RISC-V: " + parsed.assembly});
             emitRiscv(opcodes, parsed, startPc, startPc+localPc);    
           } catch (err) {
             console.log("Error parsing instr " + instr.toString(16) + " " + err);
             throw new Error("Failed");
         }
     }
-    opcodes.push({opcode: "INVALID", comment: "overrun"}); // never overrun into here
+    opcodes.push({opcode: "PUSH4", parameter: (startPc+localPc).toString(16).toUpperCase().padStart(8, "0")});
+    opcodes.push({opcode: "PUSH2", find_name: "_exit", comment: "OVERRUN"});
+    opcodes.push({opcode: "JUMP"});
     opcodes.push({opcode: "JUMPDEST", name: "_jumptable_begin"});
     for (let i = 0; i < page.length; i += 4) {
       opcodes.push({opcode: "_32bitptr", find_name: "_pc_" + i});
@@ -288,21 +315,26 @@ async function makePageCode(startPc: number, page: Buffer): Promise<[Buffer, EVM
 /*
  * dispatcher memory layout:
  * code page table (1024 x 32)
- * registers (32 * 32)
+ * registers (32 * 32) 
  * deltas (max 64k)
+ * 
  * rodata
  * data
  * 
  * code starts at 0x80000000 virtually but is all transpiled
 */
-
 const DISPATCHER_REG_START = 0x8000;
-const DISPATCHER_DELTA_START = 0x8000 + 0x400;
+const DISPATCHER_REG_WILLEXIT = 0x8400;
+const DISPATCHER_REG_ISDIRTY = 0x8420;
+
+const DISPATCHER_WRITEOUT_START = 0x8440;
+const WORD_REPLACE_MASK =  "00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff".toUpperCase();
+const LAST_WORD_REPLACE_MASK = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000".toUpperCase();
 
 async function makeDispatcher(context: Context, dispatcherTableAddress: Address, dispatcherTable: Buffer): Promise<[Buffer, EVMOpCode[]]> {
     const opcodes: EVMOpCode[] = [];
     // copy in data pages to memory so they become calldata in the code page
-    opcodes.push({opcode: "PUSH4", parameter: dispatcherTable.length.toString(16).padStart(8, "0")}); // offset
+    opcodes.push({opcode: "PUSH4", parameter: dispatcherTable.length.toString(16).padStart(8, "0")}); // size
     opcodes.push({opcode: "PUSH1", parameter: "00"}); // offset
     opcodes.push({opcode: "PUSH1", parameter: "00"}); // destOffset
     opcodes.push({opcode: "PUSH20", parameter: dispatcherTableAddress.toBuffer().toString("hex")})
@@ -318,7 +350,7 @@ async function makeDispatcher(context: Context, dispatcherTableAddress: Address,
     }
 
     opcodes.push({opcode: "PUSH4", parameter: context.entryPoint.toString(16).padStart(8, "0")}); // PC
-    opcodes.push({opcode: "PUSH4", parameter: DISPATCHER_REG_START.toString(16).padStart(8, "0")}); // PC reg
+    opcodes.push({opcode: "PUSH4", parameter: DISPATCHER_REG_START.toString(16).padStart(8, "0")});
     opcodes.push({opcode: "MSTORE", comment: "write entry point to pc"}); // write pc
 
     opcodes.push({opcode: "JUMPDEST", name: "_executeloop"});
@@ -352,29 +384,72 @@ async function makeDispatcher(context: Context, dispatcherTableAddress: Address,
     opcodes.push({opcode: "JUMPI"}); // if the code failed somehow we should bail
     opcodes.push({opcode: "INVALID", comment: "subpage failed"});
 
-
     opcodes.push({opcode: "JUMPDEST", name: "_callok"});
     // copy resulting registers & deltas
     // XXX should check return data size not too big (like, beyond delta size)
-    opcodes.push({opcode: "MSIZE"}); // memory -before- the call (our starting point) 
     opcodes.push({opcode: "RETURNDATASIZE"})
     opcodes.push({opcode: "PUSH1", parameter: "00"});
     opcodes.push({opcode: "PUSH2", parameter: "8000"}); // XXX destination: this should be dynamic, location of registers, 1024 after that is deltas
     opcodes.push({opcode: "RETURNDATACOPY"});
 
     // delta loop, initially takes just one op
-    opcodes.push({opcode: "PUSH4", parameter: DISPATCHER_REG_START.toString(16).padStart(8, "0")});
+    opcodes.push({opcode: "PUSH4", parameter: DISPATCHER_REG_ISDIRTY.toString(16).padStart(8, "0")});
+    opcodes.push({opcode: "MLOAD"});
+    opcodes.push({opcode: "PUSH2", find_name: "_isdirty"});
+    opcodes.push({opcode: "JUMPI"})
+    
+    opcodes.push({opcode: "JUMPDEST", name: "_checkwillexit"});
+    opcodes.push({opcode: "PUSH4", parameter: DISPATCHER_REG_WILLEXIT.toString(16).padStart(8, "0")});
     opcodes.push({opcode: "MLOAD"});
     opcodes.push({opcode: "PUSH2", find_name: "_fullexit"});
     opcodes.push({opcode: "JUMPI"})
+    
     opcodes.push({opcode: "PUSH2", find_name: "_executeloop"});
     opcodes.push({opcode: "JUMP"});
-  
+
+    opcodes.push({opcode: "JUMPDEST", name: "_isdirty", comment: "DIRTY PAGE(S) TO BE WRITTEN OUT"});
+    {
+      opcodes.push({opcode: "PUSH4", parameter: DISPATCHER_REG_START.toString(16).padStart(8, "0")}); // reg_start
+      opcodes.push({opcode: "PUSH2", parameter: "0440"}); // ptr
+      
+      opcodes.push({opcode: "JUMPDEST", name: "_isdirty_loop"});
+      opcodes.push({opcode: "PUSH1", parameter: "04"}); // 04 ptr reg_start
+
+      opcodes.push({opcode: "DUP3"}); // reg_start 04 ptr reg_start
+      opcodes.push({opcode: "DUP3"}); // ptr reg_start 04 ptr reg_start
+      opcodes.push({opcode: "ADD"}); // ptr+reg_start
+      opcodes.push({opcode: "MLOAD"}); // (value << 224 + addr)=*(ptr + reg_start) 04   ptr reg_start
+      opcodes.push({opcode: "DUP1"}); // (value << 224 + addr)=*(ptr + reg_start) (value << 224 + addr)=*(ptr + reg_start) 04 ptr reg_start
+
+      opcodes.push({opcode: "PUSH2", find_name: "_dowriteandcontinue"});
+      opcodes.push({opcode: "JUMPI" });
+    
+      opcodes.push({opcode: "POP"});
+      opcodes.push({opcode: "POP"});
+      opcodes.push({opcode: "POP"});
+      opcodes.push({opcode: "POP", comment: "stack should be empty here"});
+
+      opcodes.push({opcode: "PUSH2", find_name: "_checkwillexit"});
+      opcodes.push({opcode: "JUMP"});
+      
+      opcodes.push({opcode: "JUMPDEST", name: "_dowriteandcontinue", comment: "do write and continue"}); // value << 224 + addr)=*(ptr + reg_start) 04 ptr reg_start
+      opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF"});
+      opcodes.push({opcode: "AND"}); // addr 04 ptr reg_start
+      opcodes.push({opcode: "DUP3"}); // ptr addr 04 ptr reg_start
+      opcodes.push({opcode: "SWAP1"}); // addr ptr 04 ptr reg_start
+      opcodes.push({opcode: "RETURNDATACOPY"}); // ptr reg_start -- the magic here is that ptr points to first 4 bytes soooo
+      opcodes.push({opcode: "PUSH1", parameter: "20"});
+      opcodes.push({opcode: "ADD"});
+      opcodes.push({opcode: "PUSH2", find_name: "_isdirty_loop"});
+      opcodes.push({opcode: "JUMP"});      
+    }
+    
+    
     opcodes.push({opcode: "JUMPDEST", name: "_fullexit"});
     opcodes.push({opcode: "PUSH1", parameter: "00"});
     opcodes.push({opcode: "PUSH1", parameter: "00"});
     opcodes.push({opcode: "RETURN"});
-    
+       
     addProgramCounters(opcodes);
     resolveNamesAndOffsets(opcodes);
     const assembled = performAssembly(opcodes);
@@ -383,7 +458,7 @@ async function makeDispatcher(context: Context, dispatcherTableAddress: Address,
 
 function bswap32buf(buf: Buffer): Buffer {
   for (let i = 0; i < buf.length; i += 4) {
-    buf.writeUint32BE(buf.readUint32LE(i));
+    buf.writeUint32BE(buf.readUint32LE(i), i);
   }
   return buf;
 }
@@ -432,7 +507,7 @@ async function transpile(fileContents: Buffer) {
             }
             const data = fileContents.slice(seg.offset, seg.offset + seg.filesz);            
             for (let page = 0; page < data.length; page += 1024) {
-                const [ code, opcodes ] = await makePageCode(Number(seg.vaddr), data.slice(page, page + 1024));
+                const [ code, opcodes ] = await makePageCode(Number(seg.vaddr) + (page & 0xFFFFFC00 >>> 0), data.slice(page, page + 1024));
                 context.pages.push({ethAddress: Address.fromString("0x" + crypto.randomBytes(20).toString("hex")), addr: Number(seg.vaddr) + page, code: code, opcodes: opcodes});
             }
         } else if (seg.vaddr !== 0 && seg.typeDescription == "Load" && seg.flagsDescription == "Read | Write") {
@@ -441,20 +516,20 @@ async function transpile(fileContents: Buffer) {
           }
           const data = fileContents.slice(seg.offset, seg.offset + seg.filesz);            
           for (let page = 0; page < data.length; page += 16384) {
-            context.dataPages.push({ethAddress: Address.fromString("0x" + crypto.randomBytes(20).toString("hex")), addr: Number(seg.vaddr) + page, code: bswap32buf(data.slice(page, page + 1024)), opcodes: []});
+            context.dataPages.push({ethAddress: Address.fromString("0x" + crypto.randomBytes(20).toString("hex")), addr: Number(seg.vaddr) + page, code: bswap32buf(data.slice(page, page + 16384)), opcodes: []});
           }
         }
     }
 
     console.log(context);
 
-    const dispatcherTable = Buffer.alloc(context.dataPages.length * 32);
+    const dispatcherTable = Buffer.alloc(context.pages.length * 32);
     for (let i = 0; i < context.pages.length; i++) {
       context.pages[i].ethAddress.toBuffer().copy(dispatcherTable, i * 32 + 12);
     }
     const dispatcherTableAddress = Address.fromString("0x" + crypto.randomBytes(20).toString("hex"));
 
-    console.log(dispatcherTable.toString("hex"));
+    console.log("dispatcher table: " + dispatcherTable.toString("hex"));
 
     const [ dispatcherBytecode, dispatcherOpcodes ] = await makeDispatcher(context, dispatcherTableAddress, dispatcherTable);
     const dispatcherAddress = Address.fromString("0x" + crypto.randomBytes(20).toString("hex"));
@@ -468,6 +543,11 @@ async function transpile(fileContents: Buffer) {
         vm.stateManager.putContractCode(context.pages[i].ethAddress, context.pages[i].code);
     }
     
+    for (let i = 0; i < context.dataPages.length; i++) {
+      console.log(context.dataPages[i].code.length);
+      vm.stateManager.putContractCode(context.dataPages[i].ethAddress, context.dataPages[i].code);
+  }
+  
     vm.on('step', function (data: InterpreterStep) {
       const addressName = data.codeAddress === dispatcherAddress ? "DISPATCHER" : data.codeAddress.toString();
       console.log(`=== STEP === address: ${addressName} pc: ${data.pc.toString(16).toUpperCase()} - Opcode: ${JSON.stringify(data.opcode.name)}- mem length: ${data.memory.length} - ${data.opcode.dynamicFee} - ${data.gasLeft}`)
@@ -477,7 +557,6 @@ async function transpile(fileContents: Buffer) {
         opcodes = dispatcherOpcodes;
       } else {
         for (let p = 0; p < context.pages.length; p++) {
-          console.log(data.codeAddress + " " + context.pages[p].ethAddress);
           if (context.pages[p].ethAddress.equals(data.codeAddress)) {
             opcodes = context.pages[p].opcodes;
           }

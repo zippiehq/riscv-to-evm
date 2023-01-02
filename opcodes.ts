@@ -670,7 +670,7 @@ export function emitLb(
   opcodes.push({ opcode: "XOR" });
   // fixup end
 
-  opcodes.push({ opcode: "MLOAD" });
+  opcodes.push({ opcode: "CALLDATALOAD" });
   opcodes.push({ opcode: "PUSH1", parameter: "F8" }); // to get the 8-bit value as it's all the way left
   opcodes.push({ opcode: "SHR" });
 
@@ -680,13 +680,21 @@ export function emitLb(
   writeRegister(opcodes, rd, false);
 }
 
+export function emitDirtyCheck(opcodes: EVMOpCode[], pc: number) {
+  opcodes.push({opcode: "PUSH4", parameter: pc.toString(16).toUpperCase().padStart(8, "0")});
+  readRegister(opcodes, 33); // dirty section
+  opcodes.push({opcode: "PUSH2", find_name: "_exit"});
+  opcodes.push({opcode: "JUMPI"});
+  opcodes.push({opcode: "POP"});
+} 
+
 export function emitLbu(
   opcodes: EVMOpCode[],
   rd: number,
   rs1: number,
   imm: number
 ) {
-  // grab 32 bit value from rs2 (value)
+  // grab 32 bit value from rs2 (value)  
   readRegister(opcodes, rs1);
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" });
   opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
@@ -699,7 +707,7 @@ export function emitLbu(
   opcodes.push({ opcode: "PUSH1", parameter: "03" });
   opcodes.push({ opcode: "XOR" });
   // fixup end
-  opcodes.push({ opcode: "MLOAD" });
+  opcodes.push({ opcode: "CALLDATALOAD" });
 
   opcodes.push({ opcode: "PUSH1", parameter: "F8" }); // to get the 32-bit value as it's all the way left
   opcodes.push({ opcode: "SHR" });
@@ -727,7 +735,7 @@ export function emitLh(
   opcodes.push({ opcode: "PUSH1", parameter: "02" });
   opcodes.push({ opcode: "XOR" });
   // fixup end
-  opcodes.push({ opcode: "MLOAD" });
+  opcodes.push({ opcode: "CALLDATALOAD" });
   opcodes.push({ opcode: "PUSH1", parameter: "F0" }); // to get the 32-bit value as it's all the way left
   opcodes.push({ opcode: "SHR" });
 
@@ -758,7 +766,7 @@ export function emitLhu(
   opcodes.push({ opcode: "XOR" });
   // fixup end
 
-  opcodes.push({ opcode: "MLOAD" });
+  opcodes.push({ opcode: "CALLDATALOAD" });
   opcodes.push({ opcode: "PUSH1", parameter: "F0" }); // to get the 32-bit value as it's all the way left
   opcodes.push({ opcode: "SHR" });
 
@@ -778,13 +786,10 @@ export function emitLw(
 
   signExtendTo256(opcodes, imm); // imm-signextended pc pc
   opcodes.push({ opcode: "ADD" });
-
-  opcodes.push({ opcode: "PUSH1", parameter: "08"});
-  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // narrow down to 32-bit
-  opcodes.push({ opcode: "MULMOD" });
-
-  opcodes.push({ opcode: "MLOAD" });
-
+  opcodes.push({ opcode: "CALLDATALOAD", comment: "LW addr"}); 
+  opcodes.push({ opcode: "PUSH1", parameter: "E0"});
+  opcodes.push({ opcode: "SHR", comment: "LW result"});
+  
   writeRegister(opcodes, rd, false);
 }
 
@@ -849,18 +854,26 @@ export function emitSw(
   rs2: number,
   imm: number
 ) {
-    // grab 32 bit value from rs2 (value)
-  readRegister(opcodes, rs2);
+  opcodes.push({opcode: "PUSH1", parameter: "01", comment: "SET DIRTY"}); // dirty flag set
+  writeRegister(opcodes, 33 /* isdirty register */, false);
+
+  // grab 32 bit value from rs2 (value)
   readRegister(opcodes, rs1); // read rs1 (addr)
-  // XXX maybe a imm-check-if-zero-and-if-yes-no-add  
+
   if (imm !== 0) {
     signExtendTo256(opcodes, imm); // imm-signextended pc pc
     opcodes.push({ opcode: "ADD" });
   }
-  opcodes.push({ opcode: "PUSH1", parameter: "08"});
-  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // narrow down to 32-bit
-  opcodes.push({ opcode: "MULMOD" });
-  opcodes.push({ opcode: "MSTORE" });
+
+  readRegister(opcodes, rs2); // read value
+  opcodes.push({opcode: "PUSH1", parameter: "E0"});
+  opcodes.push({opcode: "SHL"});
+
+  /* construct (value << 32) | addr and store in 256-bit slot */
+  opcodes.push({opcode: "ADD"});
+  opcodes.push({opcode: "MSIZE"});
+  opcodes.push({opcode: "MSTORE", comment: "emitSw"});
+
 }
 
 export function emitEcall(opcodes: EVMOpCode[], pc: number) {
@@ -870,17 +883,14 @@ export function emitEcall(opcodes: EVMOpCode[], pc: number) {
   opcodes.push({ opcode: "JUMPI" });
   // if a0 == 0, return
   // write 'ok exit' opcode
-  opcodes.push({opcode: "PUSH1", parameter: "02"}); // 02 == intentional exit
-  opcodes.push({opcode: "MSIZE"});
+  // overwrites the end of tape info
+  opcodes.push({opcode: "PUSH1", parameter: "01"}); // write 1 to exit register
+  opcodes.push({opcode: "PUSH4", parameter: "1400"});  // XXX careful if other offsets shit
   opcodes.push({opcode: "MSTORE"});
-  opcodes.push({opcode: "PUSH2", parameter: pc.toString(16).toUpperCase().padStart(4, "0")});
+
+  opcodes.push({opcode: "PUSH4", parameter: pc.toString(16).toUpperCase().padStart(8, "0")});
   opcodes.push({opcode: "PUSH2", find_name: "_exit"});
   opcodes.push({opcode: "JUMP"}); // leave code page
 
   opcodes.push({ opcode: "JUMPDEST", name: "_ecall_" + rando });
-
-  opcodes.push({ opcode: "JUMPDEST", name: "_ecall_" + rando });
-  opcodes.push({ opcode: "PUSH1", parameter: "04" });
-  readRegister(opcodes, 11); // a1
-  opcodes.push({ opcode: "LOG0" });
 }

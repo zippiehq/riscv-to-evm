@@ -1,6 +1,6 @@
 ENTRY(_start);
  
-. = 0x1000;
+. = 0x20000;
  
 SECTIONS {
 	.rodata : ALIGN(4096) {
