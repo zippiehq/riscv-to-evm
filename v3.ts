@@ -178,11 +178,11 @@ function emitRiscv(opcodes: EVMOpCode[], parsed: Instruction, startPc: number, p
         break;
       // stores
       case "SB":
-        throw new Error("unimplemented");
+        Opcodes.emitDirtyCheck(opcodes, pc);
         Opcodes.emitSb(opcodes, parsed.rs1, parsed.rs2, parsed.imm); 
         break;
       case "SH":
-        throw new Error("unimplemented");
+        Opcodes.emitDirtyCheck(opcodes, pc);
         Opcodes.emitSh(opcodes, parsed.rs1, parsed.rs2, parsed.imm);
         break;
       case "SW":
@@ -450,10 +450,14 @@ async function makeDispatcher(context: Context, dispatcherTableAddress: Address,
 }
 
 function bswap32buf(buf: Buffer): Buffer {
-  for (let i = 0; i < buf.length; i += 4) {
-    buf.writeUint32BE(buf.readUint32LE(i), i);
+  const ret = Buffer.alloc(Math.ceil(buf.length / 4) * 4);
+  for (let i = 0; i < buf.length; i++) {
+    ret.writeUint8(buf.readUint8(i), i);
   }
-  return buf;
+  for (let i = 0; i < ret.length; i += 4) {
+    ret.writeUint32BE(ret.readUint32LE(i), i);
+  }
+  return ret;
 }
 
 

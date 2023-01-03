@@ -7,6 +7,9 @@ const WORD_REPLACE_MASK =
 const HALFWORD_REPLACE_MASK =
   "0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff".toUpperCase();
 
+const BYTE_REPLACE_MASK =
+  "00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff".toUpperCase();
+
 const REG_OFFSET = 0x1000;
 
 export const reg2mem: Record<string, number> = {
@@ -799,20 +802,43 @@ export function emitSb(
   rs2: number,
   imm: number
 ) {
-  // grab 32 bit value from rs2 (value)
-  readRegister(opcodes, rs2);
+  opcodes.push({opcode: "PUSH1", parameter: "01", comment: "SET DIRTY"}); // dirty flag set
+  writeRegister(opcodes, 33 /* isdirty register */, false);
 
-  readRegister(opcodes, rs1); // read rs1 (addr)
+  readRegister(opcodes, rs1); // rs1, (value << 24 & 0xFFFFFFF)
 
   signExtendTo256(opcodes, imm); // imm-signextended pc pc
 
   opcodes.push({ opcode: "ADD" });
-  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // narrow down to 32-bit
-  opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
+  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); 
+  opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });// narrow down to 32-bit. stack: addr+imm&0xFFFFFFF, (value << 24 & 0xFFFFFFF)
   opcodes.push({ opcode: "PUSH1", parameter: "03" });
   opcodes.push({ opcode: "XOR" });
+  opcodes.push({ opcode: "DUP1" });
+  opcodes.push({ opcode: "CALLDATALOAD"} ); // stack: current_value, addr+imm&0xFFFFFFF, (value << 24 & 0xFFFFFFF)
+  
+  opcodes.push({ opcode: "PUSH1", parameter: "E0"}); // mask out
+  opcodes.push({ opcode: "SHR"});
 
-  opcodes.push({ opcode: "MSTORE8" });
+  opcodes.push({ opcode: "PUSH4", parameter: "00FFFFFF"});
+  opcodes.push({ opcode: "AND"});
+
+  // grab 32 bit value from rs2 (value)
+  readRegister(opcodes, rs2);
+
+  opcodes.push({ opcode: "PUSH1", parameter: "FF"}); 
+  opcodes.push({ opcode: "AND"}); // shift left 248 bits 
+  opcodes.push({ opcode: "PUSH1", parameter: "18"});  
+  opcodes.push({ opcode: "SHL"}); 
+  opcodes.push({ opcode: "ADD"});
+
+  opcodes.push({opcode: "PUSH1", parameter: "E0"});
+  opcodes.push({opcode: "SHL"});
+
+  /* construct (value << 32) | addr and store in 256-bit slot */
+  opcodes.push({opcode: "ADD"});
+  opcodes.push({opcode: "MSIZE"});
+  opcodes.push({opcode: "MSTORE", comment: "emitSb"});
 }
 
 export function emitSh(
@@ -821,31 +847,43 @@ export function emitSh(
   rs2: number,
   imm: number
 ) {
-  readRegister(opcodes, rs1); // read rs1 (addr)
+  opcodes.push({opcode: "PUSH1", parameter: "01", comment: "SET DIRTY"}); // dirty flag set
+  writeRegister(opcodes, 33 /* isdirty register */, false);
+
+  readRegister(opcodes, rs1); // rs1
 
   signExtendTo256(opcodes, imm); // imm-signextended pc pc
 
   opcodes.push({ opcode: "ADD" });
-  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // narrow down to 32-bit
-  opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
+  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); 
+  opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });// narrow down to 32-bit. stack: addr+imm&0xFFFFFFF, (value << 24 & 0xFFFFFFF)
   opcodes.push({ opcode: "PUSH1", parameter: "02" });
   opcodes.push({ opcode: "XOR" });
-
   opcodes.push({ opcode: "DUP1" });
-  opcodes.push({ opcode: "MLOAD", comment: "fetch" });
-  opcodes.push({ opcode: "PUSH32", parameter: HALFWORD_REPLACE_MASK });
-  opcodes.push({ opcode: "AND" });
+  opcodes.push({ opcode: "CALLDATALOAD"} ); // stack: current_value, addr+imm&0xFFFFFFF, (value << 24 & 0xFFFFFFF)
+  
+  opcodes.push({ opcode: "PUSH1", parameter: "E0"}); // mask out
+  opcodes.push({ opcode: "SHR"});
 
-  // grab value from rs2 (value)
+  opcodes.push({ opcode: "PUSH4", parameter: "0000FFFF"});
+  opcodes.push({ opcode: "AND"});
+
+  // grab 32 bit value from rs2 (value)
   readRegister(opcodes, rs2);
 
-  opcodes.push({ opcode: "PUSH1", parameter: "F0" });
-  opcodes.push({ opcode: "SHL" });
+  opcodes.push({ opcode: "PUSH2", parameter: "FFFF"}); 
+  opcodes.push({ opcode: "AND"}); 
+  opcodes.push({ opcode: "PUSH1", parameter: "10"});  
+  opcodes.push({ opcode: "SHL"}); 
+  opcodes.push({ opcode: "ADD"});
 
-  opcodes.push({ opcode: "ADD" });
+  opcodes.push({opcode: "PUSH1", parameter: "E0"});
+  opcodes.push({opcode: "SHL"});
 
-  opcodes.push({ opcode: "SWAP1" });
-  opcodes.push({ opcode: "MSTORE" });
+  /* construct (value << 32) | addr and store in 256-bit slot */
+  opcodes.push({opcode: "ADD"});
+  opcodes.push({opcode: "MSIZE"});
+  opcodes.push({opcode: "MSTORE", comment: "emitSh"});
 }
 
 export function emitSw(
