@@ -1,0 +1,20 @@
+[package]
+name = "mips"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rlibc = "1.0.0"
+risc0-zkvm = {git = "https://github.com/dymchenkko/risc0.git", branch = "tracing", default-features = false}
+#serde = { version = "1.0", default-features = false }
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
+lto = "yes"
+codegen-units = 1
+opt-level = "z"

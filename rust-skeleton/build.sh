@@ -1,0 +1,1 @@
+cargo +nightly build --target=riscv32i-unknown-continue-elf.json  -Z build-std=alloc,core,panic_abort -Z build-std-features=panic_immediate_abort  --release 
