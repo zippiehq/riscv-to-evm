@@ -494,7 +494,7 @@ async function transpile(fileContents: Buffer) {
 
     for (let i = 0; i < elfInfo.elf.segments.length; i++) {
         const seg = elfInfo.elf.segments[i];
-        if (seg.vaddr !== 0 && seg.typeDescription == "Load" && seg.flagsDescription == "Read | Execute") { 
+        if (seg.vaddr !== 0 && seg.typeDescription == "Load" && Number(seg.vaddr) >= 0x80000000) { 
             // ^^^^ XXX this is really lazy
             if (Number(seg.vaddr) % 4096 !== 0) {
                 throw new Error("Segment should be 4K-aligned");
@@ -507,7 +507,7 @@ async function transpile(fileContents: Buffer) {
                 const [ code, opcodes ] = await makePageCode(Number(seg.vaddr) + (page & 0xFFFFFC00 >>> 0), data.slice(page, page + 1024));
                 context.pages.push({ethAddress: Address.fromString("0x" + crypto.randomBytes(20).toString("hex")), addr: Number(seg.vaddr) + page, code: code, opcodes: opcodes});
             }
-        } else if (seg.vaddr !== 0 && seg.typeDescription == "Load" && seg.flagsDescription == "Read | Write") {
+        } else if (seg.vaddr !== 0 && seg.typeDescription == "Load" && Number(seg.vaddr) < 0x80000000) {
           if (Number(seg.vaddr) % 4096 !== 0) {
             throw new Error("Segment should be 4K-aligned");
           }
