@@ -138,6 +138,9 @@ export function emitAddi(
   rs1: number,
   imm: number
 ) {
+  if (rd == 0) {
+    // XXX could optimize to just no operation this but eh
+  }
   if (imm !== 0) {
     signExtendTo256(opcodes, imm);
   }
