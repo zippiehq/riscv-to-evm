@@ -157,25 +157,18 @@ function emitRiscv(opcodes: EVMOpCode[], parsed: Instruction, startPc: number, p
         break;
       // loads
       case "LB":
-        throw new Error("unimplemented");
-
         Opcodes.emitDirtyCheck(opcodes, pc);
         Opcodes.emitLb(opcodes, parsed.rd, parsed.rs1, parsed.imm);
         break;
       case "LH":
-        throw new Error("unimplemented");
-
         Opcodes.emitDirtyCheck(opcodes, pc);
         Opcodes.emitLh(opcodes, parsed.rd, parsed.rs1, parsed.imm);
         break;
       case "LBU":
-        throw new Error("unimplemented");
-
         Opcodes.emitDirtyCheck(opcodes, pc);
         Opcodes.emitLbu(opcodes, parsed.rd, parsed.rs1, parsed.imm);
         break;
       case "LHU":
-        throw new Error("unimplemented");
         Opcodes.emitDirtyCheck(opcodes, pc);
         Opcodes.emitLhu(opcodes, parsed.rd, parsed.rs1, parsed.imm);
         break;
