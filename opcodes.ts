@@ -101,6 +101,22 @@ export function emitAdd(
   writeRegister(opcodes, rd, true);
 }
 
+export function emitAddw(
+  opcodes: EVMOpCode[],
+  rd: number,
+  rs1: number,
+  rs2: number
+) {
+  readRegister(opcodes, rs1);
+  readRegister(opcodes, rs2);
+  opcodes.push({ opcode: "ADD" });
+  opcodes.push({ opcode: "PUSH1", parameter: "03" });
+  opcodes.push({ opcode: "SIGNEXTEND" });
+
+  writeRegister(opcodes, rd, true);
+}
+
+
 export function signExtendTo256(opcodes: EVMOpCode[], value: number) {
   if (value == 0) {
     opcodes.push({
@@ -179,12 +195,11 @@ export function emitAddiw(
   if (rs1 == 0 && imm == 0) {
     opcodes.push({ opcode: "PUSH1", parameter: "00" });
   }
-  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" });
-  opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
   opcodes.push({ opcode: "PUSH1", parameter: "03" });
   opcodes.push({ opcode: "SIGNEXTEND" });
   writeRegister(opcodes, rd, true);
 }
+
 export function emitSub(
   opcodes: EVMOpCode[],
   rd: number,
@@ -194,6 +209,20 @@ export function emitSub(
   readRegister(opcodes, rs2);
   readRegister(opcodes, rs1);
   opcodes.push({ opcode: "SUB", comment: "SUB" });
+  writeRegister(opcodes, rd, true);
+}
+
+export function emitSubw(
+  opcodes: EVMOpCode[],
+  rd: number,
+  rs1: number,
+  rs2: number
+) {
+  readRegister(opcodes, rs2);
+  readRegister(opcodes, rs1);
+  opcodes.push({ opcode: "SUB", comment: "SUB" });
+  opcodes.push({ opcode: "PUSH1", parameter: "03" });
+  opcodes.push({ opcode: "SIGNEXTEND" });
   writeRegister(opcodes, rd, true);
 }
 
@@ -273,6 +302,23 @@ export function emitSra(
   writeRegister(opcodes, rd, true);
 }
 
+export function emitSraw(
+  opcodes: EVMOpCode[],
+  rd: number,
+  rs1: number,
+  rs2: number
+) {
+  readRegister(opcodes, rs1);
+  opcodes.push({ opcode: "PUSH1", parameter: "03" });
+  opcodes.push({ opcode: "SIGNEXTEND" });
+  readRegister(opcodes, rs2);
+  opcodes.push({ opcode: "PUSH1", parameter: "1F" });
+  opcodes.push({ opcode: "AND", comment: "mask to 5 bits" });
+  opcodes.push({ opcode: "SAR" });
+
+  writeRegister(opcodes, rd, true);
+}
+
 export function emitSrai(
   opcodes: EVMOpCode[],
   rd: number,
@@ -293,6 +339,28 @@ export function emitSrai(
   writeRegister(opcodes, rd, true);
 }
 
+export function emitSraiw(
+  opcodes: EVMOpCode[],
+  rd: number,
+  rs1: number,
+  imm: number
+) {
+  readRegister(opcodes, rs1);
+  opcodes.push({ opcode: "PUSH1", parameter: "03" });
+  opcodes.push({ opcode: "SIGNEXTEND" });
+
+  opcodes.push({
+    opcode: "PUSH2",
+    parameter: imm.toString(16).toUpperCase().padStart(4, "0"),
+  });
+
+  opcodes.push({ opcode: "SAR" });
+  opcodes.push({ opcode: "PUSH1", parameter: "03" });
+  opcodes.push({ opcode: "SIGNEXTEND" });
+  writeRegister(opcodes, rd, true);
+}
+
+
 export function emitSllSrl(
   opcodes: EVMOpCode[],
   type: string,
@@ -304,8 +372,29 @@ export function emitSllSrl(
 
   readRegister(opcodes, rs2);
   opcodes.push({ opcode: "PUSH1", parameter: "3F" });
-  opcodes.push({ opcode: "AND", comment: "mask to 5 bits" });
+  opcodes.push({ opcode: "AND", comment: "mask to 6 bits" });
   opcodes.push({ opcode: type == "SLL" ? "SHL" : "SHR" });
+  
+  writeRegister(opcodes, rd, true);
+}
+
+export function emitSllwSrlw(
+  opcodes: EVMOpCode[],
+  type: string,
+  rd: number,
+  rs1: number,
+  rs2: number
+) {
+  readRegister(opcodes, rs1);
+  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" });
+  opcodes.push({ opcode: "AND" });
+
+  readRegister(opcodes, rs2);
+  opcodes.push({ opcode: "PUSH1", parameter: "1F" });
+  opcodes.push({ opcode: "AND", comment: "mask to 5 bits" });
+  opcodes.push({ opcode: type == "SLLW" ? "SHL" : "SHR" });
+  opcodes.push({ opcode: "PUSH1", parameter: "03" });
+  opcodes.push({ opcode: "SIGNEXTEND" });
   writeRegister(opcodes, rd, true);
 }
 
@@ -323,6 +412,29 @@ export function emitSlliSrli(
     parameter: imm.toString(16).toUpperCase().padStart(2, "0"),
   });
   opcodes.push({ opcode: func == "SLLI" ? "SHL" : "SHR", comment: func });
+  
+  writeRegister(opcodes, rd, true); // don't need to mask if shl, but we do if shr (XXX what?)
+}
+
+export function emitSlliwSrliw(
+  opcodes: EVMOpCode[],
+  func: string,
+  rd: number,
+  rs1: number,
+  imm: number
+) {
+  readRegister(opcodes, rs1);
+  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" });
+  opcodes.push({ opcode: "AND" });
+
+  opcodes.push({
+    opcode: "PUSH1",
+    parameter: imm.toString(16).toUpperCase().padStart(2, "0"),
+  });
+  opcodes.push({ opcode: func == "SLLIW" ? "SHL" : "SHR", comment: func });
+  opcodes.push({ opcode: "PUSH1", parameter: "03" });
+  opcodes.push({ opcode: "SIGNEXTEND" });
+
   writeRegister(opcodes, rd, true); // don't need to mask if shl, but we do if shr (XXX what?)
 }
 

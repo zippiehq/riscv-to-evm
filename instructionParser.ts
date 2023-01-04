@@ -72,6 +72,10 @@ export function parseInstruction(insn: number, addr = 0): Instruction {
           name = "FENCE";
           break;
         }
+        case 0x1: {
+          name = "FENCE.I";
+          break;
+        }
       }
       break;
     }

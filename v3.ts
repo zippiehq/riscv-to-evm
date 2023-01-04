@@ -32,22 +32,45 @@ function emitRiscv(opcodes: EVMOpCode[], parsed: Instruction, startPc: number, p
         Opcodes.emitSllSrl(opcodes, parsed.instructionName, parsed.rd, parsed.rs1, parsed.rs2);
         break;
       }
+      case "SLLW":
+      case "SRLW": {
+        Opcodes.emitSllwSrlw(opcodes, parsed.instructionName, parsed.rd, parsed.rs1, parsed.rs2);
+        break;
+      }
       case "SLLI":
       case "SRLI": {
         Opcodes.emitSlliSrli(opcodes, parsed.instructionName, parsed.rd, parsed.rs1, parsed.imm);
+        break;
+      }
+      case "SLLIW":
+      case "SRLIW": {
+        Opcodes.emitSlliwSrliw(opcodes, parsed.instructionName, parsed.rd, parsed.rs1, parsed.imm);
         break;
       }
       case "SRA": {
         Opcodes.emitSra(opcodes, parsed.rd, parsed.rs1, parsed.rs2);
         break;
       }
+      case "SRAW": {
+        Opcodes.emitSraw(opcodes, parsed.rd, parsed.rs1, parsed.rs2);
+        break;
+      }
       case "SRAI": {
         Opcodes.emitSrai(opcodes, parsed.rd, parsed.rs1, parsed.imm);
         break;
       }
+      case "SRAIW": {
+        Opcodes.emitSraiw(opcodes, parsed.rd, parsed.rs1, parsed.imm);
+        break;
+      }
+
       // arithmetic
       case "ADD": {
         Opcodes.emitAdd(opcodes, parsed.rd, parsed.rs1, parsed.rs2);
+        break;
+      }
+      case "ADDW": {
+        Opcodes.emitAddw(opcodes, parsed.rd, parsed.rs1, parsed.rs2);
         break;
       }
       case "ADDIW": {
@@ -60,6 +83,10 @@ function emitRiscv(opcodes: EVMOpCode[], parsed: Instruction, startPc: number, p
       }
       case "SUB": {
         Opcodes.emitSub(opcodes, parsed.rd, parsed.rs1, parsed.rs2);
+        break;
+      }
+      case "SUBW": {
+        Opcodes.emitSubw(opcodes, parsed.rd, parsed.rs1, parsed.rs2);
         break;
       }
       case "LUI": {
