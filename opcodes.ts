@@ -831,18 +831,19 @@ export function emitLw(
   opcodes.push({ opcode: "ADD" });
   opcodes.push({ opcode: "PUSH8", parameter: "FFFFFFFFFFFFFFFF" }); 
   opcodes.push({ opcode: "AND", comment: "mask to 64 bits" });
-
-  opcodes.push({ opcode: "CALLDATALOAD", comment: "LW addr"}); 
   // big endian fixup
   opcodes.push({ opcode: "PUSH1", parameter: "04" });
   opcodes.push({ opcode: "XOR" });
   // fixup end
-  opcodes.push({ opcode: "PUSH1", parameter: "C0"});
+
+  opcodes.push({ opcode: "CALLDATALOAD", comment: "LW addr"}); 
+
+  opcodes.push({ opcode: "PUSH1", parameter: "E0"});
   opcodes.push({ opcode: "SHR", comment: "LW result"});
   
-  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); 
-  opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
-  writeRegister(opcodes, rd, false);
+  opcodes.push({ opcode: "PUSH1", parameter: "03" }); 
+  opcodes.push({ opcode: "SIGNEXTEND", comment: "signextend to 64 bit" });
+  writeRegister(opcodes, rd, true);
 }
 
 export function emitLd(

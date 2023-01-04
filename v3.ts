@@ -574,7 +574,7 @@ async function transpile(fileContents: Buffer) {
         }
       }
       for (let l = 0; l < data.stack.length; l++) {
-        console.log("- stack " + (data.stack.length - 1 - l) + ": 0x" + data.stack[l].toString(16).toUpperCase());
+        console.log("- stack " + (data.stack.length - 1 - l) + ": 0x" + data.stack[l].toString(16).toUpperCase().padStart(64, "0"));
       }  
       let mem = data.memory.toString("hex");
       let l = 0;
