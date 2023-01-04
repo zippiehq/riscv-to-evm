@@ -1,5 +1,4 @@
 mkdir -p tests-logs
-for x in tests-base/*.S; do
-	npx ts-node --files v3.ts tests/$(basename -s .S $x) &> tests-logs/$(basename -s .S $x);
-#	npx ts-node --files v2.ts tests/$(basename -s .S $x) 1 &> tests-logs/$(basename -s .S $x).profile;
+for x in riscv-tests/isa/rv64ui-evm-*.dump; do
+	npx ts-node --files v3.ts riscv-tests/isa/$(basename -s .dump $x) &> tests-logs/$(basename -s .dump $x);
 done

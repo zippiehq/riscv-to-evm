@@ -25,9 +25,6 @@ interface Context {
 }
 
 function emitRiscv(opcodes: EVMOpCode[], parsed: Instruction, startPc: number, pc: number): void {
-    if (parsed.instructionName == "SRAI" && ((parsed.imm & 0x400) == 0)) {
-      parsed.instructionName = "SRLI";
-    }
     switch (parsed.instructionName) {
       // shifts
       case "SLL":
@@ -37,7 +34,7 @@ function emitRiscv(opcodes: EVMOpCode[], parsed: Instruction, startPc: number, p
       }
       case "SLLI":
       case "SRLI": {
-        Opcodes.emitSlliSrli(opcodes, parsed.instructionName, parsed.rd, parsed.rs1, parsed.imm & 0x1F);
+        Opcodes.emitSlliSrli(opcodes, parsed.instructionName, parsed.rd, parsed.rs1, parsed.imm);
         break;
       }
       case "SRA": {
@@ -45,12 +42,16 @@ function emitRiscv(opcodes: EVMOpCode[], parsed: Instruction, startPc: number, p
         break;
       }
       case "SRAI": {
-        Opcodes.emitSrai(opcodes, parsed.rd, parsed.rs1, parsed.imm & 0x1F);
+        Opcodes.emitSrai(opcodes, parsed.rd, parsed.rs1, parsed.imm);
         break;
       }
       // arithmetic
       case "ADD": {
         Opcodes.emitAdd(opcodes, parsed.rd, parsed.rs1, parsed.rs2);
+        break;
+      }
+      case "ADDIW": {
+        Opcodes.emitAddiw(opcodes, parsed.rd, parsed.rs1, parsed.imm);
         break;
       }
       case "ADDI": {
@@ -176,6 +177,10 @@ function emitRiscv(opcodes: EVMOpCode[], parsed: Instruction, startPc: number, p
         Opcodes.emitDirtyCheck(opcodes, pc);
         Opcodes.emitLw(opcodes, parsed.rd, parsed.rs1, parsed.imm);
         break;
+      case "LD":
+        Opcodes.emitDirtyCheck(opcodes, pc);
+        Opcodes.emitLd(opcodes, parsed.rd, parsed.rs1, parsed.imm);
+        break;
       // stores
       case "SB":
         Opcodes.emitDirtyCheck(opcodes, pc);
@@ -187,6 +192,9 @@ function emitRiscv(opcodes: EVMOpCode[], parsed: Instruction, startPc: number, p
         break;
       case "SW":
         Opcodes.emitSw(opcodes, parsed.rs1, parsed.rs2, parsed.imm);
+        break;
+      case "SD":
+        Opcodes.emitSd(opcodes, parsed.rs1, parsed.rs2, parsed.imm);
         break;
       case "UNIMPL":
         opcodes.push({opcode: "INVALID"});
@@ -283,10 +291,10 @@ async function makePageCode(startPc: number, page: Buffer): Promise<[Buffer, EVM
         try {
             const parsed = parseInstruction(instr);
             const instrName = parsed.instructionName;
-            opcodes.push({opcode: "JUMPDEST", name: "_pc_" + localPc, comment: "( " + (startPc+localPc).toString(16).padStart(8, "0") + ") RISC-V: " + parsed.assembly});
+            opcodes.push({opcode: "JUMPDEST", name: "_pc_" + localPc, comment: "( " + (startPc+localPc).toString(16).padStart(8, "0") + ") RISC-V: " + instrName + " rs1=" + parsed.rs1 + " rs2=" + parsed.rs2 + " rd=" + parsed.rd + " imm=" + parsed.imm});
             emitRiscv(opcodes, parsed, startPc, startPc+localPc);    
           } catch (err) {
-            console.log("Error parsing instr " + instr.toString(16) + " " + err);
+            console.log("Error parsing instr " + instr.toString(16).padStart(8, "0") + " " + err);
             throw new Error("Failed");
         }
     }
@@ -321,8 +329,6 @@ const DISPATCHER_REG_WILLEXIT = 0x8400;
 const DISPATCHER_REG_ISDIRTY = 0x8420;
 
 const DISPATCHER_WRITEOUT_START = 0x8440;
-const WORD_REPLACE_MASK =  "00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff".toUpperCase();
-const LAST_WORD_REPLACE_MASK = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffff00000000".toUpperCase();
 
 async function makeDispatcher(context: Context, dispatcherTableAddress: Address, dispatcherTable: Buffer): Promise<[Buffer, EVMOpCode[]]> {
     const opcodes: EVMOpCode[] = [];
@@ -406,7 +412,7 @@ async function makeDispatcher(context: Context, dispatcherTableAddress: Address,
       opcodes.push({opcode: "PUSH2", parameter: "0440"}); // ptr
       
       opcodes.push({opcode: "JUMPDEST", name: "_isdirty_loop"});
-      opcodes.push({opcode: "PUSH1", parameter: "04"}); // 04 ptr reg_start
+      opcodes.push({opcode: "PUSH1", parameter: "08"}); // 04 ptr reg_start
 
       opcodes.push({opcode: "DUP3"}); // reg_start 04 ptr reg_start
       opcodes.push({opcode: "DUP3"}); // ptr reg_start 04 ptr reg_start
@@ -449,13 +455,13 @@ async function makeDispatcher(context: Context, dispatcherTableAddress: Address,
     return [Buffer.from(assembled, "hex"), opcodes];
 }
 
-function bswap32buf(buf: Buffer): Buffer {
-  const ret = Buffer.alloc(Math.ceil(buf.length / 4) * 4);
+function bswap64buf(buf: Buffer): Buffer {
+  const ret = Buffer.alloc(Math.ceil(buf.length / 8) * 8);
   for (let i = 0; i < buf.length; i++) {
     ret.writeUint8(buf.readUint8(i), i);
   }
-  for (let i = 0; i < ret.length; i += 4) {
-    ret.writeUint32BE(ret.readUint32LE(i), i);
+  for (let i = 0; i < ret.length; i += 8) {
+    ret.writeBigUInt64BE(ret.readBigUInt64LE(i), i);
   }
   return ret;
 }
@@ -499,7 +505,7 @@ async function transpile(fileContents: Buffer) {
             if (Number(seg.vaddr) % 4096 !== 0) {
                 throw new Error("Segment should be 4K-aligned");
             }
-            if (seg.vaddr !== 0x80000000) {
+            if (Number(seg.vaddr) !== 0x80000000) {
               throw new Error("Code segment should start at 0x80000000");
             }
             const data = fileContents.slice(seg.offset, seg.offset + seg.filesz);            
@@ -513,7 +519,7 @@ async function transpile(fileContents: Buffer) {
           }
           const data = fileContents.slice(seg.offset, seg.offset + seg.filesz);            
           for (let page = 0; page < data.length; page += 16384) {
-            context.dataPages.push({ethAddress: Address.fromString("0x" + crypto.randomBytes(20).toString("hex")), addr: Number(seg.vaddr) + page, code: bswap32buf(data.slice(page, page + 16384)), opcodes: []});
+            context.dataPages.push({ethAddress: Address.fromString("0x" + crypto.randomBytes(20).toString("hex")), addr: Number(seg.vaddr) + page, code: bswap64buf(data.slice(page, page + 16384)), opcodes: []});
           }
         }
     }
@@ -573,8 +579,11 @@ async function transpile(fileContents: Buffer) {
       let mem = data.memory.toString("hex");
       let l = 0;
       for (let l = 0; l < mem.length; l += 64) {   
+        if (l < 0x1000) {
+          continue;
+        }
         if (mem.substring(l, l+64) !== "0000000000000000000000000000000000000000000000000000000000000000") {
-          console.log("- mem " + (l/2).toString(16).toUpperCase().padStart(64, "0") + " - " + mem.substring(l, l+64));
+          console.log("- mem " + (l/2).toString(16).toUpperCase().padStart(8, "0") + " - " + mem.substring(l, l+64));
         }
       }
     });

@@ -1,587 +1,6 @@
-// gplv3
-
-export const CPU_REGISTER_NAMES = [
-  ['zero', 'Fixed Zero'],
-  ['ra', 'Return address'],
-  ['sp', 'Stack pointer'],
-  ['gp', 'Global pointer'],
-  ['tp', 'Thread pointer'],
-  ['t0', 'Temporary / alternate return address'],
-  ['t1', 'Temporary'],
-  ['t2', 'Temporary'],
-  ['s0', 'Saved register / frame pointer'],
-  ['s1', 'Saved register'],
-  ['a0', 'Function argument / return value'],
-  ['a1', 'Function argument / return value'],
-  ['a2', 'Function argument'],
-  ['a3', 'Function argument'],
-  ['a4', 'Function argument'],
-  ['a5', 'Function argument'],
-  ['a6', 'Function argument'],
-  ['a7', 'Function argument'],
-  ['s2', 'Saved register'],
-  ['s3', 'Saved register'],
-  ['s4', 'Saved register'],
-  ['s5', 'Saved register'],
-  ['s6', 'Saved register'],
-  ['s7', 'Saved register'],
-  ['s8', 'Saved register'],
-  ['s9', 'Saved register'],
-  ['s10', 'Saved register'],
-  ['s11', 'Saved register'],
-  ['t3', 'Temporary'],
-  ['t4', 'Temporary'],
-  ['t5', 'Temporary'],
-  ['t6', 'Temporary']
-];
-
-export function byteToHex(num: number, padding: number) {
-  if (!num) {
-    num = 0;
-  }
-  let hex = num.toString(16);
-  padding = typeof padding === 'undefined' || padding === null ? (padding = 2) : padding;
-  while (hex.length < padding) {
-    hex = '0' + hex;
-  }
-  return hex.toUpperCase();
-}
-
-export enum IMM_FUNC {
-  ADDI = 0,
-  SLLI = 1,
-  SLTI = 2,
-  SLTIU = 3,
-  XORI = 4,
-  SRLI = 5,
-  SRAI = 5,
-  ORI = 6,
-  ANDI = 7
-}
-
-export enum OP_FUNC3 {
-  ADD = 0,
-  SUB = 0,
-  SLL = 1,
-  SLT = 2,
-  SLTU = 3,
-  XOR = 4,
-  SRL = 5,
-  SRA = 5,
-  OR = 6,
-  AND = 7
-}
-
-export enum BRANCH_FUNC {
-  BEQ = 0,
-  BNE = 1,
-  BLT = 4,
-  BGE = 5,
-  BLTU = 6,
-  BGEU = 7
-}
-
-export enum LOAD_FUNC {
-  LB = 0,
-  LH = 1,
-  LW = 2,
-  LD = 3,
-  LBU = 4,
-  LHU = 5,
-  LWU = 6
-}
-
-export enum STORE_FUNC {
-  SB = 0,
-  SH = 1,
-  SW = 2,
-}
-
-export enum SYSTEM_FUNC3 {
-  ECALL = 0,
-  EBREAK = 0
-}
-
-/**
- * OPCODES 6:0 (1:0 are always 0x11) so they are ignored here
- */
-export enum OPCODES {
-  IMM = 0x04,
-  LUI = 0x0D, // Direct
-  AUIPC = 0x05, // Direct
-  OP = 0x0C,
-  JAL = 0x1B, // Direct
-  JALR = 0x19, // Direct
-  BRANCH = 0x18,
-  LOAD = 0x00,
-  STORE = 0x08,
-  SYSTEM = 0x1C
-}
-
-export const OPCODE_FUNC3 = {
-  [OPCODES.IMM]: IMM_FUNC,
-  [OPCODES.OP]: OP_FUNC3,
-  [OPCODES.BRANCH]: BRANCH_FUNC,
-  [OPCODES.LOAD]: LOAD_FUNC,
-  [OPCODES.STORE]: STORE_FUNC,
-  [OPCODES.SYSTEM]: SYSTEM_FUNC3
-};
-
-export enum INSTRUCTION_FORMATS {
-  R = 'R', //       funct7 rs2 rs1 funct3          rd opcode
-  I = 'I', //    imm[11:0]     rs1 funct3          rd opcode
-  S = 'S', //    imm[11:5] rs2 rs1 funct3    imm[4:0] opcode
-  B = 'B', // imm[12|10:5] rs2 rs1 funct3 imm[4:1|11] opcode
-  U = 'U', //   imm[31:12]                         rd opcode
-  J = 'J'  // imm[20|10:1|11|19:12]                rd opcode
-}
-
-interface NUMBER_KEY_2 {
-  [key: number]: INSTRUCTION_FORMATS;
-}
-
-
-export const OPCODE_INSTRUCTION_FORMAT = {
-  [OPCODES.IMM]: INSTRUCTION_FORMATS.I,
-  [OPCODES.OP]: INSTRUCTION_FORMATS.R,
-  [OPCODES.BRANCH]: INSTRUCTION_FORMATS.B,
-  [OPCODES.LOAD]: INSTRUCTION_FORMATS.I,
-  [OPCODES.STORE]: INSTRUCTION_FORMATS.S,
-  [OPCODES.SYSTEM]: INSTRUCTION_FORMATS.I,
-  [OPCODES.JAL]: INSTRUCTION_FORMATS.J,
-  [OPCODES.JALR]: INSTRUCTION_FORMATS.I,
-  [OPCODES.AUIPC]: INSTRUCTION_FORMATS.U,
-  [OPCODES.LUI]: INSTRUCTION_FORMATS.U
-} as NUMBER_KEY_2;
-
-export const INSTRUCTIONS = {
-  ADDI: 'ADDI',
-  SLLI: 'SLLI',
-  SLTI: 'SLTI',
-  SLTIU: 'SLTIU',
-  XORI: 'XORI',
-  SRLI: 'SRLI',
-  SRAI: 'SRAI',
-  ORI: 'ORI',
-  ANDI: 'ANDI',
-  ADD: 'ADD',
-  SUB: 'SUB',
-  SLL: 'SLL',
-  SLT: 'SLT',
-  SLTU: 'SLTU',
-  XOR: 'XOR',
-  SRL: 'SRL',
-  SRA: 'SRA',
-  OR: 'OR',
-  AND: 'AND',
-  BEQ: 'BEQ',
-  BNE: 'BNE',
-  BLT: 'BLT',
-  BGE: 'BGE',
-  BLTU: 'BLTU',
-  BGEU: 'BGEU',
-  LB: 'LB',
-  LH: 'LH',
-  LW: 'LW',
-  LBU: 'LBU',
-  LHU: 'LHU',
-  SB: 'SB',
-  SH: 'SH',
-  SW: 'SW',
-  ECALL: 'ECALL',
-  EBREAK: 'EBREAK',
-  JAL: 'JAL',
-  JALR: 'JALR',
-  AUIPC: 'AUIPC',
-  LUI: 'LUI'
-};
-
-export const INSTRUCTIONS_DESCRIPTIONS = {
-  [INSTRUCTIONS.ADDI]: {
-    name: 'addi',
-    desc: 'Add immediate',
-    text: 'Takes the value at register location RS1, adds the immediate value (IMM) and stores it back to the register at location RD.',
-    formula: 'rd = rs1 + imm',
-    rs1: true,
-    rs2: false,
-    imm: true,
-    rd: true,
-  },
-  [INSTRUCTIONS.SLLI]: {
-    name: 'slli',
-    desc: 'Shift Left Logical Imm',
-    text: 'Takes the value at register location RS1, shifts it to the left by the amount of immediate value (IMM) and stores it back to the register at location RD.',
-    formula: 'rd = rs1 << imm[0:4]',
-    rs1: true,
-    rs2: false,
-    imm: true,
-    rd: true,
-  },
-  [INSTRUCTIONS.SLTI]: {
-    name: 'slti',
-    desc: 'Set Less Than Imm',
-    text: 'Takes the value at register location RS1 and compares it to the immediate value (IMM). If the value of RS1 is smaller than IMM, store 1 back to the register at location RD, else store a 0.',
-    formula: 'rd = (rs1 < imm)?1:0',
-    rs1: true,
-    rs2: false,
-    imm: true,
-    rd: true,
-  },
-  [INSTRUCTIONS.SLTIU]: {
-    name: 'sltiu',
-    desc: 'Set Less Than Imm (U)',
-    text: 'Takes the value at register location RS1 and compares it to the immediate value (IMM). If the value of RS1 is smaller than IMM, store 1 back to the register at location RD, else store a 0.',
-    formula: 'rd = (rs1 < imm)?1:0',
-    rs1: true,
-    rs2: false,
-    imm: true,
-    rd: true,
-  },
-  [INSTRUCTIONS.XORI]: {
-    name: 'xori',
-    desc: 'Exclusive OR Immediate',
-    text: 'Takes the value at register location RS1, performs a "bitwise exclusive or" (XOR) operation with the immediate value and stores the result back to the register at location RD.',
-    formula: 'rd = rs1 ˆ imm',
-    rs1: true,
-    rs2: false,
-    imm: true,
-    rd: true,
-  },
-  [INSTRUCTIONS.SRLI]: {
-    name: 'srli',
-    desc: 'Shift Right Logical Imm',
-    formula: 'rd = rs1 >> imm[0:4]',
-    text: 'Takes the value at register location RS1, shifts it to the right by the amount of immediate value (IMM) and stores it back to the register at location RD.',
-    rs1: true,
-    rs2: false,
-    imm: true,
-    rd: true,
-  },
-  [INSTRUCTIONS.SRAI]: {
-    name: 'srai',
-    desc: 'Shift Right Arith. Imm',
-    text: 'Takes the value at register location RS1, shifts it to the right by the amount of immediate value (IMM) and stores it back to the register at location RD.',
-    formula: 'rd = rs1 >> imm[0:4]',
-    rs1: true,
-    rs2: false,
-    imm: true,
-    rd: true,
-  },
-  [INSTRUCTIONS.ORI]:  {
-    name: 'ori',
-    desc: 'OR Immediate',
-    text: 'Takes the value at register location RS1, performs a "bitwise or" (OR) operation with the immediate value and stores the result back to the register at location RD.',
-    formula: 'rd = rs1 | imm',
-    rs1: true,
-    rs2: false,
-    imm: true,
-    rd: true,
-  },
-  [INSTRUCTIONS.ANDI]:  {
-    name: 'andi',
-    desc: 'AND Immediate',
-    text: 'Takes the value at register location RS1, performs a "bitwise and" (AND) operation with the immediate value and stores the result back to the register at location RD.',
-    formula: 'rd = rs1 & imm',
-    rs1: true,
-    rs2: false,
-    imm: true,
-    rd: true,
-  },
-  [INSTRUCTIONS.ADD]: {
-    name: 'add',
-    desc: 'ADD',
-    formula: 'rd = rs1 + rs2',
-    rs1: true,
-    rs2: true,
-    imm: false,
-    rd: true,
-  },
-  [INSTRUCTIONS.SUB]: {
-    name: 'sub',
-    desc: 'SUB',
-    formula: 'rd = rs1 - rs2',
-    rs1: true,
-    rs2: true,
-    imm: false,
-    rd: true,
-  },
-  [INSTRUCTIONS.SLL]: {
-    name: 'sll',
-    desc: 'Shift Left Locical',
-    formula: 'rd = rs1 << rs2',
-    rs1: true,
-    rs2: true,
-    imm: false,
-    rd: true,
-  },
-  [INSTRUCTIONS.SLT]: {
-    name: 'slt',
-    desc: 'Set Less Than',
-    formula: 'rd = (rs1 < rs2)?1:0',
-    rs1: true,
-    rs2: true,
-    imm: false,
-    rd: true,
-  },
-  [INSTRUCTIONS.SLTU]: {
-    name: 'sltu',
-    desc: 'Set Less Than (U)',
-    formula: 'rd = (rs1 < rs2)?1:0',
-    rs1: true,
-    rs2: true,
-    imm: false,
-    rd: true,
-  },
-  [INSTRUCTIONS.XOR]: {
-    name: 'xor',
-    desc: 'XOR',
-    formula: 'rd = rs1 ˆ rs2',
-    rs1: true,
-    rs2: true,
-    imm: false,
-    rd: true,
-  },
-  [INSTRUCTIONS.SRL]: {
-    name: 'srl',
-    desc: 'Shift Right Logical',
-    formula: 'rd = rs1 >> rs2',
-    rs1: true,
-    rs2: true,
-    imm: false,
-    rd: true,
-  },
-  [INSTRUCTIONS.SRA]: {
-    name: 'sra',
-    desc: 'Shift Right Arith.',
-    formula: 'rd = rs1 >> rs2',
-    rs1: true,
-    rs2: true,
-    imm: false,
-    rd: true,
-  },
-  [INSTRUCTIONS.OR]: {
-    name: 'or',
-    desc: 'OR',
-    formula: 'rd = rs1 | rs2',
-    rs1: true,
-    rs2: true,
-    imm: false,
-    rd: true,
-  },
-  [INSTRUCTIONS.AND]: {
-    name: 'and',
-    desc: 'AND',
-    formula: 'rd = rs1 & rs2',
-    rs1: true,
-    rs2: true,
-    imm: false,
-    rd: true,
-  },
-  [INSTRUCTIONS.BEQ]: {
-    name: 'beq',
-    desc: 'Branch Equal',
-    formula: 'if(rs1 == rs2) PC += imm',
-    rs1: true,
-    rs2: true,
-    imm: true,
-    rd: false,
-  },
-  [INSTRUCTIONS.BNE]: {
-    name: 'bne',
-    desc: 'Branch Not Equal',
-    formula: 'if(rs1 != rs2) PC += imm',
-    rs1: true,
-    rs2: true,
-    imm: true,
-    rd: false,
-  },
-  [INSTRUCTIONS.BLT]: {
-    name: 'blt',
-    desc: 'Branch Lower Than',
-    formula: 'if(rs1 < rs2) PC += imm',
-    rs1: true,
-    rs2: true,
-    imm: true,
-    rd: false,
-  },
-  [INSTRUCTIONS.BGE]: {
-    name: 'bge',
-    desc: 'Branch Greater Equal',
-    formula: 'if(rs1 >= rs2) PC += imm',
-    rs1: true,
-    rs2: true,
-    imm: true,
-    rd: false,
-  },
-  [INSTRUCTIONS.BLTU]: {
-    name: 'bltu',
-    desc: 'Branch Lower Than (U)',
-    formula: 'if(rs1 < rs2) PC += imm',
-    rs1: true,
-    rs2: true,
-    imm: true,
-    rd: false,
-  },
-  [INSTRUCTIONS.BGEU]: {
-    name: 'bgeu',
-    desc: 'Branch Greater Equal (U)',
-    formula: 'if(rs1 >= rs2) PC += imm',
-    rs1: true,
-    rs2: true,
-    imm: true,
-    rd: false,
-  },
-  [INSTRUCTIONS.LB]: {
-    name: 'lb',
-    desc: 'Load Byte',
-    formula: 'rd = M[rs1+imm][0:7]',
-    rs1: true,
-    rs2: false,
-    imm: true,
-    rd: true,
-  },
-  [INSTRUCTIONS.LH]: {
-    name: 'lh',
-    desc: 'Load Half',
-    formula: 'rd = M[rs1+imm][0:15]',
-    rs1: true,
-    rs2: false,
-    imm: true,
-    rd: true,
-  },
-  [INSTRUCTIONS.LW]: {
-    name: 'lw',
-    desc: 'Load Word',
-    formula: 'rd = M[rs1+imm][0:31]',
-    rs1: true,
-    rs2: false,
-    imm: true,
-    rd: true,
-  },
-  [INSTRUCTIONS.LBU]: {
-    name: 'ld',
-    desc: 'Load Word',
-    formula: 'rd = M[rs1+imm][0:31]',
-    rs1: true,
-    rs2: false,
-    imm: true,
-    rd: true,
-  },
-  [INSTRUCTIONS.LHU]: {
-    name: 'lhu',
-    desc: 'Load Half (U)',
-    formula: 'rd = M[rs1+imm][0:15]',
-    rs1: true,
-    rs2: false,
-    imm: true,
-    rd: true,
-  },
-  [INSTRUCTIONS.SB]: {
-    name: 'sb',
-    desc: 'Store Byte',
-    formula: 'M[rs1+imm][0:7] = rs2[0:7]',
-    text: 'Store a 8 bit value from register source 2 to the memory at location of register source 1 plus immediate.',
-    rs1: true,
-    rs2: true,
-    imm: true,
-    rd: false,
-  },
-  [INSTRUCTIONS.SH]: {
-    name: 'sh',
-    desc: 'Store Half',
-    formula: 'M[rs1+imm][0:15] = rs2[0:15]',
-    text: 'Store a 16 bit value from register source 2 to the memory at location of register source 1 plus immediate.',
-    rs1: true,
-    rs2: true,
-    imm: true,
-    rd: false,
-  },
-  [INSTRUCTIONS.SW]: {
-    name: 'sw',
-    desc: 'Store Word',
-    formula: 'M[rs1+imm][0:31] = rs2[0:31]',
-    text: 'Store a 32 bit value from register source 2 to the memory at location of register source 1 plus immediate.',
-    rs1: true,
-    rs2: true,
-    imm: true,
-    rd: false,
-  },
-  [INSTRUCTIONS.ECALL]: {
-    name: 'ecall',
-    desc: 'Environment Call',
-    formula: 'Transfer control',
-    rs1: false,
-    rs2: false,
-    imm: false,
-    rd: false,
-  },
-  [INSTRUCTIONS.EBREAK]: {
-    name: 'ebreak',
-    desc: 'Environment Break',
-    formula: 'Transfer control',
-    rs1: false,
-    rs2: false,
-    imm: false,
-    rd: false,
-  },
-  [INSTRUCTIONS.JAL]: {
-    name: 'jal',
-    desc: 'Jump And Link',
-    formula: 'rd = PC + 4; PC += imm',
-    text: 'Save the next instruction address to the destination register and jump to a new address given by the immediate value plus the current program counter. The assembly of the instruction will show the address to jump to in hexadecimal.',
-    rs1: false,
-    rs2: false,
-    imm: true,
-    rd: true,
-  },
-  [INSTRUCTIONS.JALR]: {
-    name: 'jalr',
-    desc: 'Jump And Link Ref',
-    formula: 'rd = PC + 4; PC = rs1 + imm',
-    text: 'Save the next instruction address to the destination register and jump to a new absolute address set by register source 1 plus the immediate value.',
-    rs1: true,
-    rs2: false,
-    imm: true,
-    rd: true,
-  },
-  [INSTRUCTIONS.AUIPC]: {
-    name: 'auipc',
-    desc: 'Add Upper Imm to PC',
-    formula: 'rd = PC + (imm << 12)',
-    text: 'Shift the immediate value twelve to the right, add the program counter and save it to the destination register.',
-    rs1: false,
-    rs2: false,
-    imm: true,
-    rd: true,
-  },
-  [INSTRUCTIONS.LUI]: {
-    name: 'lui',
-    desc: 'Load Upper Imm',
-    formula: 'rd = imm << 12',
-    text: 'Shift the immediate value twelve to the right and save it to the destination register. Used to load big values.',
-    rs1: false,
-    rs2: false,
-    imm: true,
-    rd: true,
-  },
-};
-
 export interface Instruction {
   /** Unparsed number value of instruction **/
   unparsedInstruction: number;
-
-  /** Instruction type format **/
-  instructionTypeFormat: INSTRUCTION_FORMATS;
-
-  /** Opcode of the instruction, groups instruction **/
-  opcode: OPCODES;
-  /** Opcode of the instruction, groups instruction **/
-  opcodeName: string;
-
-  /** Func3 number value **/
-  func3: OP_FUNC3 | BRANCH_FUNC | STORE_FUNC | LOAD_FUNC | IMM_FUNC;
-  /** Func7 number value **/
-  func7: any;
 
   /** Register destination **/
   rd: number;
@@ -592,339 +11,445 @@ export interface Instruction {
 
   /** Immediate Value */
   imm: number;
-  /** Immediate value if I type instruction format **/
-  immI: number;
-  /** Immediate value if S type instruction format **/
-  immS: number;
-  /** Immediate value if B type instruction format **/
-  immB: number;
-  /** Immediate value if U type instruction format **/
-  immU: number;
-  /** Immediate value if J type instruction format **/
-  immJ: number;
 
   /** Name of the instruction e.g. ADD, ADDI, LUI ... **/
   instructionName: string;
-
-  /** Description of the instruction **/
-  description: object;
-
-  /** Where in memory this instruction is saved, not filled by this parser but by an elf loader **/
-  pc?: number;
-
-  /** Assembly of the instruction as shown by objdump **/
-  assembly?: string;
-}
-
-export function convertToSigned(bitnumber: number, bitlenght: number): number {
-  const mask = 2 ** (bitlenght - 1);
-  return -(bitnumber & mask) + (bitnumber & ~mask);
-}
-
-interface NUMBER_KEY {
-  [key: number]: string | NUMBER_KEY;
-}
-const NAME_LOOKUP_TABLE = {
-  [OPCODES.IMM]: {
-    [IMM_FUNC.ADDI]: INSTRUCTIONS.ADDI,
-    [IMM_FUNC.SLLI]: INSTRUCTIONS.SLLI,
-    [IMM_FUNC.SLTI]: INSTRUCTIONS.SLTI,
-    [IMM_FUNC.SLTIU]: INSTRUCTIONS.SLTIU,
-    [IMM_FUNC.XORI]: INSTRUCTIONS.XORI,
-    [IMM_FUNC.SRLI]: {
-      0x00: INSTRUCTIONS.SRAI,
-      0x20: INSTRUCTIONS.SRLI
-    },
-    [IMM_FUNC.ORI]: INSTRUCTIONS.ORI,
-    [IMM_FUNC.ANDI]: INSTRUCTIONS.ANDI
-  },
-  [OPCODES.OP]: {
-    [OP_FUNC3.ADD]: {
-      0x00: INSTRUCTIONS.ADD,
-      0x20: INSTRUCTIONS.SUB
-    },
-    [OP_FUNC3.SLL]: INSTRUCTIONS.SLL,
-    [OP_FUNC3.SLT]: INSTRUCTIONS.SLT,
-    [OP_FUNC3.SLTU]: INSTRUCTIONS.SLTU,
-    [OP_FUNC3.XOR]: INSTRUCTIONS.XOR,
-    [OP_FUNC3.SRL]: {
-      0x00: INSTRUCTIONS.SRL,
-      0x20: INSTRUCTIONS.SRA
-    },
-    [OP_FUNC3.OR]: INSTRUCTIONS.OR,
-    [OP_FUNC3.AND]: INSTRUCTIONS.AND
-  },
-  [OPCODES.BRANCH]: {
-    [BRANCH_FUNC.BEQ]: INSTRUCTIONS.BEQ,
-    [BRANCH_FUNC.BNE]: INSTRUCTIONS.BNE,
-    [BRANCH_FUNC.BLT]: INSTRUCTIONS.BLT,
-    [BRANCH_FUNC.BGE]: INSTRUCTIONS.BGE,
-    [BRANCH_FUNC.BLTU]: INSTRUCTIONS.BLTU,
-    [BRANCH_FUNC.BGEU]: INSTRUCTIONS.BGEU
-  },
-  [OPCODES.LOAD]: {
-    [LOAD_FUNC.LB]: INSTRUCTIONS.LB,
-    [LOAD_FUNC.LH]: INSTRUCTIONS.LH,
-    [LOAD_FUNC.LW]: INSTRUCTIONS.LW,
-    [LOAD_FUNC.LBU]: INSTRUCTIONS.LBU,
-    [LOAD_FUNC.LHU]: INSTRUCTIONS.LHU,
-  },
-  [OPCODES.STORE]: {
-    [STORE_FUNC.SB]: INSTRUCTIONS.SB,
-    [STORE_FUNC.SH]: INSTRUCTIONS.SH,
-    [STORE_FUNC.SW]: INSTRUCTIONS.SW
-  },
-  [OPCODES.SYSTEM]: {
-    [SYSTEM_FUNC3.ECALL]: {
-      0x00: INSTRUCTIONS.ECALL,
-      0x01: INSTRUCTIONS.EBREAK
-    }
-  },
-  [OPCODES.JAL]: INSTRUCTIONS.JAL,
-  [OPCODES.JALR]: INSTRUCTIONS.JALR,
-  [OPCODES.AUIPC]: INSTRUCTIONS.AUIPC,
-  [OPCODES.LUI]: INSTRUCTIONS.LUI
-} as NUMBER_KEY;
-
-export function getNameFromInstruction(opcode: number, func3: number, func7: number, imm: number): string {
-  try {
-    let op = null;
-    if (opcode == OPCODES.SYSTEM) {
-      return NAME_LOOKUP_TABLE[opcode][func3][imm] as string;
-    } else {
-      op = NAME_LOOKUP_TABLE[opcode];
-      if (typeof op !== 'string') op = op[func3];
-      if (typeof op !== 'string') op = op[func7];
-      return op as string;
-    }
-  } catch (e) {
-    console.log("Could not find instruction name for", opcode, e);
-  }
-  return 'unimplemented';
-}
-
-
-export function isIMM(name: string): boolean {
-  return name === INSTRUCTIONS.ADDI ||
-    name === INSTRUCTIONS.XORI ||
-    name === INSTRUCTIONS.ORI ||
-    name === INSTRUCTIONS.ANDI ||
-    name === INSTRUCTIONS.SLLI ||
-    name === INSTRUCTIONS.SRLI ||
-    name === INSTRUCTIONS.SRAI ||
-    name === INSTRUCTIONS.SLTI ||
-    name === INSTRUCTIONS.SLTIU;
-}
-
-export function isOP(name: string): boolean {
-  return name === INSTRUCTIONS.ADD ||
-    name === INSTRUCTIONS.SUB ||
-    name === INSTRUCTIONS.XOR ||
-    name === INSTRUCTIONS.OR ||
-    name === INSTRUCTIONS.AND ||
-    name === INSTRUCTIONS.SLL ||
-    name === INSTRUCTIONS.SRL ||
-    name === INSTRUCTIONS.SRA ||
-    name === INSTRUCTIONS.SLT ||
-    name === INSTRUCTIONS.SLTU;
-}
-
-export function isLOAD(name: string): boolean {
-  return name === INSTRUCTIONS.LB ||
-    name === INSTRUCTIONS.LH ||
-    name === INSTRUCTIONS.LW ||
-    name === INSTRUCTIONS.LBU ||
-    name === INSTRUCTIONS.LHU;
-}
-
-export function isSTORE(name: string): boolean {
-  return name === INSTRUCTIONS.SB ||
-    name === INSTRUCTIONS.SH ||
-    name === INSTRUCTIONS.SW;
-}
-
-export function isBRANCH(name: string): boolean {
-  return name === INSTRUCTIONS.BEQ ||
-    name === INSTRUCTIONS.BNE ||
-    name === INSTRUCTIONS.BLT ||
-    name === INSTRUCTIONS.BGE ||
-    name === INSTRUCTIONS.BLTU ||
-    name === INSTRUCTIONS.BGEU;
-}
-
-export function isJAL(name: string): boolean {
-  return name === INSTRUCTIONS.JAL
-}
-
-export function isJALR(name: string): boolean {
-  return name === INSTRUCTIONS.JALR
-}
-
-export function isLUI(name: string): boolean {
-  return name === INSTRUCTIONS.LUI
-}
-
-export function isAUIPC(name: string): boolean {
-  return name === INSTRUCTIONS.AUIPC
-}
-
-export function isSystem(name: string): boolean {
-  return name === INSTRUCTIONS.ECALL || name === INSTRUCTIONS.EBREAK;
-}
-
-export function getNameOfGroup(opcode: number): 'imm' | 'op' | 'lui' | 'auipc' | 'jal' | 'jalr' | 'load' | 'store' | 'branch' | 'system' {
-  if (opcode === OPCODES.IMM) return 'imm';
-  if (opcode === OPCODES.OP) return 'op';
-  if (opcode === OPCODES.LUI) return 'lui';
-  if (opcode === OPCODES.AUIPC) return 'auipc';
-  if (opcode === OPCODES.JAL) return 'jal';
-  if (opcode === OPCODES.JALR) return 'jalr';
-  if (opcode === OPCODES.LOAD) return 'load';
-  if (opcode === OPCODES.STORE) return 'store';
-  if (opcode === OPCODES.BRANCH) return 'branch';
-  if (opcode === OPCODES.SYSTEM) return 'system';
-  throw new Error("Unknown group");
 }
 
 /**
  * Parses a instruction e.g. 0x058000ef. BigEndian encoding.
  * @param instruction The instruction encoded in big endian as a number
  */
-export function parseInstruction(instruction: number, addr = 0): Instruction {
-  const always11 = (instruction) & 0b11; // The first two bits are always 11
-  const opcode = (instruction >> 2) & 0b11111;
-  const type = OPCODE_INSTRUCTION_FORMAT[opcode];
+export function parseInstruction(insn: number, addr = 0): Instruction {
+  const opcode = insn & 0x7f;
+  const rd = (insn >> 7) & 0x1f;
+  const rs1 = (insn >> 15) & 0x1f,
+    rs2 = (insn >> 20) & 0x1f;
+  const funct3 = (insn >> 12) & 0x7,
+    funct7 = (insn >> 25) & 0x7f;
 
-  let rd = 0;
-  if (type === INSTRUCTION_FORMATS.R
-    || type === INSTRUCTION_FORMATS.I
-    || type === INSTRUCTION_FORMATS.U
-    || type === INSTRUCTION_FORMATS.J) {
-    rd = (instruction >> 7) & 0b11111;
-  }
+  let imm = 0;
+  let name = "UNKNOWN";
 
-  let func3: OP_FUNC3 | BRANCH_FUNC | STORE_FUNC | LOAD_FUNC | IMM_FUNC = 0;
-  let rs1 = 0;
-  if (type === INSTRUCTION_FORMATS.R
-    || type === INSTRUCTION_FORMATS.I
-    || type === INSTRUCTION_FORMATS.S
-    || type === INSTRUCTION_FORMATS.B) {
-    func3 = (instruction >> 12) & 0b111;
-    rs1 = (instruction >> 15) & 0b11111;
-  }
-
-  let func7: number = 0;
-  if (type === INSTRUCTION_FORMATS.R) {
-    func7 = (instruction >> 25) & 0b1111111;
-  }
-
-  let rs2: number = 0;
-  if (type === INSTRUCTION_FORMATS.R
-    || type === INSTRUCTION_FORMATS.S
-    || type === INSTRUCTION_FORMATS.B) {
-    rs2 = (instruction >> 20) & 0b11111;
-  }
-
-  // All possible immediate allValues
-  let immI: number = (instruction >> 20) & 0b111111111111;
-  immI = convertToSigned(immI, 12);
-
-  let immS: number = ((instruction >> 7) & 0b11111) + (((instruction >> 25) & 0b1111111) << 5);
-  immS = convertToSigned(immS, 12);
-
-  let immB: number = (((instruction >> 31) & 0b1) << 12)
-    + (((instruction >> 25) & 0b111111) << 5)
-    + (((instruction >> 7) & 0b1) << 11)
-    + (((instruction >> 8) & 0b1111) << 1);
-  immB = convertToSigned(immB, 13);
-
-  let immU: number = (instruction >> 12) & 0b11111111111111111111;
-  immU = convertToSigned(immU, 32);
-
-  let immJ: number = (((instruction >> 31) & 0b1) << 20)
-    + (((instruction >> 21) & 0b1111111111) << 1)
-    + (((instruction >> 20) & 0b1) << 11)
-    + (((instruction >> 12) & 0b11111111) << 12);
-  immJ = convertToSigned(immJ, 21);
-
-  // The immediate value selected corresponding to the instruction
-  let imm: number = 0;
-  switch (type) {
-    case INSTRUCTION_FORMATS.I:
-      imm = immI;
-      break;
-    case INSTRUCTION_FORMATS.S:
-      imm = immS;
-      break;
-    case INSTRUCTION_FORMATS.B:
-      imm = immB;
-      break;
-    case INSTRUCTION_FORMATS.U:
-      imm = immU;
-      break;
-    case INSTRUCTION_FORMATS.J:
-      imm = immJ;
-      break;
-    default:
-      imm = 0;
-  }
-
-  const name = getNameFromInstruction(opcode, func3, func7, imm);
-  const description = INSTRUCTIONS_DESCRIPTIONS[name];
-
-  const rdString = description.rd ? CPU_REGISTER_NAMES[rd][0] : '';
-  const rs1String = description.rs1 ? CPU_REGISTER_NAMES[rs1][0] : '';
-  const rs2String = description.rs2 ? CPU_REGISTER_NAMES[rs2][0] : '';
-
-  let assembly;
   switch (opcode) {
-    case OPCODES.STORE:
-      assembly = `${name.toLowerCase()} ${rs2String},${imm}(${rs1String})`
+    case 0x03: {
+      imm = insn >> 20;
+      switch (funct3) {
+        case 0x0: /* lb */ {
+          name = "LB";
+          break;
+        }
+        case 0x1: /* lh */ {
+          name = "LH";
+          break;
+        }
+        case 0x2: /* lw */ {
+          name = "LW";
+          break;
+        }
+        case 0x3: /* ld */ {
+          name = "LD";
+          break;
+        }
+        case 0x4: /* lbu */ {
+          name = "LBU";
+          break;
+        }
+        case 0x5: /* lhu */ {
+          name = "LHU";
+          break;
+        }
+        case 0x6: /* lwu */ {
+          name = "LWU";
+          break;
+        }
+      }
       break;
-    case OPCODES.JALR:
-    case OPCODES.LOAD:
-      assembly = `${name.toLowerCase()} ${rdString},${imm}(${rs1String})`
+    }
+    case 0x0f: {
+      switch (funct3) {
+        case 0x0: {
+          name = "FENCE";
+          break;
+        }
+      }
       break;
-    case OPCODES.JAL:
-      assembly = `${name.toLowerCase()} ${rdString},${byteToHex(imm + addr, 0).toLowerCase()}`
+    }
+    case 0x13: {
+      imm = (insn & 0xfff00000) >> 20;
+      let shamt = imm & 0x3f;
+      switch (funct3) {
+        case 0x0 /* addi */:
+          name = "ADDI";
+          break;
+        case 0x1 /* slli */:
+          name = "SLLI";
+          imm = shamt;
+          break;
+        case 0x2 /* slti */:
+          name = "SLTI";
+          break;
+        case 0x3 /* sltiu */:
+          name = "SLTIU";
+          break;
+        case 0x4 /* xori */:
+          name = "XORI";
+          break;
+        case 0x5:
+          switch (funct7 >> 1) {
+            case 0x00 /* srli */:
+              name = "SRLI";
+              imm = shamt;
+              break;
+            case 0x10 /* srai */:
+              name = "SRAI";
+              imm = shamt;
+              break;
+          }
+          break;
+        case 0x6 /* ori */:
+          name = "ORI";
+          break;
+        case 0x7 /* andi */:
+          name = "ANDI";
+          break;
+      }
       break;
-    case OPCODES.BRANCH:
-      assembly = `${name.toLowerCase()} ${rs1String},${rs2String},${byteToHex(imm + addr, 0).toLowerCase()}`
+    }
+    case 0x17: /* auipc */ {
+      imm = (insn & 0xfffff000);
+      name = "AUIPC";
       break;
-    case OPCODES.SYSTEM:
-      assembly = `${name.toLowerCase()}`
+    }
+    case 0x1b: {
+      imm = insn >> 20;
+      let shamt = imm & 0x1f;
+      switch (funct3) {
+        case 0x0 /* addiw */:
+          name = "ADDIW";
+          break;
+        case 0x1 /* slliw */:
+          imm = shamt;
+          name = "SLLIW";
+          break;
+        case 0x5: {
+          switch (funct7) {
+            case 0x00 /* srliw */:
+              imm = shamt;
+              name = "SRLIW";
+              break;
+            case 0x20 /* sraiw */:
+              imm = shamt;
+              name = "SRAIW";
+              break;
+          }
+        }
+      }
       break;
-    case OPCODES.LUI:
-    case OPCODES.AUIPC:
-      assembly = `${name.toLowerCase()} ${rdString},0x${byteToHex(imm, 0).toLowerCase()}`
+    }
+    case 0x23: {
+      imm = ((insn & 0xfe000000) >> 20) | ((insn >> 7) & 0x1f);
+      switch (funct3) {
+        case 0x0 /* sb */:
+          name = "SB";
+          break;
+        case 0x1 /* sh */:
+          name = "SH";
+          break;
+        case 0x2 /* sw */:
+          name = "SW";
+          break;
+        case 0x3 /* sd */:
+          name = "SD";
+          break;
+      }
       break;
-    default:
-      assembly = `${name.toLowerCase()}${description.rd ? (' ' + rdString) : ''}${description.rs1 ? (',' + rs1String) : ''}${description.rs2 ? (',' + rs2String) : ''}${description.imm ? (',' + imm) : ''}`
+    }
+    case 0x2f:
+      {
+        let funct5 = (funct7 & 0x7c) >> 2;
+        if (funct3 == 0x2 && funct5 == 0x00) {
+          /* amoadd.w */
+          name = "AMOADD.W";
+          break;
+        } else if (funct3 == 0x2 && funct5 == 0x01) {
+          /* amoswap.w */
+          name = "AMOSWAP.W";
+          break;
+        } else if (funct3 == 0x2 && funct5 == 0x04) {
+          /* amoxor.w */
+          name = "AMOXOR.W";
+          break;
+        } else if (funct3 == 0x2 && funct5 == 0x08) {
+          /* amoor.w */
+          name = "AMOOR.W";
+          break;
+        } else if (funct3 == 0x2 && funct5 == 0x0c) {
+          /* amoand.w */
+          name = "AMOAND.W";
+          break;
+        } else if (funct3 == 0x2 && funct5 == 0x10) {
+          /* amomin.w */
+          name = "AMOMIN.W";
+          break;
+        } else if (funct3 == 0x2 && funct5 == 0x14) {
+          /* amomax.w */
+          name = "AMOMAX.W";
+          break;
+        } else if (funct3 == 0x2 && funct5 == 0x18) {
+          /* amominu.w */
+          name = "AMOMINU.W";
+          break;
+        } else if (funct3 == 0x2 && funct5 == 0x1c) {
+          /* amomaxu.w */
+          name = "AMOMAXU.W";
+          break;
+        } else if (funct3 == 0x3 && funct5 == 0x00) {
+          /* amoadd.d */
+          name = "AMOADD.W";
+          break;
+        } else if (funct3 == 0x3 && funct5 == 0x01) {
+          /* amoswap.d */
+          name = "AMOSWAP.D";
+          break;
+        } else if (funct3 == 0x3 && funct5 == 0x04) {
+          /* amoxor.d */
+          name = "AMOXOR.D";
+          break;
+        } else if (funct3 == 0x3 && funct5 == 0x08) {
+          /* amoor.d */
+          name = "AMOOR.D";
+          break;
+        } else if (funct3 == 0x3 && funct5 == 0x0c) {
+          /* amoand.d */
+          name = "AMOAND.D";
+          break;
+        } else if (funct3 == 0x3 && funct5 == 0x10) {
+          /* amomin.d */
+          name = "AMOMIN.D";
+          break;
+        } else if (funct3 == 0x3 && funct5 == 0x14) {
+          /* amomax.d */
+          name = "AMOMAX.D";
+          break;
+        } else if (funct3 == 0x3 && funct5 == 0x18) {
+          /* amominu.d */
+          name = "AMOMINU.D";
+          break;
+        } else if (funct3 == 0x3 && funct5 == 0x1c) {
+          /* amomaxu.d */
+          name = "AMOMAXU.D";
+          break;
+        }
+      }
+      break;
+    case 0x33: {
+      if (funct3 == 0x0 && funct7 == 0x00) {
+        /* add */
+        name = "ADD";
+        break;
+      } else if (funct3 == 0x0 && funct7 == 0x01) {
+        /* mul */
+        name = "MUL";
+        break;
+      } else if (funct3 == 0x0 && funct7 == 0x20) {
+        /* sub */
+        name = "SUB";
+        break;
+      } else if (funct3 == 0x1 && funct7 == 0x00) {
+        /* sll */
+        name = "SLL";
+        break;
+      } else if (funct3 == 0x1 && funct7 == 0x01) {
+        /* mulh */
+        name = "MULH";
+        break;
+      } else if (funct3 == 0x2 && funct7 == 0x00) {
+        /* slt */
+        name = "SLT";
+        break;
+      } else if (funct3 == 0x3 && funct7 == 0x00) {
+        /* sltu */
+        name = "SLTU";
+        break;
+      } else if (funct3 == 0x3 && funct7 == 0x01) {
+        /* mulhu */
+        name = "MULHU";
+        break;
+      } else if (funct3 == 0x4 && funct7 == 0x00) {
+        /* xor */
+        name = "XOR";
+        break;
+      } else if (funct3 == 0x4 && funct7 == 0x01) {
+        /* div */
+        name = "DIV";
+        break;
+      } else if (funct3 == 0x5 && funct7 == 0x00) {
+        /* srl */
+        name = "SRL";
+        break;
+      } else if (funct3 == 0x5 && funct7 == 0x01) {
+        /* divu */
+        name = "DIVU";
+        break;
+      } else if (funct3 == 0x5 && funct7 == 0x20) {
+        /* sra */
+        name = "SRA";
+        break;
+      } else if (funct3 == 0x6 && funct7 == 0x01) {
+        /* rem */
+        name = "REM";
+        break;
+      } else if (funct3 == 0x6 && funct7 == 0x00) {
+        /* or */
+        name = "OR";
+        break;
+      } else if (funct3 == 0x7 && funct7 == 0x00) {
+        /* and */
+        name = "AND";
+        break;
+      } else if (funct3 == 0x7 && funct7 == 0x01) {
+        /* remu */
+        name = "REMU";
+        break;
+      }
+      break;
+    }
+    case 0x37 /* lui */:
+      imm = (insn & 0xfffff000) >>> 0;
+      name = "LUI";
+      break;
+    case 0x3b: {
+      if (funct3 == 0x0 && funct7 == 0x00) {
+        /* addw */
+        name = "ADDW";
+        break;
+      } else if (funct3 == 0x0 && funct7 == 0x01) {
+        /* mulw */
+        name = "MULW";
+        break;
+      } else if (funct3 == 0x0 && funct7 == 0x20) {
+        /* subw */
+        name = "SUBW";
+        break;
+      } else if (funct3 == 0x1 && funct7 == 0x00) {
+        /* sllw */
+        name = "SLLW";
+        break;
+      } else if (funct3 == 0x4 && funct7 == 0x01) {
+        /* divw */
+        name = "DIVW";
+        break;
+      } else if (funct3 == 0x5 && funct7 == 0x00) {
+        /* srlw */
+        name = "SRLW";
+        break;
+      } else if (funct3 == 0x5 && funct7 == 0x01) {
+        /* divuw */
+        name = "DIVUW";
+        break;
+      } else if (funct3 == 0x5 && funct7 == 0x20) {
+        /* sraw */
+        name = "SRAW";
+        break;
+      } else if (funct3 == 0x6 && funct7 == 0x01) {
+        /* remw */
+        name = "REMW";
+        break;
+      } else if (funct3 == 0x7 && funct7 == 0x01) {
+        /* remuw */
+        name = "REMUW";
+        break;
+      }
+      break;
+    }
+    case 0x63: {
+      imm =
+        ((insn & 0x80000000) >> 19) |
+        ((insn & 0x80) << 4) |
+        ((insn >> 20) & 0x7e0) |
+        ((insn >> 7) & 0x1e);
+
+      switch (funct3) {
+        case 0x0 /* beq */:
+          name = "BEQ";
+          break;
+        case 0x1 /* bne */:
+          name = "BNE";
+          break;
+        case 0x4 /* blt */:
+          name = "BLT";
+          break;
+        case 0x5 /* bge */:
+          name = "BGE";
+          break;
+        case 0x6 /* bltu */:
+          name = "BLTU";
+          break;
+        case 0x7 /* bgeu */:
+          name = "BGEU";
+          break;
+      }
+      break;
+    }
+    case 0x67:
+      name = "JALR";
+      imm = (insn & 0xfff00000) >> 20;
+      break;
+    case 0x6f: {
+      name = "JAL";
+      imm =
+        ((insn & 0x80000000) >> 11) |
+        (insn & 0xff000) |
+        ((insn >> 9) & 0x800) |
+        ((insn >> 20) & 0x7fe);
+      break;
+    }
+    case 0x73: {
+      imm = (insn & 0xfff00000) >> 20;
+      switch (funct3) {
+        case 0x0:
+          if (rs2 == 0x0 && funct7 == 0x0) {
+            /* ecall */
+            name = "ECALL";
+            break;
+          } else if (rs2 == 0x1 && funct7 == 0x0) {
+            /* ebreak */
+            name = "EBREAK";
+            break;
+          }
+          break;
+        case 0x1:
+          name = "CSRRW";
+          break;
+        case 0x2:
+          name = "CSRRS";
+          break;
+        case 0x3:
+          name = "CSRRC";
+          break;
+        case 0x5:
+          name = "CSRRWI";
+          break;
+        case 0x6:
+          name = "CSRRSI";
+          break;
+        case 0x7:
+          name = "CSRRCI";
+          break;
+        // XXX more are here
+      }
+    }
   }
 
   const parsedInstruction: Instruction = {
-    unparsedInstruction: instruction,
-    instructionTypeFormat: type,
-    opcode: opcode,
-    opcodeName: getNameOfGroup(opcode),
-    func3: func3,
-    func7: func7,
+    unparsedInstruction: insn,
     imm: imm,
-    immI: immI,
-    immS: immS,
-    immB: immB,
-    immU: immU,
-    immJ: immJ,
     rd: rd,
     rs1: rs1,
     rs2: rs2,
     instructionName: name,
-    description: description,
-    assembly: assembly,
   };
 
   return parsedInstruction;
 }
-
-
-
