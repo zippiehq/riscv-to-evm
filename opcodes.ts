@@ -707,7 +707,7 @@ export function emitLb(
   // big endian fixup
   opcodes.push({
     opcode: "PUSH1",
-    parameter: "03",
+    parameter: "07",
     comment: "big endian fixup",
   });
   opcodes.push({ opcode: "XOR" });
@@ -720,7 +720,7 @@ export function emitLb(
   opcodes.push({ opcode: "PUSH1", parameter: "00" });
   opcodes.push({ opcode: "SIGNEXTEND" });
 
-  writeRegister(opcodes, rd, false);
+  writeRegister(opcodes, rd, true);
 }
 
 export function emitDirtyCheck(opcodes: EVMOpCode[], pc: number) {
@@ -747,7 +747,7 @@ export function emitLbu(
   opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); // narrow down to 32-bit
   opcodes.push({ opcode: "AND", comment: "mask to 32 bits" });
   // big endian fixup
-  opcodes.push({ opcode: "PUSH1", parameter: "03" });
+  opcodes.push({ opcode: "PUSH1", parameter: "07" });
   opcodes.push({ opcode: "XOR" });
   // fixup end
   opcodes.push({ opcode: "CALLDATALOAD" });
@@ -775,7 +775,7 @@ export function emitLh(
   opcodes.push({ opcode: "PUSH8", parameter: "FFFFFFFFFFFFFFFF" }); 
   opcodes.push({ opcode: "AND", comment: "mask to 64 bits" });
   // big endian fixup
-  opcodes.push({ opcode: "PUSH1", parameter: "02" });
+  opcodes.push({ opcode: "PUSH1", parameter: "06" });
   opcodes.push({ opcode: "XOR" });
   // fixup end
   opcodes.push({ opcode: "CALLDATALOAD" });
@@ -784,7 +784,7 @@ export function emitLh(
 
   opcodes.push({ opcode: "PUSH1", parameter: "01" });
   opcodes.push({ opcode: "SIGNEXTEND" });
-  writeRegister(opcodes, rd, false);
+  writeRegister(opcodes, rd, true);
 }
 
 export function emitLhu(
@@ -805,7 +805,7 @@ export function emitLhu(
   opcodes.push({ opcode: "PUSH8", parameter: "FFFFFFFFFFFFFFFF" }); 
   opcodes.push({ opcode: "AND", comment: "mask to 64 bits" });
   // big endian fixup
-  opcodes.push({ opcode: "PUSH1", parameter: "02" });
+  opcodes.push({ opcode: "PUSH1", parameter: "06" });
   opcodes.push({ opcode: "XOR" });
   // fixup end
 
@@ -844,6 +844,36 @@ export function emitLw(
   opcodes.push({ opcode: "PUSH1", parameter: "03" }); 
   opcodes.push({ opcode: "SIGNEXTEND", comment: "signextend to 64 bit" });
   writeRegister(opcodes, rd, true);
+}
+
+export function emitLwu(
+  opcodes: EVMOpCode[],
+  rd: number,
+  rs1: number,
+  imm: number
+) {
+  // grab 32 bit value from rs2 (value)
+  readRegister(opcodes, rs1);
+  opcodes.push({ opcode: "PUSH8", parameter: "FFFFFFFFFFFFFFFF" }); 
+  opcodes.push({ opcode: "AND", comment: "mask to 64 bits" });
+
+  signExtendTo256(opcodes, imm); // imm-signextended pc pc
+  opcodes.push({ opcode: "ADD" });
+  opcodes.push({ opcode: "PUSH8", parameter: "FFFFFFFFFFFFFFFF" }); 
+  opcodes.push({ opcode: "AND", comment: "mask to 64 bits" });
+  // big endian fixup
+  opcodes.push({ opcode: "PUSH1", parameter: "04" });
+  opcodes.push({ opcode: "XOR" });
+  // fixup end
+
+  opcodes.push({ opcode: "CALLDATALOAD", comment: "LW addr"}); 
+
+  opcodes.push({ opcode: "PUSH1", parameter: "E0"});
+  opcodes.push({ opcode: "SHR", comment: "LW result"});
+  
+  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF" }); 
+  opcodes.push({ opcode: "AND", comment: "zeroextend to 64 bit" });
+  writeRegister(opcodes, rd, false);
 }
 
 export function emitLd(
@@ -886,7 +916,7 @@ export function emitSb(
   opcodes.push({ opcode: "ADD" });
   opcodes.push({ opcode: "PUSH8", parameter: "FFFFFFFFFFFFFFFF" }); 
   opcodes.push({ opcode: "AND", comment: "mask to 64 bits" });// narrow down to 32-bit. stack: addr+imm&0xFFFFFFF, (value << 24 & 0xFFFFFFF)
-  opcodes.push({ opcode: "PUSH1", parameter: "03" });
+  opcodes.push({ opcode: "PUSH1", parameter: "07" });
   opcodes.push({ opcode: "XOR" });
   opcodes.push({ opcode: "DUP1" });
   opcodes.push({ opcode: "CALLDATALOAD"} ); // stack: current_value, addr+imm&0xFFFFFFF, (value << 24 & 0xFFFFFFF)
@@ -924,14 +954,14 @@ export function emitSh(
   opcodes.push({opcode: "PUSH1", parameter: "01", comment: "SET DIRTY"}); // dirty flag set
   writeRegister(opcodes, 33 /* isdirty register */, false);
 
-  readRegister(opcodes, rs1); // rs1
+  readRegister(opcodes, rs1); // rs1, (value << 24 & 0xFFFFFFF)
 
   signExtendTo256(opcodes, imm); // imm-signextended pc pc
 
   opcodes.push({ opcode: "ADD" });
   opcodes.push({ opcode: "PUSH8", parameter: "FFFFFFFFFFFFFFFF" }); 
-  opcodes.push({ opcode: "AND", comment: "mask to 64 bits" });// narrow down to 64-bit. stack: addr+imm&0xFFFFFFF, (value << 24 & 0xFFFFFFF)
-  opcodes.push({ opcode: "PUSH1", parameter: "02" });
+  opcodes.push({ opcode: "AND", comment: "mask to 64 bits" });// narrow down to 32-bit. stack: addr+imm&0xFFFFFFF, (value << 24 & 0xFFFFFFF)
+  opcodes.push({ opcode: "PUSH1", parameter: "06" });
   opcodes.push({ opcode: "XOR" });
   opcodes.push({ opcode: "DUP1" });
   opcodes.push({ opcode: "CALLDATALOAD"} ); // stack: current_value, addr+imm&0xFFFFFFF, (value << 24 & 0xFFFFFFF)
@@ -939,15 +969,15 @@ export function emitSh(
   opcodes.push({ opcode: "PUSH1", parameter: "C0"}); // mask out
   opcodes.push({ opcode: "SHR"});
 
-  opcodes.push({ opcode: "PUSH4", parameter: "0000FFFF"});
+  opcodes.push({ opcode: "PUSH8", parameter: "0000FFFFFFFFFF"});
   opcodes.push({ opcode: "AND"});
 
-  // grab 32 bit value from rs2 (value)
+  // grab 64 bit value from rs2 (value)
   readRegister(opcodes, rs2);
 
   opcodes.push({ opcode: "PUSH2", parameter: "FFFF"}); 
-  opcodes.push({ opcode: "AND"}); 
-  opcodes.push({ opcode: "PUSH1", parameter: "10"});  
+  opcodes.push({ opcode: "AND"}); // shift left 248 bits 
+  opcodes.push({ opcode: "PUSH1", parameter: "30"});  
   opcodes.push({ opcode: "SHL"}); 
   opcodes.push({ opcode: "ADD"});
 
@@ -969,16 +999,32 @@ export function emitSw(
   opcodes.push({opcode: "PUSH1", parameter: "01", comment: "SET DIRTY"}); // dirty flag set
   writeRegister(opcodes, 33 /* isdirty register */, false);
 
+  readRegister(opcodes, rs1); // rs1, (value << 24 & 0xFFFFFFF)
+
+  signExtendTo256(opcodes, imm); // imm-signextended pc pc
+
+  opcodes.push({ opcode: "ADD" });
+  opcodes.push({ opcode: "PUSH8", parameter: "FFFFFFFFFFFFFFFF" }); 
+  opcodes.push({ opcode: "AND", comment: "mask to 64 bits" });// narrow down to 32-bit. stack: addr+imm&0xFFFFFFF, (value << 24 & 0xFFFFFFF)
+  opcodes.push({ opcode: "PUSH1", parameter: "04" });
+  opcodes.push({ opcode: "XOR" });
+  opcodes.push({ opcode: "DUP1" });
+  opcodes.push({ opcode: "CALLDATALOAD"} ); // stack: current_value, addr+imm&0xFFFFFFF, (value << 24 & 0xFFFFFFF)
+  
+  opcodes.push({ opcode: "PUSH1", parameter: "C0"}); // mask out
+  opcodes.push({ opcode: "SHR"});
+
+  opcodes.push({ opcode: "PUSH8", parameter: "00000000FFFFFFFF"});
+  opcodes.push({ opcode: "AND"});
+
   // grab 64 bit value from rs2 (value)
-  readRegister(opcodes, rs1); // read rs1 (addr)
+  readRegister(opcodes, rs2);
 
-  if (imm !== 0) {
-    signExtendTo256(opcodes, imm); // imm-signextended pc pc
-    opcodes.push({ opcode: "ADD" });
-  }
-
-  readRegister(opcodes, rs2); // read value
-  opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF"});
+  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF"}); 
+  opcodes.push({ opcode: "AND"}); // shift left 248 bits 
+  opcodes.push({ opcode: "PUSH1", parameter: "20"});  
+  opcodes.push({ opcode: "SHL"}); 
+  opcodes.push({ opcode: "ADD"});
 
   opcodes.push({opcode: "PUSH1", parameter: "C0"});
   opcodes.push({opcode: "SHL"});
@@ -987,7 +1033,6 @@ export function emitSw(
   opcodes.push({opcode: "ADD"});
   opcodes.push({opcode: "MSIZE"});
   opcodes.push({opcode: "MSTORE", comment: "emitSw"});
-
 }
 
 export function emitSd(

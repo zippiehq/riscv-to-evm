@@ -173,6 +173,10 @@ function emitRiscv(opcodes: EVMOpCode[], parsed: Instruction, startPc: number, p
         Opcodes.emitDirtyCheck(opcodes, pc);
         Opcodes.emitLhu(opcodes, parsed.rd, parsed.rs1, parsed.imm);
         break;
+      case "LWU":
+        Opcodes.emitDirtyCheck(opcodes, pc);
+        Opcodes.emitLwu(opcodes, parsed.rd, parsed.rs1, parsed.imm);
+        break;
       case "LW":
         Opcodes.emitDirtyCheck(opcodes, pc);
         Opcodes.emitLw(opcodes, parsed.rd, parsed.rs1, parsed.imm);
