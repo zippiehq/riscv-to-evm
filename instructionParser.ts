@@ -268,6 +268,10 @@ export function parseInstruction(insn: number, addr = 0): Instruction {
         /* mulh */
         name = "MULH";
         break;
+      } else if (funct3 == 0x2 && funct7 == 0x01) { 
+        /* mulhsu */
+        name = "MULHSU";
+        break;
       } else if (funct3 == 0x2 && funct7 == 0x00) {
         /* slt */
         name = "SLT";

@@ -238,6 +238,81 @@ export function emitMul(
   writeRegister(opcodes, rd, true);
 }
 
+export function emitMulhsu(
+  opcodes: EVMOpCode[],
+  rd: number,
+  rs1: number,
+  rs2: number
+) {
+  readRegister(opcodes, rs2);
+  readRegister(opcodes, rs1);
+  opcodes.push({ opcode: "PUSH1", parameter: "07" });
+  opcodes.push({ opcode: "SIGNEXTEND" });
+  
+  opcodes.push({ opcode: "MUL", comment: "MUL" });
+  opcodes.push({ opcode: "PUSH1", parameter: "40"} );
+  opcodes.push({ opcode: "SHR" });
+  
+  writeRegister(opcodes, rd, true);
+}
+
+export function emitMulhu(
+  opcodes: EVMOpCode[],
+  rd: number,
+  rs1: number,
+  rs2: number
+) {
+  readRegister(opcodes, rs2);
+  readRegister(opcodes, rs1);
+  opcodes.push({ opcode: "MUL", comment: "MUL" });
+  opcodes.push({ opcode: "PUSH1", parameter: "40"} );
+  opcodes.push({ opcode: "SHR" });
+  
+  writeRegister(opcodes, rd, true);
+}
+
+export function emitMulh(
+  opcodes: EVMOpCode[],
+  rd: number,
+  rs1: number,
+  rs2: number
+) {
+  readRegister(opcodes, rs2);
+  opcodes.push({opcode: "PUSH1", parameter: "07" });
+  opcodes.push({opcode: "SIGNEXTEND" });
+
+  readRegister(opcodes, rs1);
+  opcodes.push({opcode: "PUSH1", parameter: "07" });
+  opcodes.push({opcode: "SIGNEXTEND" });
+
+  opcodes.push({ opcode: "MUL", comment: "MUL" });
+  opcodes.push({ opcode: "PUSH1", parameter: "40"} );
+  opcodes.push({ opcode: "SHR" });
+
+  opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF"});  
+  opcodes.push({opcode: "AND"});  
+
+  writeRegister(opcodes, rd, true);
+}
+
+export function emitMulw(
+  opcodes: EVMOpCode[],
+  rd: number,
+  rs1: number,
+  rs2: number
+) {
+  readRegister(opcodes, rs2);
+  opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF"});  
+  opcodes.push({opcode: "AND"});  
+  readRegister(opcodes, rs1);
+  opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF"});  
+  opcodes.push({opcode: "AND"});  
+  opcodes.push({opcode: "MUL", comment: "MUL" });
+  opcodes.push({opcode: "PUSH1", parameter: "03" });
+  opcodes.push({opcode: "SIGNEXTEND" });
+
+  writeRegister(opcodes, rd, true);
+}
 export function emitAndOrXor(
   opcodes: EVMOpCode[],
   type: string,

@@ -227,6 +227,22 @@ function emitRiscv(opcodes: EVMOpCode[], parsed: Instruction, startPc: number, p
       case "SD":
         Opcodes.emitSd(opcodes, parsed.rs1, parsed.rs2, parsed.imm);
         break;
+      /* M extension */
+      case "MUL":
+        Opcodes.emitMul(opcodes, parsed.rd, parsed.rs1, parsed.rs2);
+        break;
+      case "MULH":
+        Opcodes.emitMulh(opcodes, parsed.rd, parsed.rs1, parsed.rs2);
+        break;
+      case "MULHU":
+        Opcodes.emitMulhu(opcodes, parsed.rd, parsed.rs1, parsed.rs2);
+        break;
+      case "MULHSU":
+        Opcodes.emitMulhsu(opcodes, parsed.rd, parsed.rs1, parsed.rs2);
+        break;
+      case "MULW":
+        Opcodes.emitMulw(opcodes, parsed.rd, parsed.rs1, parsed.rs2);
+        break;
       case "UNIMPL":
         opcodes.push({opcode: "INVALID"});
         break;
