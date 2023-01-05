@@ -248,7 +248,7 @@ export function emitMulhsu(
   readRegister(opcodes, rs1);
   opcodes.push({ opcode: "PUSH1", parameter: "07" });
   opcodes.push({ opcode: "SIGNEXTEND" });
-  
+
   opcodes.push({ opcode: "MUL", comment: "MUL" });
   opcodes.push({ opcode: "PUSH1", parameter: "40"} );
   opcodes.push({ opcode: "SHR" });
@@ -270,6 +270,260 @@ export function emitMulhu(
   
   writeRegister(opcodes, rd, true);
 }
+
+export function emitDiv(
+  opcodes: EVMOpCode[],
+  rd: number,
+  rs1: number,
+  rs2: number
+) {
+  const randoLabel = crypto.randomBytes(32).toString("hex");
+  readRegister(opcodes, rs2);
+  opcodes.push({opcode: "DUP1"});
+  opcodes.push({opcode: "ISZERO"});
+  opcodes.push({opcode: "PUSH2", find_name: "_zero_divisor_" + randoLabel})
+  opcodes.push({opcode: "JUMPI"});
+  
+  opcodes.push({opcode: "PUSH1", parameter: "07" });
+  opcodes.push({opcode: "SIGNEXTEND" });
+
+  readRegister(opcodes, rs1);
+  opcodes.push({opcode: "PUSH1", parameter: "07" });
+  opcodes.push({opcode: "SIGNEXTEND" });
+
+  opcodes.push({ opcode: "SDIV", comment: "DIV" });
+  writeRegister(opcodes, rd, true);
+  opcodes.push({opcode: "PUSH2", find_name: "_div_done_" + randoLabel});
+  opcodes.push({opcode: "JUMP"});
+  opcodes.push({opcode: "JUMPDEST", name: "_zero_divisor_" + randoLabel});
+  opcodes.push({opcode: "POP"});
+  opcodes.push({opcode: "PUSH8", parameter: "FFFFFFFFFFFFFFFF"});
+  writeRegister(opcodes, rd, false);
+  opcodes.push({opcode: "JUMPDEST", name: "_div_done_" + randoLabel});
+}
+
+export function emitRem(
+  opcodes: EVMOpCode[],
+  rd: number,
+  rs1: number,
+  rs2: number
+) {
+  const randoLabel = crypto.randomBytes(32).toString("hex");
+  readRegister(opcodes, rs2);
+  opcodes.push({opcode: "DUP1"});
+  opcodes.push({opcode: "ISZERO"});
+  opcodes.push({opcode: "PUSH2", find_name: "_zero_divisor_" + randoLabel})
+  opcodes.push({opcode: "JUMPI"});
+  
+  opcodes.push({opcode: "PUSH1", parameter: "07" });
+  opcodes.push({opcode: "SIGNEXTEND" });
+
+  readRegister(opcodes, rs1);
+  opcodes.push({opcode: "PUSH1", parameter: "07" });
+  opcodes.push({opcode: "SIGNEXTEND" });
+
+  opcodes.push({ opcode: "SMOD", comment: "DIV" });
+  writeRegister(opcodes, rd, true);
+  opcodes.push({opcode: "PUSH2", find_name: "_rem_done_" + randoLabel});
+  opcodes.push({opcode: "JUMP"});
+  opcodes.push({opcode: "JUMPDEST", name: "_zero_divisor_" + randoLabel});
+  opcodes.push({opcode: "POP"});
+  readRegister(opcodes, rs1);
+
+  writeRegister(opcodes, rd, false);
+  opcodes.push({opcode: "JUMPDEST", name: "_rem_done_" + randoLabel});
+}
+
+export function emitDivw(
+  opcodes: EVMOpCode[],
+  rd: number,
+  rs1: number,
+  rs2: number
+) {
+  const randoLabel = crypto.randomBytes(32).toString("hex");
+  readRegister(opcodes, rs2);
+  opcodes.push({opcode: "DUP1"});
+  opcodes.push({opcode: "ISZERO"});
+  opcodes.push({opcode: "PUSH2", find_name: "_zero_divisor_" + randoLabel})
+  opcodes.push({opcode: "JUMPI"});
+  
+  opcodes.push({opcode: "PUSH1", parameter: "03" });
+  opcodes.push({opcode: "SIGNEXTEND" });
+
+  readRegister(opcodes, rs1);
+  opcodes.push({opcode: "PUSH1", parameter: "03" });
+  opcodes.push({opcode: "SIGNEXTEND" });
+
+  opcodes.push({ opcode: "SDIV", comment: "DIVW" });
+
+  opcodes.push({opcode: "PUSH1", parameter: "03" });
+  opcodes.push({opcode: "SIGNEXTEND" });
+  writeRegister(opcodes, rd, true);
+
+  opcodes.push({opcode: "PUSH2", find_name: "_div_done_" + randoLabel});
+  opcodes.push({opcode: "JUMP"});
+  opcodes.push({opcode: "JUMPDEST", name: "_zero_divisor_" + randoLabel});
+  opcodes.push({opcode: "POP"});
+  opcodes.push({opcode: "PUSH8", parameter: "FFFFFFFFFFFFFFFF"});
+  writeRegister(opcodes, rd, false);
+  opcodes.push({opcode: "JUMPDEST", name: "_div_done_" + randoLabel});
+}
+
+export function emitRemw(
+  opcodes: EVMOpCode[],
+  rd: number,
+  rs1: number,
+  rs2: number
+) {
+  const randoLabel = crypto.randomBytes(32).toString("hex");
+  readRegister(opcodes, rs2);
+  opcodes.push({opcode: "DUP1"});
+  opcodes.push({opcode: "ISZERO"});
+  opcodes.push({opcode: "PUSH2", find_name: "_zero_divisor_" + randoLabel})
+  opcodes.push({opcode: "JUMPI"});
+  
+  opcodes.push({opcode: "PUSH1", parameter: "03" });
+  opcodes.push({opcode: "SIGNEXTEND" });
+
+  readRegister(opcodes, rs1);
+  opcodes.push({opcode: "PUSH1", parameter: "03" });
+  opcodes.push({opcode: "SIGNEXTEND" });
+
+  opcodes.push({ opcode: "SMOD", comment: "REMW" });
+
+  opcodes.push({opcode: "PUSH1", parameter: "03" });
+  opcodes.push({opcode: "SIGNEXTEND" });
+  writeRegister(opcodes, rd, true);
+
+  opcodes.push({opcode: "PUSH2", find_name: "_remw_done_" + randoLabel});
+  opcodes.push({opcode: "JUMP"});
+  opcodes.push({opcode: "JUMPDEST", name: "_zero_divisor_" + randoLabel});
+  opcodes.push({opcode: "POP"});
+  readRegister(opcodes, rs1);
+  writeRegister(opcodes, rd, false);
+  opcodes.push({opcode: "JUMPDEST", name: "_remw_done_" + randoLabel});
+}
+
+export function emitDivu(
+  opcodes: EVMOpCode[],
+  rd: number,
+  rs1: number,
+  rs2: number
+) {
+  const randoLabel = crypto.randomBytes(32).toString("hex");
+
+  readRegister(opcodes, rs2);
+  opcodes.push({opcode: "DUP1"});
+  opcodes.push({opcode: "ISZERO"});
+  opcodes.push({opcode: "PUSH2", find_name: "_zero_divisor_" + randoLabel})
+  opcodes.push({opcode: "JUMPI"});
+
+  readRegister(opcodes, rs1);
+  opcodes.push({ opcode: "DIV", comment: "DIVU" });
+  writeRegister(opcodes, rd, true);
+  opcodes.push({opcode: "PUSH2", find_name: "_div_done_" + randoLabel});
+  opcodes.push({opcode: "JUMP"});
+  opcodes.push({opcode: "JUMPDEST", name: "_zero_divisor_" + randoLabel});
+  opcodes.push({opcode: "POP"});
+  opcodes.push({opcode: "PUSH8", parameter: "FFFFFFFFFFFFFFFF"});
+  writeRegister(opcodes, rd, false);
+  opcodes.push({opcode: "JUMPDEST", name: "_div_done_" + randoLabel});
+}
+
+export function emitRemu(
+  opcodes: EVMOpCode[],
+  rd: number,
+  rs1: number,
+  rs2: number
+) {
+  const randoLabel = crypto.randomBytes(32).toString("hex");
+
+  readRegister(opcodes, rs2);
+  opcodes.push({opcode: "DUP1"});
+  opcodes.push({opcode: "ISZERO"});
+  opcodes.push({opcode: "PUSH2", find_name: "_zero_divisor_" + randoLabel})
+  opcodes.push({opcode: "JUMPI"});
+
+  readRegister(opcodes, rs1);
+  opcodes.push({ opcode: "MOD", comment: "REMU" });
+  writeRegister(opcodes, rd, true);
+  opcodes.push({opcode: "PUSH2", find_name: "_remu_done_" + randoLabel});
+  opcodes.push({opcode: "JUMP"});
+  opcodes.push({opcode: "JUMPDEST", name: "_zero_divisor_" + randoLabel});
+  opcodes.push({opcode: "POP"});
+  readRegister(opcodes, rs1);
+  writeRegister(opcodes, rd, false);
+  opcodes.push({opcode: "JUMPDEST", name: "_remu_done_" + randoLabel});
+}
+
+export function emitDivuw(
+  opcodes: EVMOpCode[],
+  rd: number,
+  rs1: number,
+  rs2: number
+) {
+  const randoLabel = crypto.randomBytes(32).toString("hex");
+
+  readRegister(opcodes, rs2);
+  
+  opcodes.push({opcode: "DUP1"});
+  opcodes.push({opcode: "ISZERO"});
+  opcodes.push({opcode: "PUSH2", find_name: "_zero_divisor_" + randoLabel})
+  opcodes.push({opcode: "JUMPI"});
+  opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF"});
+  opcodes.push({opcode: "AND"});
+
+  readRegister(opcodes, rs1);
+  opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF"});
+  opcodes.push({opcode: "AND"});
+
+  opcodes.push({ opcode: "DIV", comment: "DIVUW" });
+  opcodes.push({opcode: "PUSH1", parameter: "03" });
+  opcodes.push({opcode: "SIGNEXTEND" });
+  writeRegister(opcodes, rd, true);
+  opcodes.push({opcode: "PUSH2", find_name: "_div_done_" + randoLabel});
+  opcodes.push({opcode: "JUMP"});
+  opcodes.push({opcode: "JUMPDEST", name: "_zero_divisor_" + randoLabel});
+  opcodes.push({opcode: "POP"});
+  opcodes.push({opcode: "PUSH8", parameter: "FFFFFFFFFFFFFFFF"});
+  writeRegister(opcodes, rd, false);
+  opcodes.push({opcode: "JUMPDEST", name: "_div_done_" + randoLabel});
+}
+
+export function emitRemuw(
+  opcodes: EVMOpCode[],
+  rd: number,
+  rs1: number,
+  rs2: number
+) {
+  const randoLabel = crypto.randomBytes(32).toString("hex");
+
+  readRegister(opcodes, rs2);
+  
+  opcodes.push({opcode: "DUP1"});
+  opcodes.push({opcode: "ISZERO"});
+  opcodes.push({opcode: "PUSH2", find_name: "_zero_divisor_" + randoLabel})
+  opcodes.push({opcode: "JUMPI"});
+  opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF"});
+  opcodes.push({opcode: "AND"});
+
+  readRegister(opcodes, rs1);
+  opcodes.push({opcode: "PUSH4", parameter: "FFFFFFFF"});
+  opcodes.push({opcode: "AND"});
+
+  opcodes.push({ opcode: "MOD", comment: "REMUW" });
+  opcodes.push({opcode: "PUSH1", parameter: "03" });
+  opcodes.push({opcode: "SIGNEXTEND" });
+  writeRegister(opcodes, rd, true);
+  opcodes.push({opcode: "PUSH2", find_name: "_remuw_done_" + randoLabel});
+  opcodes.push({opcode: "JUMP"});
+  opcodes.push({opcode: "JUMPDEST", name: "_zero_divisor_" + randoLabel});
+  opcodes.push({opcode: "POP"});
+  readRegister(opcodes, rs1);
+  writeRegister(opcodes, rd, false);
+  opcodes.push({opcode: "JUMPDEST", name: "_remuw_done_" + randoLabel});
+}
+
 
 export function emitMulh(
   opcodes: EVMOpCode[],
