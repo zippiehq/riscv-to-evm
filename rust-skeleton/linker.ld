@@ -6,7 +6,6 @@ MEMORY
     ram (RW!X) : ORIGIN = 0x00020000, LENGTH = 0x1000000
 }
  
- 
 SECTIONS {
          .text : ALIGN(4096) {
     		*(.text._start)
@@ -21,23 +20,41 @@ SECTIONS {
     		*(.srodata*)
 	} >ram
 	.eh_frame : { KEEP (*(.eh_frame)) } >ram
-	.data : ALIGN(4) {
+	.data : ALIGN(4096) {
 	    *(.data .data.*)
 	    *(.gnu.linkonce.d.*)
 	    __global_pointer$ = . + 0x800;
 	    *(.sdata .sdata.* .sdata2.*)
 	    *(.gnu.linkonce.s.*)
 	} >ram
-	.got : ALIGN(4) {
+	.got : ALIGN(4096) {
 		*(.got .got.*);
 	} >ram
 	/* empty space here */
-	.bss : ALIGN(4) {
+	.bss : ALIGN(4096) {
+	    __bss_begin = .;
 	    *(.sbss*)
 	    *(.gnu.linkonce.sb.*)
 	    *(.bss .bss.*)
 	    *(.gnu.linkonce.b.*)
+	    __bss_end = .;
 	} >ram
+	 __bss_size = __bss_end - __bss_begin;
+	.input : ALIGN(4096) {
+		__input_begin = .;
+		. = . + 300*1024;
+		__input_end = .;
+	} >ram
+
+	__input_maxlength = __input_end - __input_begin;
+
+	.stack : ALIGN(4096) {
+		. += 8*1024;
+		__stack_init$ = . - 8;
+        } >ram
+	__heap_start = .;
+	
+
 	/* Include entry point at start of binary */
 	 .stab          0 : { *(.stab) }
 	 .stabstr       0 : { *(.stabstr) }

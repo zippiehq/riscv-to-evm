@@ -244,6 +244,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf1c2c742266c2f1041c914ba65355a83ae8747b05f208319784083583494b4b"
 
 [[package]]
+name = "pin-project-lite"
+version = "0.2.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e0a7ae3ac2f1173085d398531c705756c94a4c56843785df85a60c1a0afac116"
+
+[[package]]
 name = "proc-macro2"
 version = "1.0.47"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -270,31 +276,35 @@ checksum = "ec0be4795e2f6a28069bec0b5ff3e2ac9bafc99e6a9a7dc3547996c5c816922c"
 [[package]]
 name = "risc0-circuit-rv32im"
 version = "1.0.0-rc.2"
-source = "git+https://github.com/dymchenkko/risc0.git?branch=tracing#baa732ad31a1a8486ab93a5cb61b73f66300a50c"
+source = "git+https://github.com/risc0/risc0.git?branch=main#0cd7791f56d1c382a2e7ce9a7a9efc0c77b0a8d2"
 dependencies = [
  "anyhow",
  "cc",
  "glob",
+ "log",
  "metal",
  "risc0-zkp",
  "risc0-zkvm-platform",
  "sha2",
+ "tracing",
 ]
 
 [[package]]
 name = "risc0-zeroio"
 version = "1.0.0-rc.2"
-source = "git+https://github.com/dymchenkko/risc0.git?branch=tracing#baa732ad31a1a8486ab93a5cb61b73f66300a50c"
+source = "git+https://github.com/risc0/risc0.git?branch=main#0cd7791f56d1c382a2e7ce9a7a9efc0c77b0a8d2"
 dependencies = [
  "bytemuck",
  "impl-trait-for-tuples",
+ "log",
  "risc0-zeroio-derive",
+ "tracing",
 ]
 
 [[package]]
 name = "risc0-zeroio-derive"
 version = "1.0.0-rc.2"
-source = "git+https://github.com/dymchenkko/risc0.git?branch=tracing#baa732ad31a1a8486ab93a5cb61b73f66300a50c"
+source = "git+https://github.com/risc0/risc0.git?branch=main#0cd7791f56d1c382a2e7ce9a7a9efc0c77b0a8d2"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -304,37 +314,41 @@ dependencies = [
 [[package]]
 name = "risc0-zkp"
 version = "1.0.0-rc.2"
-source = "git+https://github.com/dymchenkko/risc0.git?branch=tracing#baa732ad31a1a8486ab93a5cb61b73f66300a50c"
+source = "git+https://github.com/risc0/risc0.git?branch=main#0cd7791f56d1c382a2e7ce9a7a9efc0c77b0a8d2"
 dependencies = [
  "anyhow",
  "bytemuck",
+ "log",
  "metal",
  "paste",
  "rand_core",
  "risc0-zeroio",
  "serde",
  "sha2",
+ "tracing",
 ]
 
 [[package]]
 name = "risc0-zkvm"
 version = "1.0.0-rc.2"
-source = "git+https://github.com/dymchenkko/risc0.git?branch=tracing#baa732ad31a1a8486ab93a5cb61b73f66300a50c"
+source = "git+https://github.com/risc0/risc0.git?branch=main#0cd7791f56d1c382a2e7ce9a7a9efc0c77b0a8d2"
 dependencies = [
  "anyhow",
  "bytemuck",
  "cfg-if",
+ "log",
  "risc0-circuit-rv32im",
  "risc0-zeroio",
  "risc0-zkp",
  "risc0-zkvm-platform",
  "serde",
+ "tracing",
 ]
 
 [[package]]
 name = "risc0-zkvm-platform"
 version = "1.0.0-rc.2"
-source = "git+https://github.com/dymchenkko/risc0.git?branch=tracing#baa732ad31a1a8486ab93a5cb61b73f66300a50c"
+source = "git+https://github.com/risc0/risc0.git?branch=main#0cd7791f56d1c382a2e7ce9a7a9efc0c77b0a8d2"
 
 [[package]]
 name = "rlibc"
@@ -383,6 +397,35 @@ dependencies = [
  "quote",
  "unicode-ident",
 ]
+
+[[package]]
+name = "tracing"
+version = "0.1.37"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8ce8c33a8d48bd45d624a6e523445fd21ec13d3653cd51f681abf67418f54eb8"
+dependencies = [
+ "cfg-if",
+ "pin-project-lite",
+ "tracing-attributes",
+ "tracing-core",
+]
+
+[[package]]
+name = "tracing-attributes"
+version = "0.1.23"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4017f8f45139870ca7e672686113917c71c7a6e02d4924eda67186083c03081a"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "tracing-core"
+version = "0.1.30"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "24eb03ba0eab1fd845050058ce5e616558e8f8d8fca633e6b163fe25c797213a"
 
 [[package]]
 name = "typenum"

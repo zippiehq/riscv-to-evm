@@ -38,34 +38,31 @@ use core::{
 
 struct BumpPointerAlloc;
 
-static mut HEAP_WORDS_REMAINING: usize = 4096;
+extern "C" {
+        static mut __heap_start: usize;
+}
 
 #[no_mangle]
-pub fn zkvm_abi_alloc_words(nwords: usize) -> *mut u32 {
-    // SAFETY: Single threaded, so nothing else can touch this while we're working.
-    let heap_words_remaining: &mut usize = unsafe { &mut HEAP_WORDS_REMAINING };
-    let new_words_remaining = heap_words_remaining
-        .checked_sub(nwords)
-        .expect("Out of memory!");
-    // SAFETY: We've already checked to make sure we haven't
-    // overflowed the heap, so the pointer arithmetic here should not
-    // cause any undefined behavior.
-    let ptr = unsafe { (0x10000000 as *mut u32).sub(*heap_words_remaining) };
-    *heap_words_remaining = new_words_remaining;
+pub fn zkvm_abi_alloc_words(nwords: usize) -> *mut usize {
+    let ptr = unsafe { (__heap_start as (*mut usize)).add(nwords * 8) };
+    unsafe { __heap_start = ptr as usize; }
     ptr
 }
 
 
 unsafe impl GlobalAlloc for BumpPointerAlloc {
     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
-        let nwords = layout
-            .align_to(4)
+        let aligned_size = layout
+            .align_to(8)
             .expect("Unable to align allocation to word size")
             .pad_to_align()
-            .size()
-            / 4;
+            .size() / 8;
         
-        zkvm_abi_alloc_words(nwords) as *mut u8
+        zkvm_abi_alloc_words(aligned_size) as *mut u8
+    }
+    
+    unsafe fn alloc_zeroed(&self, layout: Layout) -> *mut u8 {
+        self.alloc(layout)
     }
 
     unsafe fn dealloc(&self, _: *mut u8, _: Layout) {
@@ -82,12 +79,17 @@ extern "C" {
 }
 
 #[no_mangle]
-pub extern "C" fn _start() {
-/*     let r: [u32;1] = [0];
+pub extern "C" fn __start(calldata: *mut usize) {
+     let r: [u32;1] = [0];
     let s: [u32;1] = [1];
     let t: [u8;1] = [1];
-    verify(&r, &s, &t); */
-    loop {}
+    verify(&r, &s, &t);
+    loop {
+        unsafe {
+           asm!("ebreak", options(noreturn));
+        }
+    }
+    
 }
 
 fn verify(journal: &[u32], seal: &[u32], method_id: &[u8]) -> bool {
@@ -101,3 +103,18 @@ fn verify(journal: &[u32], seal: &[u32], method_id: &[u8]) -> bool {
         },
     };
 }
+
+core::arch::global_asm!(
+    r#"
+.section .text._start;
+.globl _start;
+_start:
+    .option push;
+    .option norelax;
+    la gp, __global_pointer$;
+    .option pop;
+    la sp, __stack_init$;
+    la a0, __input_begin
+    jal ra, __start
+"#
+);
