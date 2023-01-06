@@ -287,6 +287,7 @@ function emitRiscv(
       Opcodes.emitSh(opcodes, parsed.rs1, parsed.rs2, parsed.imm);
       break;
     case "SW":
+      Opcodes.emitDirtyCheck(opcodes, pc);
       Opcodes.emitSw(opcodes, parsed.rs1, parsed.rs2, parsed.imm);
       break;
     case "SD":
@@ -701,7 +702,6 @@ async function transpile(fileContents: Buffer) {
   if (!elfInfo || !elfInfo.elf) {
     throw new Error("No ELF");
   }
-
   const context: Context = {
     pages: [],
     dataPages: [],
@@ -844,6 +844,7 @@ async function transpile(fileContents: Buffer) {
           data.stack[l].toString(16).toUpperCase().padStart(64, "0")
       );
     }
+    /* 
     let mem = data.memory.toString("hex");
     let l = 0;
     for (let l = 0; l < mem.length; l += 64) {
@@ -862,7 +863,8 @@ async function transpile(fileContents: Buffer) {
         );
       }
     }
-  });
+    */
+   });
 
   const { execResult } = await vm.runCall({
     caller: Address.fromString("0xf4eb9bb30a8f61991220cb31762bf2f456bc7fee"),
