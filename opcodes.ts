@@ -1166,7 +1166,7 @@ export function emitLb(
 
 export function emitDirtyCheck(opcodes: EVMOpCode[], pc: number) {
   opcodes.push({opcode: "PUSH4", parameter: pc.toString(16).toUpperCase().padStart(8, "0")});
-  readRegister(opcodes, 33); // dirty section
+  readRegister(opcodes, 34); // dirty section
   opcodes.push({opcode: "PUSH2", find_name: "_exit"});
   opcodes.push({opcode: "JUMPI"});
   opcodes.push({opcode: "POP"});
@@ -1270,21 +1270,24 @@ export function emitLw(
 
   signExtendTo256(opcodes, imm); // imm-signextended pc pc
   opcodes.push({ opcode: "ADD" });
-  opcodes.push({ opcode: "PUSH8", parameter: "FFFFFFFFFFFFFFFF" }); 
+  opcodes.push({ opcode: "PUSH8", parameter: "FFFFFFFFFFFFFFFF" });
   opcodes.push({ opcode: "AND", comment: "mask to 64 bits" });
+
+  loadWord(opcodes);
+  opcodes.push({ opcode: "PUSH1", parameter: "03" });
+  opcodes.push({ opcode: "SIGNEXTEND", comment: "signextend to 64 bit" });
+  writeRegister(opcodes, rd, true);
+}
+
+function loadWord(opcodes: EVMOpCode[]) {
   // big endian fixup
   opcodes.push({ opcode: "PUSH1", parameter: "04" });
   opcodes.push({ opcode: "XOR" });
   // fixup end
+  opcodes.push({ opcode: "CALLDATALOAD", comment: "LW addr" });
 
-  opcodes.push({ opcode: "CALLDATALOAD", comment: "LW addr"}); 
-
-  opcodes.push({ opcode: "PUSH1", parameter: "E0"});
-  opcodes.push({ opcode: "SHR", comment: "LW result"});
-  
-  opcodes.push({ opcode: "PUSH1", parameter: "03" }); 
-  opcodes.push({ opcode: "SIGNEXTEND", comment: "signextend to 64 bit" });
-  writeRegister(opcodes, rd, true);
+  opcodes.push({ opcode: "PUSH1", parameter: "E0" });
+  opcodes.push({ opcode: "SHR", comment: "LW result" });
 }
 
 export function emitLwu(
@@ -1348,7 +1351,7 @@ export function emitSb(
   imm: number
 ) {
   opcodes.push({opcode: "PUSH1", parameter: "01", comment: "SET DIRTY"}); // dirty flag set
-  writeRegister(opcodes, 33 /* isdirty register */, false);
+  writeRegister(opcodes, 34 /* isdirty register */, false);
 
   readRegister(opcodes, rs1); // rs1, (value << 24 & 0xFFFFFFF)
 
@@ -1393,7 +1396,7 @@ export function emitSh(
   imm: number
 ) {
   opcodes.push({opcode: "PUSH1", parameter: "01", comment: "SET DIRTY"}); // dirty flag set
-  writeRegister(opcodes, 33 /* isdirty register */, false);
+  writeRegister(opcodes, 34 /* isdirty register */, false);
 
   readRegister(opcodes, rs1); // rs1, (value << 24 & 0xFFFFFFF)
 
@@ -1438,7 +1441,7 @@ export function emitSw(
   imm: number
 ) {
   opcodes.push({opcode: "PUSH1", parameter: "01", comment: "SET DIRTY"}); // dirty flag set
-  writeRegister(opcodes, 33 /* isdirty register */, false);
+  writeRegister(opcodes, 34 /* isdirty register */, false);
 
   readRegister(opcodes, rs1); // rs1, (value << 24 & 0xFFFFFFF)
 
@@ -1483,7 +1486,7 @@ export function emitSd(
   imm: number
 ) {
   opcodes.push({opcode: "PUSH1", parameter: "01", comment: "SET DIRTY"}); // dirty flag set
-  writeRegister(opcodes, 33 /* isdirty register */, false);
+  writeRegister(opcodes, 34 /* isdirty register */, false);
 
   // grab 64 bit value from rs2 (value)
   readRegister(opcodes, rs1); // read rs1 (addr)
@@ -1501,8 +1504,10 @@ export function emitSd(
   opcodes.push({opcode: "ADD"});
   opcodes.push({opcode: "MSIZE"});
   opcodes.push({opcode: "MSTORE", comment: "emitSd"});
-
 }
+
+
+
 
 export function emitEcall(opcodes: EVMOpCode[], pc: number) {
   const rando = crypto.randomBytes(32).toString("hex");
@@ -1513,7 +1518,7 @@ export function emitEcall(opcodes: EVMOpCode[], pc: number) {
   // write 'ok exit' opcode
   // overwrites the end of tape info
   opcodes.push({opcode: "PUSH1", parameter: "01"}); // write 1 to exit register
-  opcodes.push({opcode: "PUSH4", parameter: "1400"});  // XXX careful if other offsets shit
+  opcodes.push({opcode: "PUSH4", parameter: "1420"});  // XXX careful if other offsets shit
   opcodes.push({opcode: "MSTORE"});
 
   opcodes.push({opcode: "PUSH4", parameter: pc.toString(16).toUpperCase().padStart(8, "0")});
@@ -1521,4 +1526,100 @@ export function emitEcall(opcodes: EVMOpCode[], pc: number) {
   opcodes.push({opcode: "JUMP"}); // leave code page
 
   opcodes.push({ opcode: "JUMPDEST", name: "_ecall_" + rando });
+}
+
+export function emitLr(opcodes: EVMOpCode[], rd: number, rs1: number, pc: number, func: string) {
+  opcodes.push({opcode: "PUSH1", parameter: "01"});
+  writeRegister(opcodes, 32, false); // write to reservation register
+  if (func === "LR.W") {
+    emitLw(opcodes, rd, rs1, 0);
+  }
+  if (func === "LR.D") {
+    emitLd(opcodes, rd, rs1, 0);
+  }
+}
+
+export function emitAmoaddW(opcodes: EVMOpCode[], rd: number, rs1: number, rs2: number, pc: number, func: string) {
+  emitDirtyCheck(opcodes, pc);
+
+  // get address from rs1
+  readRegister(opcodes, rs1);
+  loadWord(opcodes);
+
+  // m[x[rs1]]
+  opcodes.push( {opcode: "DUP1" });
+  // signextend previous value and write it to rd
+  opcodes.push({ opcode: "PUSH1", parameter: "03" });
+  opcodes.push({ opcode: "SIGNEXTEND" });
+  writeRegister(opcodes, rd, true);
+  // ^ write word we loaded out into rd in a sign-extended way
+
+  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF"}); 
+  opcodes.push({ opcode: "AND" }); 
+  
+  readRegister(opcodes, rs2);
+  opcodes.push({ opcode: "ADD", comment: "read rs2 and add them together "});
+  opcodes.push({ opcode: "PUSH4", parameter: "FFFFFFFF"}); 
+  opcodes.push({ opcode: "AND" }); 
+
+  // mark dirty register
+  opcodes.push({opcode: "PUSH1", parameter: "01", comment: "SET DIRTY FOR AMOADD.W"}); // dirty flag set
+  writeRegister(opcodes, 34 /* isdirty register */, false);
+
+  readRegister(opcodes, rs1);
+  // load previous value
+  opcodes.push({ opcode: "PUSH1", parameter: "04" });
+  opcodes.push({ opcode: "XOR" });
+  opcodes.push({ opcode: "DUP1" });
+  opcodes.push({ opcode: "CALLDATALOAD"} ); // stack: current_value, addr+imm&0xFFFFFFF, (value << 24 & 0xFFFFFFF)
+  
+  opcodes.push({ opcode: "PUSH1", parameter: "C0"}); // mask out
+  opcodes.push({ opcode: "SHR"});
+
+  opcodes.push({ opcode: "PUSH8", parameter: "00000000FFFFFFFF"});
+  opcodes.push({ opcode: "AND"});
+
+  opcodes.push({ opcode: "DUP3"});
+  opcodes.push({ opcode: "PUSH1", parameter: "20"});  
+  opcodes.push({ opcode: "SHL"}); 
+  opcodes.push({ opcode: "ADD"});
+
+  opcodes.push({opcode: "PUSH1", parameter: "C0"});
+  opcodes.push({opcode: "SHL"});
+
+  /* construct (value << 32) | addr and store in 256-bit slot */
+  opcodes.push({opcode: "ADD"});
+  opcodes.push({opcode: "MSIZE"});
+  opcodes.push({opcode: "MSTORE", comment: "emitAmoaddw"});
+  opcodes.push({opcode: "POP"});
+}
+
+export function emitSc(opcodes: EVMOpCode[], rd: number, rs1: number, rs2: number, pc: number, func: string) {
+  if (func === "SC.W") {
+    emitDirtyCheck(opcodes, pc);
+  }
+  const randoLabel = crypto.randomBytes(32).toString("hex");
+  readRegister(opcodes, 32); // reservation active register
+  opcodes.push({opcode: "PUSH2", find_name: "_reservation_ok_" + randoLabel});
+  opcodes.push({opcode: "JUMPI"});
+
+  opcodes.push({opcode: "PUSH1", parameter: "01"});
+  writeRegister(opcodes, rd, false);
+
+  opcodes.push({opcode: "PUSH2", find_name: "_sc_end_" + randoLabel});
+  opcodes.push({opcode: "JUMP"});
+
+  opcodes.push({opcode: "JUMPDEST", name: "_reservation_ok_" + randoLabel});
+  opcodes.push({opcode: "PUSH1", parameter: "00"});
+  writeRegister(opcodes, rd, false);
+  opcodes.push({opcode: "PUSH1", parameter: "00"});
+  writeRegister(opcodes, 32, false);
+
+  if (func === "SC.W") {
+    emitSw(opcodes, rs1, rs2, 0);
+  }
+  if (func === "SC.W") {
+    emitSd(opcodes, rd, rs1, 0);
+  }
+  opcodes.push({opcode: "JUMPDEST", name: "_sc_end_" + randoLabel});
 }

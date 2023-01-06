@@ -244,6 +244,18 @@ export function parseInstruction(insn: number, addr = 0): Instruction {
           /* amomaxu.d */
           name = "AMOMAXU.D";
           break;
+        } else if (funct3 == 0x2 && funct5 == 0x02) {
+          name = "LR.W";
+          break;
+        } else if (funct3 == 0x3 && funct5 == 0x02) {
+          name = "LR.D";
+          break;
+        } else if (funct3 == 0x2 && funct5 == 0x03) {
+          name = "SC.W";
+          break;
+        } else if (funct3 == 0x3 && funct5 == 0x03) {
+          name = "SC.D";
+          break;
         }
       }
       break;

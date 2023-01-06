@@ -333,6 +333,17 @@ function emitRiscv(
     case "REMUW":
       Opcodes.emitRemuw(opcodes, parsed.rd, parsed.rs1, parsed.rs2);
       break;
+    case "LR.W":
+    case "LR.D":
+      Opcodes.emitLr(opcodes, parsed.rd, parsed.rs1, pc, parsed.instructionName);
+      break;
+    case "SC.W":
+    case "SC.D":
+      Opcodes.emitSc(opcodes, parsed.rd, parsed.rs1, parsed.rs2, pc, parsed.instructionName);
+      break;
+    case "AMOADD.W":
+      Opcodes.emitAmoaddW(opcodes, parsed.rd, parsed.rs1, parsed.rs2, pc, parsed.instructionName);
+      break;
     case "UNIMPL":
       opcodes.push({ opcode: "INVALID" });
       break;
@@ -344,8 +355,7 @@ function emitRiscv(
 /*
  * memory layout while in a code page contract:
  * 0x0000..0x1000 is jump table (1024) for the page
- * 0x1000..0x1420 is 'registers'
- * 0x1420+ is write log in form of (op) (addr) (value) in 32 bytes slots
+ * 0x1000..0x1420 is 'registers' -- last one is reservation set, first one is PC
  * on return we return 0x1000 upwards w/ size msize-0x1000
  */
 
@@ -364,8 +374,8 @@ async function makePageCode(
   opcodes.push({ opcode: "PUSH1", parameter: "00" });
   opcodes.push({ opcode: "CODECOPY" });
 
-  // copy in registers to 0x1000 ~213 gas w/ expansion
-  opcodes.push({ opcode: "PUSH2", parameter: "0400" });
+  // copy in registers + reserved set to 0x1000 ~213 gas w/ expansion
+  opcodes.push({ opcode: "PUSH2", parameter: "0420" });
   opcodes.push({ opcode: "PUSH2", parameter: "8000" });
   opcodes.push({ opcode: "PUSH2", parameter: "1000" });
   opcodes.push({ opcode: "CALLDATACOPY" });
@@ -489,10 +499,8 @@ async function makePageCode(
  * code starts at 0x80000000 virtually but is all transpiled
  */
 const DISPATCHER_REG_START = 0x8000;
-const DISPATCHER_REG_WILLEXIT = 0x8400;
-const DISPATCHER_REG_ISDIRTY = 0x8420;
-
-const DISPATCHER_WRITEOUT_START = 0x8440;
+const DISPATCHER_REG_WILLEXIT = 0x8420;
+const DISPATCHER_REG_ISDIRTY = 0x8440;
 
 async function makeDispatcher(
   context: Context,
@@ -617,7 +625,7 @@ async function makeDispatcher(
       opcode: "PUSH4",
       parameter: DISPATCHER_REG_START.toString(16).padStart(8, "0"),
     }); // reg_start
-    opcodes.push({ opcode: "PUSH2", parameter: "0440" }); // ptr
+    opcodes.push({ opcode: "PUSH2", parameter: "0460" }); // ptr
 
     opcodes.push({ opcode: "JUMPDEST", name: "_isdirty_loop" });
     opcodes.push({ opcode: "PUSH1", parameter: "08" }); // 04 ptr reg_start
@@ -702,6 +710,9 @@ async function transpile(fileContents: Buffer) {
   if (!elfInfo || !elfInfo.elf) {
     throw new Error("No ELF");
   }
+  console.log(elfinfo.getSymbolByName(elfInfo.elf, "__input_begin"));
+  console.log(elfinfo.getSymbolByName(elfInfo.elf, "__input_maxlength"));
+
   const context: Context = {
     pages: [],
     dataPages: [],
