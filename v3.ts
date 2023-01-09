@@ -335,6 +335,7 @@ function emitRiscv(
       break;
     case "LR.W":
     case "LR.D":
+      Opcodes.emitDirtyCheck(opcodes, pc);
       Opcodes.emitLr(opcodes, parsed.rd, parsed.rs1, pc, parsed.instructionName);
       break;
     case "SC.W":
@@ -618,7 +619,7 @@ async function makeDispatcher(
   opcodes.push({
     opcode: "JUMPDEST",
     name: "_isdirty",
-    comment: "DIRTY PAGE(S) TO BE WRITTEN OUT",
+    comment: "RISC-V DIRTY PAGE(S) TO BE WRITTEN OUT",
   });
   {
     opcodes.push({
@@ -656,7 +657,7 @@ async function makeDispatcher(
     opcodes.push({ opcode: "AND" }); // addr 04 ptr reg_start
     opcodes.push({ opcode: "DUP3" }); // ptr addr 04 ptr reg_start
     opcodes.push({ opcode: "SWAP1" }); // addr ptr 04 ptr reg_start
-    opcodes.push({ opcode: "RETURNDATACOPY" }); // ptr reg_start -- the magic here is that ptr points to first 4 bytes soooo
+    opcodes.push({ opcode: "RETURNDATACOPY", comment: "RISC-V: do write-out"}); // ptr reg_start -- the magic here is that ptr points to first 4 bytes soooo
     opcodes.push({ opcode: "PUSH1", parameter: "20" });
     opcodes.push({ opcode: "ADD" });
     opcodes.push({ opcode: "PUSH2", find_name: "_isdirty_loop" });
@@ -847,6 +848,15 @@ async function transpile(fileContents: Buffer) {
         printO(cycle, opcodes[l]);
       }
     }
+
+    if (data.codeAddress !== dispatcherAddress) {
+      if (data.memory.length > ((0x1000) + (33*32))) {
+        for (let i = 0x1000; i < (0x1000) + (33*32); i += 32) {
+          console.log("x" + ((i - 0x1000) / 32).toString(10).padStart(2, " ") + ": " + data.memory.readBigUint64BE(i+(32-8)).toString(16).padStart(16, "-"));
+        }  
+      }
+    }
+
     for (let l = 0; l < data.stack.length; l++) {
       console.log(
         "- stack " +
@@ -855,7 +865,7 @@ async function transpile(fileContents: Buffer) {
           data.stack[l].toString(16).toUpperCase().padStart(64, "0")
       );
     }
-    /* 
+    
     let mem = data.memory.toString("hex");
     let l = 0;
     for (let l = 0; l < mem.length; l += 64) {
@@ -874,7 +884,7 @@ async function transpile(fileContents: Buffer) {
         );
       }
     }
-    */
+    
    });
 
   const { execResult } = await vm.runCall({

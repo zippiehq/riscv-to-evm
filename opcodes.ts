@@ -1537,6 +1537,7 @@ export function emitLr(opcodes: EVMOpCode[], rd: number, rs1: number, pc: number
   if (func === "LR.D") {
     emitLd(opcodes, rd, rs1, 0);
   }
+  opcodes.push({opcode: "JUMPDEST", comment: "LR DONE"});
 }
 
 export function emitAmoaddW(opcodes: EVMOpCode[], rd: number, rs1: number, rs2: number, pc: number, func: string) {
@@ -1603,6 +1604,9 @@ export function emitSc(opcodes: EVMOpCode[], rd: number, rs1: number, rs2: numbe
   opcodes.push({opcode: "PUSH2", find_name: "_reservation_ok_" + randoLabel});
   opcodes.push({opcode: "JUMPI"});
 
+  opcodes.push({opcode: "PUSH1", parameter: "00"});
+  writeRegister(opcodes, 32, false); // write to reservation register
+
   opcodes.push({opcode: "PUSH1", parameter: "01"});
   writeRegister(opcodes, rd, false);
 
@@ -1610,16 +1614,19 @@ export function emitSc(opcodes: EVMOpCode[], rd: number, rs1: number, rs2: numbe
   opcodes.push({opcode: "JUMP"});
 
   opcodes.push({opcode: "JUMPDEST", name: "_reservation_ok_" + randoLabel});
+
+
   opcodes.push({opcode: "PUSH1", parameter: "00"});
-  writeRegister(opcodes, rd, false);
-  opcodes.push({opcode: "PUSH1", parameter: "00"});
-  writeRegister(opcodes, 32, false);
+  writeRegister(opcodes, 32, false); // write to reservation register
 
   if (func === "SC.W") {
     emitSw(opcodes, rs1, rs2, 0);
   }
-  if (func === "SC.W") {
-    emitSd(opcodes, rd, rs1, 0);
+  if (func === "SC.D") {
+    emitSd(opcodes, rs1, rs2, 0);
   }
+  opcodes.push({opcode: "PUSH1", parameter: "00"});
+  writeRegister(opcodes, rd, false);
+  
   opcodes.push({opcode: "JUMPDEST", name: "_sc_end_" + randoLabel});
 }
